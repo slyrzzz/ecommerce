@@ -1,8 +1,7 @@
 import { Suspense } from "react";
-import { ProductListByCollectionDocument, ProductOrderField, OrderDirection } from "@/gql/graphql";
-import { executePublicGraphQL } from "@/lib/graphql";
 import { CACHE_PROFILES, applyCacheProfile } from "@/lib/cache-manifest";
 import { ProductList } from "@/ui/components/product-list";
+import { getProducts } from "@/lib/payload";
 
 export const metadata = {
 	title: "ACME Storefront, powered by Saleor & Next.js",
@@ -17,25 +16,15 @@ export const metadata = {
  * on-demand revalidation via cacheTag is the intended recovery path.
  */
 async function getFeaturedProducts(channel: string) {
-	"use cache";
-	applyCacheProfile(CACHE_PROFILES.collections, "featured-products");
-
-	const result = await executePublicGraphQL(ProductListByCollectionDocument, {
-		variables: {
-			slug: "featured-products",
-			channel,
-			first: 12,
-			sortBy: { field: ProductOrderField.Collection, direction: OrderDirection.Asc },
-		},
-		revalidate: 300,
-	});
-
-	if (!result.ok) {
-		console.warn(`[Homepage] Failed to fetch featured products for ${channel}:`, result.error.message);
+	console.log("=== RUNNING getFeaturedProducts ===");
+	try {
+		const products = await getProducts({});
+		console.log("=== RETRIEVED PRODUCTS ===", products.length);
+		return products.slice(0, 12);
+	} catch (error) {
+		console.error(`[Homepage] Failed to fetch featured products:`, error);
 		return [];
 	}
-
-	return result.data.collection?.products?.edges.map(({ node }) => node) ?? [];
 }
 
 /**

@@ -1,139 +1,48 @@
 import { Suspense } from "react";
-import { notFound } from "next/navigation";
-import { ProductListPaginatedDocument } from "@/gql/graphql";
-import { executePublicGraphQL } from "@/lib/graphql";
-import { getPaginatedListVariables } from "@/lib/utils";
-import { CategoryHero, transformToProductCard } from "@/ui/components/plp";
-import { buildSortVariables, buildFilterVariables } from "@/ui/components/plp/filter-utils";
-import { resolveCategorySlugsToIds } from "@/ui/components/plp/filter-utils.server";
-import { ProductsPageClient } from "./products-client";
+import { getProducts } from "@/lib/payload";
+import { ProductList } from "@/ui/components/product-list";
 
 export const metadata = {
-	title: "Products · Saleor Storefront example",
-	description: "All products in Saleor Storefront example",
+	title: "Products",
+	description: "Browse all products in our store.",
 };
 
 type PageProps = {
 	params: Promise<{ channel: string }>;
-	searchParams: Promise<{
-		cursor?: string | string[];
-		direction?: string | string[];
-		sort?: string;
-		price?: string;
-		colors?: string;
-		sizes?: string;
-		categories?: string;
-	}>;
+	searchParams: Promise<{ q?: string; sort?: string }>;
 };
 
-/**
- * Products page with Cache Components.
- * Static shell (hero) renders immediately, product grid streams in.
- */
 export default async function Page(props: PageProps) {
-	const params = await props.params;
-
-	const breadcrumbs = [
-		{ label: "Home", href: `/${params.channel}` },
-		{ label: "Products", href: `/${params.channel}/products` },
-	];
-
 	return (
-		<>
-			{/* Static shell - renders immediately */}
-			<CategoryHero
-				title="All Products"
-				description="Discover our full collection of premium products."
-				breadcrumbs={breadcrumbs}
-			/>
-			{/* Dynamic content - streams in via Suspense */}
+		<div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+			<h1 className="mb-6 text-2xl font-semibold">All Products</h1>
 			<Suspense fallback={<ProductsGridSkeleton />}>
-				<ProductsContent params={props.params} searchParams={props.searchParams} />
+				<ProductsContent searchParams={props.searchParams} />
 			</Suspense>
-		</>
+		</div>
 	);
 }
 
-/**
- * Dynamic products content - reads searchParams at request time.
- */
-async function ProductsContent({
-	params: paramsPromise,
-	searchParams: searchParamsPromise,
-}: {
-	params: Promise<{ channel: string }>;
-	searchParams: PageProps["searchParams"];
-}) {
-	const [params, searchParams] = await Promise.all([paramsPromise, searchParamsPromise]);
+async function ProductsContent({ searchParams }: { searchParams: PageProps["searchParams"] }) {
+	const sp = await searchParams;
+	const products = await getProducts({ query: sp.q });
 
-	const paginationVariables = getPaginatedListVariables({ params: searchParams });
-	const sortBy = buildSortVariables(searchParams.sort);
-
-	// Parse category slugs from URL and resolve to IDs for server-side filtering
-	const categorySlugs = searchParams.categories?.split(",").filter(Boolean) || [];
-	const categoryMap = await resolveCategorySlugsToIds(categorySlugs);
-	const categoryIds = Array.from(categoryMap.values()).map((c) => c.id);
-
-	const filter = buildFilterVariables({
-		priceRange: searchParams.price,
-		categoryIds,
-	});
-
-	const result = await executePublicGraphQL(ProductListPaginatedDocument, {
-		variables: {
-			...paginationVariables,
-			channel: params.channel,
-			sortBy,
-			filter,
-		},
-		revalidate: 300,
-	});
-
-	if (!result.ok || !result.data.products) {
-		notFound();
+	if (!products || products.length === 0) {
+		return <p className="text-muted-foreground">No products found.</p>;
 	}
 
-	const products = result.data.products;
-	const productCards = products.edges.map((e) => transformToProductCard(e.node, params.channel));
-
-	// Build resolved categories array for the client (for active filter display)
-	const resolvedCategories = categorySlugs
-		.map((slug) => {
-			const cat = categoryMap.get(slug);
-			return cat ? { slug, id: cat.id, name: cat.name } : null;
-		})
-		.filter(Boolean) as { slug: string; id: string; name: string }[];
-
-	return (
-		<ProductsPageClient
-			products={productCards}
-			pageInfo={products.pageInfo}
-			totalCount={products.totalCount ?? productCards.length}
-			resolvedCategories={resolvedCategories}
-		/>
-	);
+	return <ProductList products={products} />;
 }
 
-/**
- * Products grid skeleton with delayed visibility.
- * Matches ProductGrid/ProductCard dimensions to prevent layout shift.
- */
 function ProductsGridSkeleton() {
 	return (
-		<div className="mx-auto max-w-7xl animate-skeleton-delayed px-4 py-8 opacity-0 sm:px-6 lg:px-8">
-			{/* Matches ProductGrid: grid-cols-2 lg:grid-cols-3 */}
-			<div className="grid grid-cols-2 gap-4 lg:grid-cols-3 lg:gap-6">
-				{Array.from({ length: 6 }).map((_, i) => (
-					<div key={i} className="animate-pulse">
-						{/* Matches ProductCard: aspect-[3/4] rounded-xl */}
-						<div className="mb-4 aspect-[3/4] rounded-xl bg-muted" />
-						<div className="space-y-1.5">
-							<div className="h-4 w-3/4 rounded bg-muted" />
-							<div className="h-4 w-1/2 rounded bg-muted" />
-						</div>
-					</div>
-				))}
-			</div>
+		<div className="grid grid-cols-2 gap-4 lg:grid-cols-3 lg:gap-6">
+			{Array.from({ length: 6 }).map((_, i) => (
+				<div key={i} className="animate-pulse">
+					<div className="mb-4 aspect-[3/4] rounded-xl bg-secondary" />
+					<div className="h-4 w-3/4 rounded bg-secondary" />
+				</div>
+			))}
 		</div>
 	);
 }

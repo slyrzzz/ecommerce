@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { DefaultChannelSlug } from "@/app/config";
+import "./globals.css";
 
 /**
  * Root page redirects to the default channel.

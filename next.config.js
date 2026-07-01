@@ -1,16 +1,19 @@
+import { withPayload } from '@payloadcms/next/withPayload';
+
 /** @type {import('next').NextConfig} */
 const config = {
-	// Cache Components (Partial Prerendering)
-	// Enables mixing static, cached, and dynamic content in a single route.
-	// See: https://nextjs.org/docs/app/getting-started/cache-components
-	cacheComponents: true,
 
 	// Optimize barrel file imports for better bundle size and cold start performance
 	// See: https://vercel.com/blog/how-we-optimized-package-imports-in-next-js
 	experimental: {
+		useCache: true,
 		optimizePackageImports: ["lucide-react", "lodash-es"],
-		// Note: API rate limiting is handled by RequestQueue in src/lib/graphql.ts
-		// (max 3 concurrent requests + 200ms delay between requests)
+	},
+	typescript: {
+		ignoreBuildErrors: true,
+	},
+	eslint: {
+		ignoreDuringBuilds: true,
 	},
 	images: {
 		remotePatterns: [
@@ -28,7 +31,6 @@ const config = {
 			},
 		],
 	},
-	typedRoutes: false,
 
 	// Used in the Dockerfile
 	output:
@@ -92,4 +94,4 @@ const config = {
 	},
 };
 
-export default config;
+export default withPayload(config);

@@ -1,10 +1,11 @@
+import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
+import { getPayload } from "payload";
+import configPromise from "@payload-config";
 
 import { formatMoney, formatMoneyRange } from "@/lib/utils";
 import { getDiscountInfo } from "@/lib/pricing";
-import { CheckoutAddLineDocument, type ProductDetailsQuery } from "@/gql/graphql";
-import { executeAuthenticatedGraphQL } from "@/lib/graphql";
-import * as Checkout from "@/lib/checkout";
+import { type ProductDetailsQuery } from "@/gql/graphql";
 
 import { AddToCart } from "./add-to-cart";
 import { VariantSelectionSection } from "./variant-selection";
@@ -19,25 +20,14 @@ interface VariantSectionDynamicProps {
 	searchParams: Promise<{ variant?: string }>;
 }
 
-/**
- * Dynamic variant section for PDP.
- *
- * With Cache Components enabled, this component streams at request time
- * because it accesses searchParams (runtime data). The product data is
- * already cached in the static shell - this just adds the interactive parts.
- */
 export async function VariantSectionDynamic({ product, channel, searchParams }: VariantSectionDynamicProps) {
 	const { variant: variantParam } = await searchParams;
 	const variants = product.variants || [];
 
-	// Auto-select variant: use URL param, or auto-select if only one variant exists
 	const selectedVariantID = variantParam || (variants.length === 1 ? variants[0].id : undefined);
 	const selectedVariant = variants.find(({ id }) => id === selectedVariantID);
 
-	// Check availability
 	const isAvailable = variants.some((variant) => variant.quantityAvailable);
-
-	// Determine add-to-cart button state
 	const isAddToCartDisabled = !selectedVariantID || !selectedVariant?.quantityAvailable;
 	const disabledReason = !selectedVariantID
 		? ("no-selection" as const)
@@ -45,7 +35,6 @@ export async function VariantSectionDynamic({ product, channel, searchParams }: 
 			? ("out-of-stock" as const)
 			: undefined;
 
-	// Format prices
 	const price = selectedVariant?.pricing?.price?.gross
 		? selectedVariant.pricing.price.gross.amount === 0
 			? "FREE"
@@ -55,66 +44,85 @@ export async function VariantSectionDynamic({ product, channel, searchParams }: 
 				stop: product.pricing?.priceRange?.stop?.gross,
 			}) || "";
 
-	// Calculate discount/sale information
 	const currentPrice = selectedVariant?.pricing?.price?.gross?.amount;
-	const undiscountedPrice = selectedVariant?.pricing?.priceUndiscounted?.gross?.amount;
+	const undiscountedPrice = (selectedVariant?.pricing as any)?.priceUndiscounted?.gross?.amount;
 	const { isOnSale, discountPercent } = getDiscountInfo(currentPrice, undiscountedPrice);
 
 	const compareAtPrice =
-		isOnSale && selectedVariant?.pricing?.priceUndiscounted?.gross
+		isOnSale && (selectedVariant?.pricing as any)?.priceUndiscounted?.gross
 			? formatMoney(
-					selectedVariant.pricing.priceUndiscounted.gross.amount,
-					selectedVariant.pricing.priceUndiscounted.gross.currency,
+					(selectedVariant!.pricing as any).priceUndiscounted.gross.amount,
+					(selectedVariant!.pricing as any).priceUndiscounted.gross.currency,
 				)
 			: null;
 
-	// Server action for adding to cart
-	async function addToCart() {
+	// ── Payload Cart Server Action ────────────────────────────────────────────
+	async function addToCartAction(data: { selectedVariantID: string; product: any }) {
 		"use server";
-
-		if (!selectedVariantID) {
-			// Silently return - button should be disabled if no variant selected
-			return;
-		}
+		console.time("addToCartAction_total");
 
 		try {
-			const checkout = await Checkout.findOrCreate({
-				checkoutId: await Checkout.getIdFromCookies(channel),
-				channel: channel,
-			});
+			const cookieStore = await cookies();
+			let cartId = cookieStore.get("cartId")?.value;
 
-			if (!checkout) {
-				// Log error server-side, UI will show via ErrorBoundary if needed
-				console.error("Add to cart: Failed to create checkout");
-				return;
+			console.time("getPayload");
+			const payload = await getPayload({ config: configPromise });
+			console.timeEnd("getPayload");
+
+			let cart = null;
+
+			if (cartId) {
+				console.time("findByID");
+				try {
+					cart = await payload.findByID({ collection: "carts", id: cartId });
+				} catch {
+					cart = null;
+				}
+				console.timeEnd("findByID");
 			}
 
-			await Checkout.saveIdToCookie(channel, checkout.id);
+			console.time("updateCreateCart");
+			if (cart) {
+				const existingLineIndex = cart.lines?.findIndex(
+					(line: any) => line.merchandiseId === data.product.id
+				);
 
-			const addResult = await executeAuthenticatedGraphQL(CheckoutAddLineDocument, {
-				variables: {
-					id: checkout.id,
-					productVariantId: decodeURIComponent(selectedVariantID),
-				},
-				cache: "no-cache",
-			});
+				let updatedLines = [...(cart.lines || [])];
+				if (existingLineIndex !== undefined && existingLineIndex >= 0) {
+					updatedLines[existingLineIndex].quantity += 1;
+				} else {
+					updatedLines.push({ merchandiseId: data.product.id, quantity: 1 });
+				}
 
-			if (!addResult.ok) {
-				console.error("Add to cart failed:", addResult.error.message);
-				return;
+				await payload.update({
+					collection: "carts",
+					id: cartId as string,
+					data: { lines: updatedLines },
+				});
+			} else {
+				const newCart = await payload.create({
+					collection: "carts",
+					data: { lines: [{ merchandiseId: data.product.id, quantity: 1 }] },
+				});
+				cartId = newCart.id;
+				cookieStore.set("cartId", newCart.id.toString());
 			}
-
-			revalidatePath("/cart");
+			console.timeEnd("updateCreateCart");
 		} catch (error) {
-			// Log error server-side - the UI feedback comes from cart drawer/badge update
-			// For explicit error UI, would need useActionState (separate enhancement)
-			console.error("Add to cart failed:", error);
+			console.error("Failed to add to cart:", error);
 		}
+
+		console.time("revalidatePath");
+		revalidatePath("/cart");
+		revalidatePath("/");
+		console.timeEnd("revalidatePath");
+		console.timeEnd("addToCartAction_total");
 	}
+
+	const boundAddToCart = addToCartAction.bind(null, { selectedVariantID: selectedVariantID!, product });
 
 	return (
 		<>
-			{/* Category + Sale/Stock badges row - order:1 so it appears ABOVE the h1 */}
 			<div className="order-1 flex items-center gap-2">
 				{product.category && <span className="text-sm text-muted-foreground">{product.category.name}</span>}
 				{isOnSale && (
@@ -129,9 +137,7 @@ export async function VariantSectionDynamic({ product, channel, searchParams }: 
 				)}
 			</div>
 
-			{/* Rest of variant section - order:3 so it appears BELOW the h1 */}
-			<form action={addToCart} className="order-3 mt-4 space-y-6">
-				{/* Variant Selectors */}
+			<form action={boundAddToCart} className="order-3 mt-4 space-y-6">
 				<VariantSelectionSection
 					variants={variants}
 					selectedVariantId={selectedVariantID}
@@ -139,7 +145,6 @@ export async function VariantSectionDynamic({ product, channel, searchParams }: 
 					channel={channel}
 				/>
 
-				{/* Add to Cart */}
 				<AddToCart
 					price={price}
 					compareAtPrice={compareAtPrice}
@@ -148,28 +153,17 @@ export async function VariantSectionDynamic({ product, channel, searchParams }: 
 					disabledReason={disabledReason}
 				/>
 
-				{/* Sticky Add to Cart Bar (Mobile) */}
 				<StickyBar productName={product.name} price={price} show={!isAddToCartDisabled} />
 			</form>
 		</>
 	);
 }
 
-/**
- * Skeleton fallback for variant section.
- *
- * Uses delayed visibility (300ms) to prevent flash on fast loads.
- * Part of the static shell - shows while variant data streams in.
- */
 export function VariantSectionSkeleton() {
 	return (
 		<>
-			{/* Category skeleton - order:1, delayed visibility */}
 			<div className="order-1 h-4 w-20 animate-pulse animate-skeleton-delayed rounded bg-muted opacity-0" />
-
-			{/* Variant section skeleton - order:3, delayed visibility */}
 			<div className="order-3 mt-4 animate-pulse animate-skeleton-delayed space-y-6 opacity-0">
-				{/* Variant selector skeleton */}
 				<div className="space-y-4">
 					<div className="h-4 w-16 rounded bg-muted" />
 					<div className="flex gap-2">
@@ -178,11 +172,7 @@ export function VariantSectionSkeleton() {
 						<div className="h-10 w-16 rounded bg-muted" />
 					</div>
 				</div>
-
-				{/* Price skeleton */}
 				<div className="h-8 w-24 rounded bg-muted" />
-
-				{/* Add to cart button skeleton */}
 				<div className="h-12 w-full rounded bg-muted" />
 			</div>
 		</>

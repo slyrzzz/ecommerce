@@ -84,7 +84,7 @@ export function groupVariantsByAttributes(variants: SaleorVariant[]): AttributeG
 
 	// Process each variant
 	for (const variant of variants) {
-		for (const attr of variant.selectionAttributes) {
+		for (const attr of (variant.selectionAttributes ?? [])) {
 			const slug = attr.attribute.slug ?? "";
 			const name = attr.attribute.name ?? slug;
 
@@ -187,7 +187,7 @@ export function findMatchingVariant(
 		let allMatch = true;
 
 		for (const [attrSlug, selectedValue] of selectionEntries) {
-			const attr = variant.selectionAttributes.find(
+			const attr = (variant.selectionAttributes ?? []).find(
 				(a) => (a.attribute.slug ?? "").toLowerCase() === attrSlug.toLowerCase(),
 			);
 
@@ -224,7 +224,7 @@ export function getSelectionsFromVariant(
 	if (!variant) return {};
 
 	const selections: Record<string, string> = {};
-	for (const attr of variant.selectionAttributes) {
+	for (const attr of (variant.selectionAttributes ?? [])) {
 		const slug = attr.attribute.slug ?? "";
 		const value = attr.values[0]?.name ?? "";
 		if (slug && value) {
@@ -258,7 +258,7 @@ export function getOptionsForAttribute(
 	return targetGroup.options.map((option) => {
 		// Find ALL variants that have this option value
 		const variantsWithOption = variants.filter((variant) => {
-			const attr = variant.selectionAttributes.find(
+			const attr = (variant.selectionAttributes ?? []).find(
 				(a) => (a.attribute.slug ?? "").toLowerCase() === targetAttributeSlug.toLowerCase(),
 			);
 			return attr?.values.some((v) => (v.name ?? "").toLowerCase().replace(/\s+/g, "-") === option.id);
@@ -273,7 +273,7 @@ export function getOptionsForAttribute(
 		if (otherSelections.length > 0) {
 			existsWithCurrentSelection = variantsWithOption.some((variant) => {
 				for (const [attrSlug, selectedValue] of otherSelections) {
-					const attr = variant.selectionAttributes.find(
+					const attr = (variant.selectionAttributes ?? []).find(
 						(a) => (a.attribute.slug ?? "").toLowerCase() === attrSlug.toLowerCase(),
 					);
 					if (!attr) return false;

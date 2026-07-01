@@ -105,7 +105,8 @@ export const rootMetadata: Metadata = {
  * Truncate text to a maximum length at word boundary
  * Used for SEO-friendly titles and descriptions
  */
-export function truncateText(text: string, maxLength: number): string {
+export function truncateText(text: string | null | undefined, maxLength: number): string {
+	if (!text || typeof text !== "string") return "";
 	if (text.length <= maxLength) return text;
 	const truncated = text.slice(0, maxLength);
 	const lastSpace = truncated.lastIndexOf(" ");

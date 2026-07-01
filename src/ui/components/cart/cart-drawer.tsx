@@ -11,136 +11,50 @@ import { deleteCartLine, updateCartLineQuantity } from "./actions";
 import { cn } from "@/lib/utils";
 import { formatMoney } from "@/lib/utils";
 import { localeConfig } from "@/config/locale";
-import { hasDiscount } from "@/lib/pricing";
 
-interface CartLine {
+interface PayloadCartLine {
 	id: string;
+	merchandiseId: string;
 	quantity: number;
-	totalPrice: {
-		gross: {
-			amount: number;
-			currency: string;
-		};
-	};
-	variant: {
-		id: string;
-		name: string;
-		product: {
-			id: string;
-			name: string;
-			slug: string;
-			thumbnail?: {
-				url: string;
-				alt?: string | null;
-			} | null;
-		};
-		pricing?: {
-			price?: {
-				gross: {
-					amount: number;
-					currency: string;
-				};
-			} | null;
-			priceUndiscounted?: {
-				gross: {
-					amount: number;
-					currency: string;
-				};
-			} | null;
-		} | null;
-		attributes?: Array<{
-			attribute: {
-				name?: string | null;
-				slug?: string | null;
-			};
-			values: Array<{
-				name?: string | null;
-				value?: string | null;
-			}>;
-		}>;
-	};
-}
-
-import { getColorHex, isColorAttribute } from "@/lib/colors";
-
-interface VariantAttribute {
-	name: string;
-	value: string;
-	colorHex?: string;
-	isColor: boolean;
-}
-
-function getVariantDetails(variant: CartLine["variant"]): VariantAttribute[] {
-	const attributes = variant.attributes || [];
-	const result: VariantAttribute[] = [];
-
-	for (const attr of attributes) {
-		const slug = attr.attribute.slug || "";
-		const name = attr.attribute.name || slug;
-		const value = attr.values[0];
-
-		if (!value?.name) continue;
-
-		const isColor = isColorAttribute(slug);
-
-		result.push({
-			name,
-			value: value.name,
-			colorHex: isColor ? getColorHex(value) : undefined,
-			isColor,
-		});
-	}
-
-	// Sort: color first, then others
-	return result.sort((a, b) => {
-		if (a.isColor && !b.isColor) return -1;
-		if (!a.isColor && b.isColor) return 1;
-		return 0;
-	});
+	totalPrice: number;
+	product: any; // payload product
 }
 
 interface CartDrawerProps {
-	checkoutId: string | null;
-	lines: CartLine[];
-	totalPrice: {
-		gross: {
-			amount: number;
-			currency: string;
-		};
-	} | null;
+	cartId: string | null;
+	lines: PayloadCartLine[];
+	totalPrice: number;
 	channel: string;
 }
 
-export function CartDrawer({ checkoutId, lines, totalPrice, channel }: CartDrawerProps) {
+export function CartDrawer({ cartId, lines, totalPrice, channel }: CartDrawerProps) {
 	const { isOpen, closeCart } = useCart();
 	const [isPending, startTransition] = useTransition();
 
 	const itemCount = lines.reduce((sum, line) => sum + line.quantity, 0);
-	const subtotal = totalPrice?.gross.amount ?? 0;
-	const currency = totalPrice?.gross.currency ?? localeConfig.fallbackCurrency;
+	const currency = localeConfig.fallbackCurrency;
 
-	const handleRemove = (lineId: string) => {
-		if (!checkoutId) return;
+	const handleRemove = (merchandiseId: string) => {
+		if (!cartId) return;
 		startTransition(() => {
-			deleteCartLine(checkoutId, lineId);
+			deleteCartLine(cartId, merchandiseId);
 		});
 	};
 
-	const handleUpdateQuantity = (lineId: string, newQuantity: number) => {
-		if (!checkoutId || newQuantity < 1) return;
+	const handleUpdateQuantity = (merchandiseId: string, newQuantity: number) => {
+		if (!cartId || newQuantity < 1) return;
 		startTransition(() => {
-			updateCartLineQuantity(checkoutId, lineId, newQuantity);
+			updateCartLineQuantity(cartId, merchandiseId, newQuantity);
 		});
 	};
 
 	const freeShippingThreshold = 100;
-	const progressToFreeShipping = Math.min((subtotal / freeShippingThreshold) * 100, 100);
-	const amountToFreeShipping = Math.max(freeShippingThreshold - subtotal, 0);
+	const progressToFreeShipping = Math.min((totalPrice / freeShippingThreshold) * 100, 100);
+	const amountToFreeShipping = Math.max(freeShippingThreshold - totalPrice, 0);
 
 	return (
 		<Sheet open={isOpen} onOpenChange={(open) => !open && closeCart()}>
 			<SheetContent side="right" className="flex flex-col p-0">
-				{/* Header */}
 				<SheetHeader className="justify-between border-b border-border px-6 py-4">
 					<div className="flex items-center gap-3">
 						<ShoppingBag className="h-5 w-5" />
@@ -150,7 +64,6 @@ export function CartDrawer({ checkoutId, lines, totalPrice, channel }: CartDrawe
 					<SheetCloseButton className="static" />
 				</SheetHeader>
 
-				{/* Free Shipping Progress */}
 				{lines.length > 0 && (
 					<div className="bg-secondary/50 border-b border-border px-6 py-4">
 						<div className="mb-2 flex items-center gap-2 text-sm">
@@ -175,7 +88,6 @@ export function CartDrawer({ checkoutId, lines, totalPrice, channel }: CartDrawe
 					</div>
 				)}
 
-				{/* Cart Items */}
 				<div className="flex-1 overflow-y-auto">
 					{lines.length === 0 ? (
 						<div className="flex h-full flex-col items-center justify-center px-6 text-center">
@@ -197,82 +109,55 @@ export function CartDrawer({ checkoutId, lines, totalPrice, channel }: CartDrawe
 					) : (
 						<ul className="divide-y divide-border">
 							{lines.map((line) => {
-								const variantAttributes = getVariantDetails(line.variant);
-								const isDiscounted = hasDiscount(
-									line.variant.pricing?.price?.gross.amount,
-									line.variant.pricing?.priceUndiscounted?.gross.amount,
-								);
+								const product = line.product;
+								const imageUrl = product.media?.[0]?.url;
 
 								return (
 									<li key={line.id} className="px-6 py-4">
 										<div className="flex gap-4">
-											{/* Product Image */}
 											<Link
-												href={`/${channel}/products/${line.variant.product.slug}?variant=${line.variant.id}`}
+												href={`/${channel}/products/${product.slug}`}
 												onClick={closeCart}
 												className="group relative h-24 w-20 shrink-0 overflow-hidden rounded-lg bg-secondary"
 											>
-												{line.variant.product.thumbnail?.url && (
+												{imageUrl && (
 													<Image
-														src={line.variant.product.thumbnail.url}
-														alt={line.variant.product.thumbnail.alt ?? line.variant.product.name}
+														src={imageUrl}
+														alt={product.name}
 														fill
 														className="object-cover transition-transform duration-300 group-hover:scale-105"
 													/>
 												)}
 											</Link>
 
-											{/* Product Details */}
 											<div className="min-w-0 flex-1">
 												<div className="flex items-start justify-between gap-2">
 													<div>
 														<Link
-															href={`/${channel}/products/${line.variant.product.slug}?variant=${line.variant.id}`}
+															href={`/${channel}/products/${product.slug}`}
 															onClick={closeCart}
 															className="line-clamp-1 text-sm font-medium hover:underline"
 														>
-															{line.variant.product.name}
+															{product.name}
 														</Link>
-														{/* Variant attributes: Color swatch + values separated by | */}
-														{variantAttributes.length > 0 ? (
-															<div className="mt-1 flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
-																{variantAttributes.map((attr, index) => (
-																	<span key={attr.name} className="flex items-center gap-1.5">
-																		{index > 0 && <span className="text-border">|</span>}
-																		{attr.colorHex && (
-																			<span
-																				className="h-3 w-3 rounded-full border border-border"
-																				style={{ backgroundColor: attr.colorHex }}
-																			/>
-																		)}
-																		{/* Show "Size X" for size attributes, just value for colors */}
-																		<span>{attr.isColor ? attr.value : `${attr.name} ${attr.value}`}</span>
-																	</span>
-																))}
-															</div>
-														) : line.variant.name && line.variant.name !== line.variant.id ? (
-															<p className="mt-1 text-xs text-muted-foreground">{line.variant.name}</p>
-														) : null}
 													</div>
 													<Button
 														variant="ghost"
 														size="icon"
 														className="-mr-2 -mt-1 h-8 w-8 shrink-0 text-muted-foreground hover:text-destructive"
-														onClick={() => handleRemove(line.id)}
+														onClick={() => handleRemove(line.merchandiseId)}
 														disabled={isPending}
 													>
 														<Trash2 className="h-4 w-4" />
-														<span className="sr-only">Remove {line.variant.product.name}</span>
+														<span className="sr-only">Remove {product.name}</span>
 													</Button>
 												</div>
 
-												{/* Quantity & Price */}
 												<div className="mt-3 flex items-center justify-between">
-													{/* Quantity Selector */}
 													<div className="flex items-center rounded-lg border border-border">
 														<button
 															type="button"
-															onClick={() => handleUpdateQuantity(line.id, line.quantity - 1)}
+															onClick={() => handleUpdateQuantity(line.merchandiseId, line.quantity - 1)}
 															disabled={line.quantity <= 1 || isPending}
 															className="p-2 transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-40"
 														>
@@ -282,7 +167,7 @@ export function CartDrawer({ checkoutId, lines, totalPrice, channel }: CartDrawe
 														<span className="w-8 text-center text-sm font-medium">{line.quantity}</span>
 														<button
 															type="button"
-															onClick={() => handleUpdateQuantity(line.id, line.quantity + 1)}
+															onClick={() => handleUpdateQuantity(line.merchandiseId, line.quantity + 1)}
 															disabled={isPending}
 															className="p-2 transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-40"
 														>
@@ -291,19 +176,10 @@ export function CartDrawer({ checkoutId, lines, totalPrice, channel }: CartDrawe
 														</button>
 													</div>
 
-													{/* Price */}
 													<div className="text-right">
 														<span className="text-sm font-medium">
-															{formatMoney(line.totalPrice.gross.amount, line.totalPrice.gross.currency)}
+															{formatMoney(line.totalPrice, currency)}
 														</span>
-														{isDiscounted && line.variant.pricing?.priceUndiscounted && (
-															<span className="block text-xs text-muted-foreground line-through">
-																{formatMoney(
-																	line.variant.pricing.priceUndiscounted.gross.amount * line.quantity,
-																	line.variant.pricing.priceUndiscounted.gross.currency,
-																)}
-															</span>
-														)}
 													</div>
 												</div>
 											</div>
@@ -315,29 +191,26 @@ export function CartDrawer({ checkoutId, lines, totalPrice, channel }: CartDrawe
 					)}
 				</div>
 
-				{/* Footer */}
 				{lines.length > 0 && (
 					<div className="border-t border-border bg-background">
-						{/* Order Summary */}
 						<div className="space-y-2 px-6 py-4">
 							<div className="flex items-center justify-between text-sm">
 								<span className="text-muted-foreground">Subtotal</span>
-								<span>{formatMoney(subtotal, currency)}</span>
+								<span>{formatMoney(totalPrice, currency)}</span>
 							</div>
 							<div className="flex items-center justify-between text-sm">
 								<span className="text-muted-foreground">Shipping</span>
-								<span>{subtotal >= freeShippingThreshold ? "Free" : "Calculated at checkout"}</span>
+								<span>{totalPrice >= freeShippingThreshold ? "Free" : "Calculated at checkout"}</span>
 							</div>
 							<div className="flex items-center justify-between border-t border-border pt-2 text-base font-semibold">
 								<span>Total</span>
-								<span>{formatMoney(subtotal, currency)}</span>
+								<span>{formatMoney(totalPrice, currency)}</span>
 							</div>
 						</div>
 
-						{/* Actions */}
 						<div className="space-y-3 px-6 pb-6">
 							<Link
-								href={`/checkout?checkout=${checkoutId}`}
+								href={`/${channel}/checkout`}
 								onClick={closeCart}
 								className="hover:bg-primary/90 group inline-flex h-12 w-full items-center justify-center gap-2 rounded-md bg-primary text-base font-medium text-primary-foreground transition-colors"
 							>
@@ -353,7 +226,6 @@ export function CartDrawer({ checkoutId, lines, totalPrice, channel }: CartDrawe
 							</Link>
 						</div>
 
-						{/* Trust Signals */}
 						<div className="flex items-center justify-center gap-6 border-t border-border px-6 pb-4 pt-4 text-xs text-muted-foreground">
 							<span className="flex items-center gap-1.5">
 								<Truck className="h-4 w-4" />

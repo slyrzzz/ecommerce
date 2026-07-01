@@ -5,8 +5,8 @@ import { ErrorBoundary } from "react-error-boundary";
 import edjsHTML from "editorjs-html";
 import xss from "xss";
 
-import { executePublicGraphQL } from "@/lib/graphql";
-import { ProductDetailsDocument, type ProductDetailsQuery } from "@/gql/graphql";
+import { getProduct, getAllProductSlugs } from "@/lib/payload";
+import { ProductDetailsQuery } from "@/gql/graphql";
 import { buildPageMetadata, buildProductJsonLd } from "@/lib/seo";
 import { CACHE_PROFILES, applyCacheProfile } from "@/lib/cache-manifest";
 import { Breadcrumbs } from "@/ui/components/breadcrumbs";
@@ -26,20 +26,17 @@ async function getProductData(slug: string, channel: string) {
 	"use cache";
 	applyCacheProfile(CACHE_PROFILES.products, slug);
 
-	const result = await executePublicGraphQL(ProductDetailsDocument, {
-		variables: {
-			slug: decodeURIComponent(slug),
-			channel,
-		},
-		revalidate: 300,
-	});
-
-	if (!result.ok) {
-		console.error(`[getProductData] Failed to fetch product ${slug} for ${channel}:`, result.error.message);
+	try {
+		const product = await getProduct(decodeURIComponent(slug));
+		if (!product) {
+			console.error(`[getProductData] Failed to find product ${slug}`);
+			return null;
+		}
+		return product;
+	} catch (error) {
+		console.error(`[getProductData] Error fetching product ${slug}:`, error);
 		return null;
 	}
-
-	return result.data.product;
 }
 
 // ============================================================================
@@ -76,8 +73,11 @@ export async function generateMetadata(props: {
 	});
 }
 
-// NOTE: generateStaticParams is intentionally omitted for product pages.
-// All product pages are generated on-demand via ISR instead.
+
+export async function generateStaticParams() {
+	const slugs = await getAllProductSlugs();
+	return slugs.map((slug) => ({ slug }));
+}
 
 // ============================================================================
 // Page Component

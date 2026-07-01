@@ -21,3 +21,31 @@
 		-moz-osx-font-smoothing: grayscale;
 	}
 }
+
+/* ── Payload Admin Panel: Fix Tailwind Resets and Forms Conflict ── */
+/* Tailwind's Preflight resets and @tailwindcss/forms plugin override Payload's native styles, */
+/* causing form fields (inputs, textareas, selects) to have white backgrounds and invisible text. */
+/* We target the Payload template wrappers and revert these styles back to Payload's native layer. */
+.template-default input,
+.template-default textarea,
+.template-default select,
+.template-minimal input,
+.template-minimal textarea,
+.template-minimal select,
+.template-default input:focus,
+.template-default textarea:focus,
+.template-default select:focus,
+.template-minimal input:focus,
+.template-minimal textarea:focus,
+.template-minimal select:focus {
+	background-color: revert-layer;
+	color: revert-layer;
+	border-color: revert-layer;
+	border-width: revert-layer;
+	border-style: revert-layer;
+	border-radius: revert-layer;
+	padding: revert-layer;
+	box-shadow: revert-layer;
+	font-size: revert-layer;
+	line-height: revert-layer;
+}

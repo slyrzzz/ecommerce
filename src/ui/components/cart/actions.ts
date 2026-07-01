@@ -1,43 +1,66 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { executeAuthenticatedGraphQL } from "@/lib/graphql";
-import { CheckoutDeleteLinesDocument, CheckoutLinesUpdateDocument } from "@/gql/graphql";
-import * as Checkout from "@/lib/checkout";
+import { getPayload } from "payload";
+import configPromise from "@payload-config";
 
-export async function deleteCartLine(checkoutId: string, lineId: string) {
-	const result = await executeAuthenticatedGraphQL(CheckoutDeleteLinesDocument, {
-		variables: {
-			checkoutId,
-			lineIds: [lineId],
-		},
-		cache: "no-cache",
-	});
+export async function deleteCartLine(cartId: string, merchandiseId: string) {
+	console.time("deleteCartLine_total");
+	try {
+		console.time("getPayload");
+		const payload = await getPayload({ config: configPromise });
+		console.timeEnd("getPayload");
 
-	// If cart is now empty, clear the checkout cookie to start fresh next time
-	if (result.ok) {
-		const checkout = result.data.checkoutLinesDelete?.checkout;
-		if (checkout && checkout.lines.length === 0) {
-			await Checkout.clearCheckoutCookie(checkout.channel.slug);
+		console.time("findByID");
+		const cart: any = await payload.findByID({ collection: "carts", id: cartId });
+		console.timeEnd("findByID");
+		
+		if (cart && cart.lines) {
+			const updatedLines = cart.lines.filter((line: any) => line.merchandiseId !== merchandiseId);
+			console.time("updateCart");
+			await payload.update({
+				collection: "carts",
+				id: cartId,
+				data: { lines: updatedLines },
+			});
+			console.timeEnd("updateCart");
 		}
+	} catch (error) {
+		console.error("Failed to delete cart line:", error);
 	}
 
+	console.time("revalidatePath");
 	revalidatePath("/cart");
 	revalidatePath("/");
+	console.timeEnd("revalidatePath");
+	console.timeEnd("deleteCartLine_total");
 }
 
-export async function updateCartLineQuantity(checkoutId: string, lineId: string, quantity: number) {
+export async function updateCartLineQuantity(cartId: string, merchandiseId: string, quantity: number) {
 	if (quantity < 1) {
-		return deleteCartLine(checkoutId, lineId);
+		return deleteCartLine(cartId, merchandiseId);
 	}
 
-	await executeAuthenticatedGraphQL(CheckoutLinesUpdateDocument, {
-		variables: {
-			checkoutId,
-			lines: [{ lineId, quantity }],
-		},
-		cache: "no-cache",
-	});
+	try {
+		const payload = await getPayload({ config: configPromise });
+		const cart: any = await payload.findByID({ collection: "carts", id: cartId });
+		
+		if (cart && cart.lines) {
+			const updatedLines = cart.lines.map((line: any) => {
+				if (line.merchandiseId === merchandiseId) {
+					return { ...line, quantity };
+				}
+				return line;
+			});
+			await payload.update({
+				collection: "carts",
+				id: cartId,
+				data: { lines: updatedLines },
+			});
+		}
+	} catch (error) {
+		console.error("Failed to update cart line quantity:", error);
+	}
 
 	revalidatePath("/cart");
 	revalidatePath("/");
