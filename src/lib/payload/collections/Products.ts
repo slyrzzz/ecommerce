@@ -9,7 +9,7 @@ export const Products: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'status', 'price', 'inventory', 'updatedAt'],
-    description: 'Gestión del catálogo de productos.',
+    description: 'Gestión completa del catálogo de productos (sin barra lateral dividida).',
   },
   access: {
     read: () => true, // Catálogo público
@@ -19,24 +19,57 @@ export const Products: CollectionConfig = {
       type: 'tabs',
       tabs: [
         {
-          label: 'Información General',
+          label: 'Información Básica',
+          description: 'Detalles principales y estado de publicación en la tienda.',
           fields: [
             {
-              name: 'title',
-              type: 'text',
+              type: 'row',
+              fields: [
+                {
+                  name: 'title',
+                  type: 'text',
+                  required: true,
+                  label: 'Nombre del Producto *',
+                  admin: {
+                    width: '70%',
+                    description: 'Nombre claro y atractivo que verán los clientes en la tienda.',
+                  },
+                },
+                {
+                  name: 'status',
+                  type: 'select',
+                  label: 'Estado en la Tienda *',
+                  defaultValue: 'draft',
+                  required: true,
+                  options: [
+                    { label: '🟡 Borrador (Oculto)', value: 'draft' },
+                    { label: '🟢 Publicado (Visible)', value: 'published' },
+                  ],
+                  admin: {
+                    width: '30%',
+                    description: 'Determina si el producto se muestra públicamente.',
+                  },
+                },
+              ],
+            },
+            {
+              name: 'category',
+              type: 'relationship',
+              relationTo: 'categories',
+              hasMany: true,
               required: true,
-              label: 'Nombre del Producto',
+              label: 'Categoría(s) del Producto *',
               admin: {
-                description: 'Nombre claro y conciso del producto.',
+                description: 'Selecciona una o más categorías para organizar el producto.',
               },
             },
             {
               name: 'description',
               type: 'richText',
               required: true,
-              label: 'Descripción (Soporta formato enriquecido)',
+              label: 'Descripción Comercial *',
               admin: {
-                description: 'Detalla las características de tu producto. Usa estilos, listas y emojis para destacar información.',
+                description: 'Detalla características y beneficios. Puedes usar subtítulos, negritas y listas.',
               },
               editor: lexicalEditor({
                 features: ({ defaultFeatures }) => [
@@ -45,54 +78,89 @@ export const Products: CollectionConfig = {
                 ],
               }),
             },
+          ],
+        },
+        {
+          label: 'Precios e Inventario',
+          description: 'Control de precios de venta, descuentos y existencias disponibles.',
+          fields: [
+            {
+              type: 'row',
+              fields: [
+                {
+                  name: 'price',
+                  type: 'number',
+                  required: true,
+                  min: 0,
+                  label: 'Precio Actual de Venta ($) *',
+                  admin: {
+                    width: '50%',
+                    description: 'Precio final que se cobrará al cliente en la tienda.',
+                  },
+                },
+                {
+                  name: 'compareAtPrice',
+                  type: 'number',
+                  label: 'Precio Anterior / Original ($) (Opcional)',
+                  admin: {
+                    width: '50%',
+                    description: 'Si es mayor al Precio Actual, aparecerá tachado indicando descuento.',
+                  },
+                },
+              ],
+            },
             {
               type: 'row',
               fields: [
                 {
                   name: 'sku',
                   type: 'text',
-                  label: 'SKU (Unidad de Mantenimiento de Stock)',
+                  label: 'SKU (Código Interno de Referencia)',
                   admin: {
                     width: '50%',
-                    description: 'Código de referencia interno único.',
+                    description: 'Código único para identificación en tu inventario.',
                   },
                 },
                 {
                   name: 'inventory',
                   type: 'number',
-                  label: 'Inventario (Stock)',
+                  label: 'Unidades en Stock *',
                   defaultValue: 0,
                   required: true,
                   admin: {
                     width: '50%',
-                    description: 'Cantidad de unidades disponibles para la venta.',
+                    description: 'Cantidad física disponible para la venta inmediata.',
                   },
                 },
               ],
             },
-            {
-              name: 'compareAtPrice',
-              type: 'number',
-              label: 'Precio Anterior / Compare at price ($)',
-              admin: {
-                description: 'Precio original sin descuento. Aparecerá tachado si es mayor al precio actual.',
-              },
-            },
           ],
         },
         {
-          label: 'Ficha Técnica',
+          label: 'Multimedia y Ficha Técnica',
+          description: 'Galería visual y tabla de especificaciones técnicas del producto.',
           fields: [
+            {
+              name: 'media',
+              type: 'upload',
+              relationTo: 'media',
+              hasMany: true,
+              required: true,
+              label: 'Galería de Imágenes del Producto *',
+              admin: {
+                description: 'Sube imágenes claras (recomendado formato 1:1 o cuadrado). La primera imagen será la portada.',
+              },
+            },
             {
               name: 'specifications',
               type: 'array',
-              label: 'Especificaciones',
+              label: 'Tabla de Especificaciones Técnicas (Opcional)',
               labels: {
                 singular: 'Especificación',
                 plural: 'Especificaciones',
               },
               admin: {
-                description: 'Agrega pares de especificaciones técnicas (ej. Material -> Acero, Movimiento -> Cuarzo).',
+                description: 'Agrega pares de datos técnicos (Ejemplo: Material -> Acero Inoxidable, Color -> Negro Mate).',
               },
               fields: [
                 {
@@ -102,14 +170,14 @@ export const Products: CollectionConfig = {
                       name: 'name',
                       type: 'text',
                       required: true,
-                      label: 'Nombre de la propiedad',
+                      label: 'Característica (Ej: Material)',
                       admin: { width: '50%' },
                     },
                     {
                       name: 'value',
                       type: 'text',
                       required: true,
-                      label: 'Valor',
+                      label: 'Valor (Ej: Aluminio Anodizado)',
                       admin: { width: '50%' },
                     },
                   ],
@@ -119,71 +187,22 @@ export const Products: CollectionConfig = {
           ],
         },
         {
-          label: 'Multimedia',
+          label: 'SEO y URL Slug',
+          description: 'Configuración del enlace permanente en la tienda web.',
           fields: [
             {
-              name: 'media',
-              type: 'upload',
-              relationTo: 'media',
-              hasMany: true,
+              name: 'slug',
+              type: 'text',
               required: true,
-              label: 'Galería de Imágenes',
+              unique: true,
+              label: 'URL Slug *',
               admin: {
-                description: 'Sube imágenes cuadradas (1:1) para mantener un diseño limpio. La primera imagen será la principal.',
+                description: 'Identificador para la URL de la tienda (ejemplo: smartpulse-x7-wearable). En minúsculas y separado por guiones.',
               },
             },
           ],
         },
       ],
-    },
-    {
-      name: 'status',
-      type: 'select',
-      label: 'Estado del Producto',
-      defaultValue: 'draft',
-      required: true,
-      options: [
-        { label: 'Borrador', value: 'draft' },
-        { label: 'Publicado', value: 'published' },
-      ],
-      admin: {
-        position: 'sidebar',
-        description: 'Determina si el producto es visible en la tienda.',
-      },
-    },
-    {
-      name: 'price',
-      type: 'number',
-      required: true,
-      min: 0,
-      label: 'Precio Actual ($)',
-      admin: {
-        position: 'sidebar',
-        description: 'Precio final de venta (aplicará el cobro sobre este valor).',
-      },
-    },
-    {
-      name: 'category',
-      type: 'relationship',
-      relationTo: 'categories',
-      hasMany: true,
-      required: true,
-      label: 'Categoría',
-      admin: {
-        position: 'sidebar',
-        description: 'Asigna una o más categorías a este producto.',
-      },
-    },
-    {
-      name: 'slug',
-      type: 'text',
-      required: true,
-      unique: true,
-      label: 'URL Slug',
-      admin: {
-        position: 'sidebar',
-        description: 'Identificador único en la URL. Usualmente en minúsculas y separado por guiones.',
-      },
     },
   ],
 };
