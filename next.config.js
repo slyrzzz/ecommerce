@@ -2,6 +2,11 @@ import { withPayload } from '@payloadcms/next/withPayload';
 
 /** @type {import('next').NextConfig} */
 const config = {
+	transpilePackages: [
+		"isomorphic-dompurify",
+		"html-encoding-sniffer",
+		"@exodus/bytes"
+	],
 
 	// Optimize barrel file imports for better bundle size and cold start performance
 	// See: https://vercel.com/blog/how-we-optimized-package-imports-in-next-js
