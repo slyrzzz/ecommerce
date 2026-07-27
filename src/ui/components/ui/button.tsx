@@ -22,12 +22,13 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 					"disabled:pointer-events-none disabled:opacity-50",
 					// Variants
 					{
-						"hover:bg-primary/90 shadow-xs bg-primary text-primary-foreground": variant === "default",
-						"hover:bg-secondary/80 bg-secondary text-secondary-foreground": variant === "secondary",
-						"shadow-xs border border-input bg-background hover:bg-accent hover:text-accent-foreground":
+						"hover:bg-primary/90 shadow-sm bg-primary text-primary-foreground font-semibold": variant === "default",
+						"hover:bg-secondary/80 bg-secondary text-secondary-foreground font-semibold border border-border":
+							variant === "secondary",
+						"shadow-sm border-2 border-primary/20 bg-background hover:bg-accent hover:text-accent-foreground font-semibold":
 							variant === "outline-solid",
-						"hover:bg-accent hover:text-accent-foreground": variant === "ghost",
-						"hover:bg-destructive/90 shadow-xs bg-destructive text-destructive-foreground":
+						"hover:bg-accent hover:text-accent-foreground font-semibold": variant === "ghost",
+						"hover:bg-destructive/90 shadow-sm bg-destructive text-destructive-foreground font-semibold":
 							variant === "destructive",
 					},
 					// Sizes

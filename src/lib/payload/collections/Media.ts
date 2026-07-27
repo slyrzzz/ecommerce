@@ -40,7 +40,23 @@ export const Media: CollectionConfig = {
   upload: {
     // Restricción estricta de MIME-Types a imágenes seguras/optimizadas
     mimeTypes: ['image/jpeg', 'image/png', 'image/webp'],
-    staticDir: 'public/media',
+    staticDir: process.env.VERCEL ? '/tmp' : 'public/media',
+    disableLocalStorage: true,
+    adminThumbnail: ({ doc }) =>
+      ((doc as Record<string, unknown>)?.cloudinaryURL ||
+        (doc as Record<string, unknown>)?.url ||
+        null) as string,
+    handlers: [
+      async (req, { doc }) => {
+        const targetUrl =
+          (doc as Record<string, unknown>)?.cloudinaryURL ||
+          (doc as Record<string, unknown>)?.url;
+        if (targetUrl && typeof targetUrl === 'string') {
+          return Response.redirect(targetUrl, 302);
+        }
+        return null;
+      },
+    ],
   },
   access: {
     read: () => true, // Acceso público para visualizar imágenes en la tienda
