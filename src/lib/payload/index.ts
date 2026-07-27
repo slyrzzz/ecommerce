@@ -77,23 +77,33 @@ export async function getCategories() {
 }
 
 export async function getAllProductSlugs(): Promise<string[]> {
-  const payload = await getPayload({ config: configPromise });
-  const products = await payload.find({
-    collection: 'products',
-    limit: 1000,
-    depth: 0,
-  });
-  return products.docs.map((doc: any) => doc.slug);
+  try {
+    const payload = await getPayload({ config: configPromise });
+    const products = await payload.find({
+      collection: 'products',
+      limit: 1000,
+      depth: 0,
+    });
+    return products.docs.map((doc: any) => doc.slug);
+  } catch (error) {
+    console.error("Error fetching product slugs:", error);
+    return [];
+  }
 }
 
 export async function getAllCategorySlugs(): Promise<string[]> {
-  const payload = await getPayload({ config: configPromise });
-  const categories = await payload.find({
-    collection: 'categories',
-    limit: 1000,
-    depth: 0,
-  });
-  return categories.docs.map((doc: any) => doc.slug);
+  try {
+    const payload = await getPayload({ config: configPromise });
+    const categories = await payload.find({
+      collection: 'categories',
+      limit: 1000,
+      depth: 0,
+    });
+    return categories.docs.map((doc: any) => doc.slug);
+  } catch (error) {
+    console.error("Error fetching category slugs:", error);
+    return [];
+  }
 }
 
 // --- MAPPERS ---
