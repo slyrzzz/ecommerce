@@ -55,7 +55,11 @@ export const seoConfig = {
  * Falls back to localhost for development
  */
 export function getBaseUrl(): string {
-	return process.env.NEXT_PUBLIC_STOREFRONT_URL || "http://localhost:3000";
+	const rawUrl = process.env.NEXT_PUBLIC_STOREFRONT_URL?.trim() || "http://localhost:3000";
+	if (rawUrl.startsWith("http://") || rawUrl.startsWith("https://")) {
+		return rawUrl;
+	}
+	return `https://${rawUrl}`;
 }
 
 /**
@@ -63,5 +67,9 @@ export function getBaseUrl(): string {
  * Used by Next.js for resolving relative URLs in metadata
  */
 export function getMetadataBase(): URL {
-	return new URL(getBaseUrl());
+	try {
+		return new URL(getBaseUrl());
+	} catch {
+		return new URL("http://localhost:3000");
+	}
 }
