@@ -24,7 +24,6 @@
 		"editorjs-html": "4.0.5",
 		"embla-carousel-react": "8.6.0",
 		"geist": "1.5.1",
-		"isomorphic-dompurify": "^3.13.0",
 		"lodash-es": "4.17.21",
 		"lucide-react": "0.358.0",
 		"next": "15.3.9",

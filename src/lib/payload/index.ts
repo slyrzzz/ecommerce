@@ -1,12 +1,7 @@
 import { getPayload } from 'payload';
 import configPromise from '@payload-config';
-import DOMPurify from 'isomorphic-dompurify';
 import { ProductDetailsQuery, ProductListItemFragment } from '@/gql/graphql';
 import { cookies } from 'next/headers';
-
-const sanitizeHtml = (html: string) => {
-  return DOMPurify.sanitize(html);
-};
 
 export async function getProducts({ query, reverse, sortKey, categoryId }: { query?: string, reverse?: boolean, sortKey?: string, categoryId?: string }): Promise<ProductListItemFragment[]> {
   console.log("=== ADAPTER: getProducts starting ===");
