@@ -1,25 +1,31 @@
 "use client";
 
 import {
-	Shirt,
-	Leaf,
-	Droplets,
-	Ruler,
-	Sparkles,
 	Check,
 	Layers,
+	Ruler,
 	Scale,
-	Shield,
-	Battery,
+	ShieldCheck,
+	Droplets,
+	BatteryCharging,
 	Cpu,
 	Wifi,
 	Bluetooth,
-	Star,
-	Wrench,
 	Clock,
 	Zap,
-	Lock,
+	Leaf,
+	Package,
+	Monitor,
+	Volume2,
+	Camera,
+	HardDrive,
 	Globe,
+	Shield,
+	Battery,
+	Shirt,
+	Wrench,
+	Sparkles,
+	Star,
 } from "lucide-react";
 import {
 	Accordion,
@@ -48,47 +54,60 @@ interface ProductAttributesProps {
 
 function getSpecificationIcon(iconKey?: string | null): ReactNode {
 	if (!iconKey || iconKey === "none") return null;
-	const className = "h-4 w-4 shrink-0";
+	const className = "h-4 w-4 shrink-0 text-neutral-600 dark:text-neutral-400";
 	switch (iconKey.toLowerCase()) {
 		case "check":
 			return <Check className={className} />;
+		case "material":
 		case "layers":
 			return <Layers className={className} />;
+		case "dimensions":
 		case "ruler":
 			return <Ruler className={className} />;
 		case "weight":
 		case "scale":
 			return <Scale className={className} />;
 		case "shield":
-			return <Shield className={className} />;
+			return <ShieldCheck className={className} />;
+		case "water":
 		case "droplets":
 			return <Droplets className={className} />;
 		case "battery":
-			return <Battery className={className} />;
+			return <BatteryCharging className={className} />;
 		case "cpu":
 			return <Cpu className={className} />;
 		case "wifi":
 			return <Wifi className={className} />;
 		case "bluetooth":
 			return <Bluetooth className={className} />;
-		case "star":
-			return <Star className={className} />;
+		case "clock":
+			return <Clock className={className} />;
+		case "zap":
+			return <Zap className={className} />;
+		case "eco":
 		case "leaf":
 			return <Leaf className={className} />;
+		case "box":
+			return <Package className={className} />;
+		case "screen":
+			return <Monitor className={className} />;
+		case "sound":
+			return <Volume2 className={className} />;
+		case "camera":
+			return <Camera className={className} />;
+		case "storage":
+			return <HardDrive className={className} />;
+		case "global":
+			return <Globe className={className} />;
+		// Fallbacks for legacy saved specs
+		case "star":
+			return <Star className={className} />;
 		case "wrench":
 			return <Wrench className={className} />;
 		case "shirt":
 			return <Shirt className={className} />;
 		case "sparkles":
 			return <Sparkles className={className} />;
-		case "clock":
-			return <Clock className={className} />;
-		case "zap":
-			return <Zap className={className} />;
-		case "lock":
-			return <Lock className={className} />;
-		case "globe":
-			return <Globe className={className} />;
 		default:
 			return null;
 	}
