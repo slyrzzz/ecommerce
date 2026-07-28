@@ -44,7 +44,7 @@ export class WhatsAppCheckoutStrategy implements ICheckoutStrategy {
 		const encodedMessage = encodeURIComponent(message);
 		const whatsappUrl = `https://wa.me/${this.sellerPhone}?text=${encodedMessage}`;
 
-		// Redirect to WhatsApp
-		window.location.href = whatsappUrl;
+		// Open WhatsApp in a new window/tab so the storefront session remains active
+		window.open(whatsappUrl, "_blank", "noopener,noreferrer");
 	}
 }

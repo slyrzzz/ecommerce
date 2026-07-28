@@ -5,7 +5,9 @@ import * as Checkout from "@/lib/checkout";
 
 export async function logout() {
 	"use server";
-	(await getServerAuthClient()).signOut();
+	const { cookies } = await import("next/headers");
+	const cookieStore = await cookies();
+	cookieStore.delete("payload-token");
 }
 
 /**

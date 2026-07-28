@@ -16,13 +16,10 @@ export const Users: CollectionConfig = {
         const password = (data as any)?.password;
         
         if (password && typeof password === 'string') {
-          const hasUppercase = /[A-Z]/.test(password);
-          const hasNumber = /\d/.test(password);
-          const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-          const isLongEnough = password.length >= 12;
+          const isLongEnough = password.length >= 8;
 
-          if (!hasUppercase || !hasNumber || !hasSpecialChar || !isLongEnough) {
-            throw new Error('Políticas de seguridad: La contraseña debe tener al menos 12 caracteres, incluir una mayúscula, un número y un carácter especial.');
+          if (!isLongEnough) {
+            throw new Error('La contraseña debe tener al menos 8 caracteres.');
           }
         }
         return data;
@@ -30,6 +27,30 @@ export const Users: CollectionConfig = {
     ]
   },
   fields: [
-    // Email is automatically added by Payload when auth: true
+    {
+      name: 'firstName',
+      type: 'text',
+      label: 'First Name',
+    },
+    {
+      name: 'lastName',
+      type: 'text',
+      label: 'Last Name',
+    },
+    {
+      name: 'phone',
+      type: 'text',
+      label: 'Phone Number (WhatsApp)',
+    },
+    {
+      name: 'address',
+      type: 'text',
+      label: 'Address',
+    },
+    {
+      name: 'city',
+      type: 'text',
+      label: 'City',
+    },
   ],
 };

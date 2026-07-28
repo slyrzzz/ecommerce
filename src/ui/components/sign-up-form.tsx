@@ -47,7 +47,6 @@ export function SignUpForm() {
 		setIsSubmitting(true);
 
 		try {
-			// Call Saleor accountRegister mutation
 			const response = await fetch("/api/auth/register", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
@@ -57,21 +56,17 @@ export function SignUpForm() {
 					firstName,
 					lastName,
 					channel: params.channel,
-					redirectUrl: `${window.location.origin}/${params.channel}/login`,
 				}),
 			});
 
-			const data = (await response.json()) as {
-				errors?: Array<{ message: string; code?: string }>;
-				user?: { id: string; email: string };
-			};
+			const data = await response.json();
 
-			if (data.errors?.length) {
-				const err = data.errors[0];
-				if (err.code === "UNIQUE") {
+			if (!response.ok || data.errors?.length) {
+				const err = data.errors?.[0];
+				if (err?.code === "UNIQUE") {
 					setError("An account with this email already exists. Please sign in instead.");
 				} else {
-					setError(err.message || "Failed to create account");
+					setError(err?.message || "Failed to create account");
 				}
 				return;
 			}
@@ -102,12 +97,12 @@ export function SignUpForm() {
 							</svg>
 						</div>
 						<h2 className="text-xl font-semibold">Account Created!</h2>
-						<p className="mt-2 text-muted-foreground">Please check your email to verify your account.</p>
+						<p className="mt-2 text-muted-foreground">You are now logged in and ready to shop.</p>
 						<Link
-							href={`/${params.channel}/login`}
-							className="mt-6 inline-block text-sm font-medium text-foreground underline underline-offset-2 hover:no-underline"
+							href={`/${params.channel}`}
+							className="mt-6 inline-block rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
 						>
-							Go to Sign In
+							Continue Shopping
 						</Link>
 					</div>
 				</div>

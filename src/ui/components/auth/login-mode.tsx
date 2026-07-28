@@ -4,7 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
-import { useSaleorAuthContext } from "@saleor/auth-sdk/react";
 import { Button } from "@/ui/components/ui/button";
 import { Input } from "@/ui/components/ui/input";
 import { Label } from "@/ui/components/ui/label";
@@ -14,7 +13,6 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 export function LoginMode() {
 	const router = useRouter();
 	const params = useParams<{ channel: string }>();
-	const { signIn } = useSaleorAuthContext();
 
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
@@ -41,22 +39,20 @@ export function LoginMode() {
 		setIsSubmitting(true);
 
 		try {
-			const result = await signIn({ email, password });
+			const response = await fetch("/api/auth/login", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ email, password }),
+			});
 
-			if (result.data?.tokenCreate?.errors?.length) {
-				const err = result.data.tokenCreate.errors[0];
-				const isInvalidCredentials =
-					err.message?.toLowerCase().includes("invalid") ||
-					err.message?.toLowerCase().includes("credentials");
-				setError(
-					isInvalidCredentials
-						? "Invalid email or password. Please try again."
-						: err.message || "Sign in failed",
-				);
+			const data = await response.json();
+
+			if (!response.ok || data.errors?.length) {
+				setError(data.errors?.[0]?.message || "Invalid email or password. Please try again.");
 				return;
 			}
 
-			if (result.data?.tokenCreate?.token) {
+			if (data.token) {
 				router.push(`/${params.channel}`);
 				router.refresh();
 			}

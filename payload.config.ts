@@ -9,6 +9,7 @@ import { Media } from './src/lib/payload/collections/Media';
 import { Categories } from './src/lib/payload/collections/Categories';
 import { Products } from './src/lib/payload/collections/Products';
 import { Carts } from './src/lib/payload/collections/Carts';
+import { Orders } from './src/lib/payload/collections/Orders';
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -30,6 +31,7 @@ export default buildConfig({
     Categories,
     Products,
     Carts,
+    Orders,
   ],
   plugins: [],
   editor: lexicalEditor({}),

@@ -1,83 +1,81 @@
 import { NextRequest, NextResponse } from "next/server";
-import { executeRawGraphQL, asValidationError, getUserMessage } from "@/lib/graphql";
-
-const REGISTER_MUTATION = `
-  mutation AccountRegister($input: AccountRegisterInput!) {
-    accountRegister(input: $input) {
-      user {
-        id
-        email
-      }
-      errors {
-        field
-        message
-        code
-      }
-    }
-  }
-`;
-
-interface RegisterRequest {
-	email: string;
-	password: string;
-	firstName?: string;
-	lastName?: string;
-	channel: string;
-	redirectUrl: string;
-}
-
-interface AccountRegisterResult {
-	accountRegister?: {
-		user?: { id: string; email: string };
-		errors?: Array<{ field?: string | null; message: string; code?: string | null }>;
-	};
-}
+import { getPayload } from "payload";
+import configPromise from "@payload-config";
+import { cookies } from "next/headers";
 
 export async function POST(request: NextRequest) {
-	const body = (await request.json()) as RegisterRequest;
-	const { email, password, firstName, lastName, channel, redirectUrl } = body;
+  const body = await request.json();
+  const { email, password, firstName, lastName, phone, address, city } = body;
 
-	if (!email || !password) {
-		return NextResponse.json(
-			{ errors: [{ message: "Email and password are required", code: "REQUIRED" }] },
-			{ status: 400 },
-		);
-	}
+  if (!email || !password) {
+    return NextResponse.json(
+      { errors: [{ message: "Email and password are required", code: "REQUIRED" }] },
+      { status: 400 },
+    );
+  }
 
-	const result = await executeRawGraphQL<AccountRegisterResult>({
-		query: REGISTER_MUTATION,
-		variables: {
-			input: {
-				email,
-				password,
-				firstName: firstName || "",
-				lastName: lastName || "",
-				channel,
-				redirectUrl,
-			},
-		},
-	});
+  try {
+    const payload = await getPayload({ config: configPromise });
 
-	// Network or GraphQL error
-	if (!result.ok) {
-		console.error("Registration error:", result.error.type);
-		return NextResponse.json(
-			{ errors: [{ message: getUserMessage(result.error), code: result.error.type.toUpperCase() }] },
-			{ status: result.error.type === "network" ? 503 : 400 },
-		);
-	}
+    // Check if user already exists
+    const existing = await payload.find({
+      collection: "users",
+      where: { email: { equals: email.toLowerCase() } },
+    });
+    if (existing && existing.totalDocs > 0) {
+      return NextResponse.json(
+        { errors: [{ message: "An account with this email already exists", code: "UNIQUE" }] },
+        { status: 400 },
+      );
+    }
 
-	const accountRegister = result.data.accountRegister;
+    const newUser = await payload.create({
+      collection: "users",
+      data: {
+        email: email.toLowerCase(),
+        password,
+        firstName: firstName || "",
+        lastName: lastName || "",
+        phone: phone || "",
+        address: address || "",
+        city: city || "",
+      },
+    });
 
-	// Saleor validation errors
-	if (accountRegister?.errors?.length) {
-		const validationResult = asValidationError(accountRegister.errors);
-		return NextResponse.json({ errors: validationResult.error.validationErrors }, { status: 400 });
-	}
+    // Log the user in immediately after registering
+    const loginResult = await payload.login({
+      collection: "users",
+      data: {
+        email: email.toLowerCase(),
+        password,
+      },
+    });
 
-	// Success
-	return NextResponse.json({
-		user: accountRegister?.user,
-		message: "Account created successfully. Please check your email to verify your account.",
-	});
+    if (loginResult.token) {
+      const cookieStore = await cookies();
+      cookieStore.set("payload-token", loginResult.token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        path: "/",
+        sameSite: "lax",
+        maxAge: 60 * 60 * 24 * 7, // 7 days
+      });
+    }
+
+    return NextResponse.json({
+      user: {
+        id: newUser.id,
+        email: newUser.email,
+        firstName: newUser.firstName,
+        lastName: newUser.lastName,
+      },
+      message: "Account created successfully.",
+    });
+  } catch (error: any) {
+    console.error("Payload registration error:", error);
+    return NextResponse.json(
+      { errors: [{ message: error.message || "Error creating account", code: "ERROR" }] },
+      { status: 400 },
+    );
+  }
 }

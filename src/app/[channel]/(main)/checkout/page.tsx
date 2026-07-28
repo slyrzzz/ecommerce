@@ -3,10 +3,12 @@ import { getPayload } from "payload";
 import configPromise from "@payload-config";
 import { CheckoutForm } from "./CheckoutForm";
 import { localeConfig } from "@/config/locale";
+import { getCurrentUser } from "@/lib/payload/auth";
 
 export default async function CheckoutPage() {
 	const cookieStore = await cookies();
 	const cartId = cookieStore.get("cartId")?.value;
+	const user = await getCurrentUser();
 	
 	const cartData = {
 		totalPrice: 0,
@@ -33,6 +35,7 @@ export default async function CheckoutPage() {
 								productName: product.title || product.name || "Producto",
 								quantity: line.quantity,
 								price: price,
+								merchandiseId: line.merchandiseId,
 							});
 						}
 					} catch {
@@ -48,7 +51,7 @@ export default async function CheckoutPage() {
 	return (
 		<section className="mx-auto max-w-7xl p-8 pb-16">
 			<h1 className="text-3xl font-bold mb-8">Checkout</h1>
-			<CheckoutForm cartData={cartData} />
+			<CheckoutForm cartData={cartData} currentUser={user} />
 		</section>
 	);
 }
