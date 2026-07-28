@@ -2,7 +2,8 @@ import Link from "next/link";
 import { LinkWithChannel } from "../atoms/link-with-channel";
 import { CopyrightText } from "./copyright-text";
 import { Logo } from "./shared/logo";
-import { getCategories } from "@/lib/payload";
+import { getCategories, getStoreIdentity, getStoreContact } from "@/lib/payload";
+import { Instagram, Facebook, Twitter, MessageCircle } from "lucide-react";
 
 // Default footer links
 const defaultFooterLinks = {
@@ -22,6 +23,8 @@ const defaultFooterLinks = {
 
 export async function Footer({ channel }: { channel: string }) {
 	const categories = await getCategories();
+	const storeIdentity = await getStoreIdentity();
+	const storeContact = await getStoreContact();
 
 	return (
 		<footer className="bg-foreground text-background">
@@ -31,11 +34,79 @@ export async function Footer({ channel }: { channel: string }) {
 					{/* Brand */}
 					<div className="col-span-2 md:col-span-1">
 						<Link href={`/${channel}`} prefetch={false} className="mb-4 inline-block">
-							<Logo className="h-7 w-auto" inverted />
+							<Logo
+								className="h-7 w-auto"
+								inverted
+								logoUrl={storeIdentity.logoUrl}
+								logoInvertedUrl={storeIdentity.logoInvertedUrl}
+								ariaLabel={storeIdentity.siteName}
+							/>
 						</Link>
 						<p className="mt-4 max-w-xs text-sm leading-relaxed text-neutral-400">
-							Minimal design, maximum impact. Thoughtfully crafted essentials for everyday comfort.
+							{storeIdentity.tagline}
 						</p>
+
+						{/* Redes Sociales dinámicas con interruptor */}
+						{storeContact.socialLinks.showSocialLinks && (
+							<div className="mt-6 flex items-center gap-3">
+								{storeContact.socialLinks.instagram && (
+									<a
+										href={
+											storeContact.socialLinks.instagram.startsWith("http")
+												? storeContact.socialLinks.instagram
+												: `https://instagram.com/${storeContact.socialLinks.instagram.replace(/^@/, "")}`
+										}
+										target="_blank"
+										rel="noopener noreferrer"
+										className="rounded-full bg-neutral-800 p-2 text-neutral-300 transition-colors hover:bg-neutral-700 hover:text-white"
+										aria-label="Instagram"
+									>
+										<Instagram className="h-4 w-4" />
+									</a>
+								)}
+								{storeContact.socialLinks.facebook && (
+									<a
+										href={storeContact.socialLinks.facebook}
+										target="_blank"
+										rel="noopener noreferrer"
+										className="rounded-full bg-neutral-800 p-2 text-neutral-300 transition-colors hover:bg-neutral-700 hover:text-white"
+										aria-label="Facebook"
+									>
+										<Facebook className="h-4 w-4" />
+									</a>
+								)}
+								{storeContact.socialLinks.twitter && (
+									<a
+										href={
+											storeContact.socialLinks.twitter.startsWith("http")
+												? storeContact.socialLinks.twitter
+												: `https://x.com/${storeContact.socialLinks.twitter.replace(/^@/, "")}`
+										}
+										target="_blank"
+										rel="noopener noreferrer"
+										className="rounded-full bg-neutral-800 p-2 text-neutral-300 transition-colors hover:bg-neutral-700 hover:text-white"
+										aria-label="Twitter"
+									>
+										<Twitter className="h-4 w-4" />
+									</a>
+								)}
+								{storeContact.socialLinks.whatsappSupport && (
+									<a
+										href={
+											storeContact.socialLinks.whatsappSupport.startsWith("http")
+												? storeContact.socialLinks.whatsappSupport
+												: `https://wa.me/${storeContact.socialLinks.whatsappSupport.replace(/\D/g, "")}`
+										}
+										target="_blank"
+										rel="noopener noreferrer"
+										className="rounded-full bg-neutral-800 p-2 text-neutral-300 transition-colors hover:bg-neutral-700 hover:text-white"
+										aria-label="WhatsApp Soporte"
+									>
+										<MessageCircle className="h-4 w-4" />
+									</a>
+								)}
+							</div>
+						)}
 					</div>
 
 					{/* Payload Categories */}
@@ -94,7 +165,7 @@ export async function Footer({ channel }: { channel: string }) {
 				{/* Bottom bar */}
 				<div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-neutral-800 pt-8 sm:flex-row">
 					<p className="text-xs text-neutral-500">
-						<CopyrightText />
+						<CopyrightText holder={storeIdentity.copyrightHolder} />
 					</p>
 					<div className="flex items-center gap-6">
 						<Link

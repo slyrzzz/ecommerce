@@ -4,11 +4,13 @@ import configPromise from "@payload-config";
 import { CheckoutForm } from "./CheckoutForm";
 import { localeConfig } from "@/config/locale";
 import { getCurrentUser } from "@/lib/payload/auth";
+import { getStoreContact } from "@/lib/payload";
 
 export default async function CheckoutPage() {
 	const cookieStore = await cookies();
 	const cartId = cookieStore.get("cartId")?.value;
 	const user = await getCurrentUser();
+	const storeContact = await getStoreContact();
 	
 	const cartData = {
 		totalPrice: 0,
@@ -51,7 +53,11 @@ export default async function CheckoutPage() {
 	return (
 		<section className="mx-auto max-w-7xl p-8 pb-16">
 			<h1 className="text-3xl font-bold mb-8">Checkout</h1>
-			<CheckoutForm cartData={cartData} currentUser={user} />
+			<CheckoutForm
+				cartData={cartData}
+				currentUser={user}
+				whatsappNumber={storeContact.whatsapp.businessPhone}
+			/>
 		</section>
 	);
 }

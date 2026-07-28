@@ -6,7 +6,15 @@ import { formatMoney } from "@/lib/utils";
 import { Button } from "@/ui/components/ui/button";
 import { Save, CheckCircle2, MessageSquare } from "lucide-react";
 
-export function CheckoutForm({ cartData, currentUser }: { cartData: CheckoutCartData; currentUser?: any }) {
+export function CheckoutForm({
+	cartData,
+	currentUser,
+	whatsappNumber = "584120000000",
+}: {
+	cartData: CheckoutCartData;
+	currentUser?: any;
+	whatsappNumber?: string;
+}) {
 	const [customer, setCustomer] = useState<CheckoutCustomerData>({
 		firstName: currentUser?.firstName || "",
 		lastName: currentUser?.lastName || "",
@@ -35,13 +43,14 @@ export function CheckoutForm({ cartData, currentUser }: { cartData: CheckoutCart
 					}));
 				}
 			} catch {
-				// Ignore parse errors
+				// Ignore localStorage read error
 			}
 		}
 	}, [currentUser]);
 
-	const updateCustomerField = (field: keyof CheckoutCustomerData, value: string) => {
-		const updated = { ...customer, [field]: value };
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const { name, value } = e.target;
+		const updated = { ...customer, [name]: value };
 		setCustomer(updated);
 
 		if (!currentUser) {
@@ -55,7 +64,7 @@ export function CheckoutForm({ cartData, currentUser }: { cartData: CheckoutCart
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
-		const strategy = new WhatsAppCheckoutStrategy("584120000000"); // Replace with business WhatsApp number
+		const strategy = new WhatsAppCheckoutStrategy(whatsappNumber);
 		strategy.execute(customer, cartData);
 	};
 

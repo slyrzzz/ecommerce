@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import { getPayload } from "payload";
 import configPromise from "@payload-config";
-import { CartDrawer } from "./cart-drawer";
+import { CartDrawer, type CartSettings } from "./cart-drawer";
 
 interface CartDrawerWrapperProps {
 	channel: string;
@@ -13,20 +13,45 @@ export async function CartDrawerWrapper({ channel }: CartDrawerWrapperProps) {
 	let lines: any[] = [];
 	let totalAmount = 0;
 
-	if (cartId) {
-		try {
-			console.time("CartWrapper_getPayload");
-			const payload = await getPayload({ config: configPromise });
-			console.timeEnd("CartWrapper_getPayload");
+	let cartSettings: CartSettings = {
+		showFreeShippingBar: true,
+		freeShippingThreshold: 100,
+		showCartFooterMessages: true,
+		freeDeliveryText: "Free delivery over",
+		returnsText: "30-day returns",
+	};
 
-			console.time("CartWrapper_fetchCart");
-			const cart = await payload.findByID({ collection: "carts", id: cartId });
-			console.timeEnd("CartWrapper_fetchCart");
+	try {
+		const payload = await getPayload({ config: configPromise });
+
+		// 1. Obtener la configuración global del carrito en "Manejo de Tienda" -> "Opciones de Carrito"
+		try {
+			const globalConfig = await payload.findGlobal({
+				slug: "store-management" as any,
+			}).catch(() => null);
+
+			if (globalConfig) {
+				const fs = (globalConfig as any).freeShipping;
+				const fm = (globalConfig as any).footerMessages;
+				cartSettings = {
+					showFreeShippingBar: fs?.enabled ?? true,
+					freeShippingThreshold: typeof fs?.thresholdAmount === "number" ? fs.thresholdAmount : 100,
+					showCartFooterMessages: fm?.enabled ?? true,
+					freeDeliveryText: fm?.freeDeliveryText || "Free delivery over",
+					returnsText: fm?.returnsText || "30-day returns",
+				};
+			}
+		} catch (gErr) {
+			console.error("CartDrawerWrapper store-management config error:", gErr);
+		}
+
+		// 2. Obtener el carrito y sus productos si hay un cartId
+		if (cartId) {
+			const cart = await payload.findByID({ collection: "carts", id: cartId }).catch(() => null);
 
 			if (cart && cart.lines && cart.lines.length > 0) {
 				const productIds = cart.lines.map((line: any) => line.merchandiseId);
-				
-				console.time("CartWrapper_fetchProducts");
+
 				const productsRes = await payload.find({
 					collection: "products",
 					where: {
@@ -34,9 +59,8 @@ export async function CartDrawerWrapper({ channel }: CartDrawerWrapperProps) {
 							in: productIds,
 						},
 					},
-					limit: 100, // adjust as needed
+					limit: 100,
 				});
-				console.timeEnd("CartWrapper_fetchProducts");
 
 				const productMap = new Map();
 				productsRes.docs.forEach((prod) => productMap.set(prod.id, prod));
@@ -65,9 +89,9 @@ export async function CartDrawerWrapper({ channel }: CartDrawerWrapperProps) {
 					}
 				}
 			}
-		} catch (error) {
-			console.error("CartDrawerWrapper error:", error);
 		}
+	} catch (error) {
+		console.error("CartDrawerWrapper error:", error);
 	}
 
 	return (
@@ -76,6 +100,7 @@ export async function CartDrawerWrapper({ channel }: CartDrawerWrapperProps) {
 			lines={lines}
 			totalPrice={totalAmount}
 			channel={channel}
+			settings={cartSettings}
 		/>
 	);
 }

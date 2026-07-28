@@ -248,3 +248,84 @@ function mapPayloadProductToCommerce(doc: any): NonNullable<ProductDetailsQuery[
     ]
   };
 }
+
+export async function getStoreIdentity() {
+  try {
+    const payload = await getPayload({ config: configPromise });
+    const doc = await payload.findGlobal({ slug: "store-identity", depth: 1 }) as any;
+    return {
+      siteName: doc?.siteName || "Saleor Store",
+      tagline: doc?.tagline || "Premium products with exceptional quality. Discover our curated collection.",
+      description: doc?.description || "Starter pack for building performant e-commerce experiences with Saleor.",
+      copyrightHolder: doc?.copyrightHolder || "Saleor Demo Store",
+      logoUrl: doc?.logo && typeof doc.logo === "object" ? doc.logo.url : null,
+      logoInvertedUrl: doc?.logoInverted && typeof doc.logoInverted === "object" ? doc.logoInverted.url : null,
+      faviconUrl: doc?.favicon && typeof doc.favicon === "object" ? doc.favicon.url : null,
+    };
+  } catch (error) {
+    console.error("Failed to fetch store-identity:", error);
+    return {
+      siteName: "Saleor Store",
+      tagline: "Premium products with exceptional quality. Discover our curated collection.",
+      description: "Starter pack for building performant e-commerce experiences with Saleor.",
+      copyrightHolder: "Saleor Demo Store",
+      logoUrl: null,
+      logoInvertedUrl: null,
+      faviconUrl: null,
+    };
+  }
+}
+
+export async function getStoreContact() {
+  try {
+    const payload = await getPayload({ config: configPromise });
+    const doc = await payload.findGlobal({ slug: "store-contact", depth: 1 }) as any;
+    return {
+      whatsapp: {
+        enabled: doc?.enabled !== false,
+        businessPhone: doc?.businessPhone || "584120000000",
+        defaultMessagePrefix: doc?.defaultMessagePrefix || "¡Hola! Quiero completar mi pedido",
+      },
+      contactInfo: {
+        supportEmail: doc?.supportEmail || "soporte@tienda.com",
+        supportPhone: doc?.supportPhone || "+1 (555) 123-4567",
+        address: doc?.address || "123 Commerce St, Suite 100",
+        cityCountry: doc?.cityCountry || "Ciudad de México, México",
+        hours: doc?.hours || "Lunes - Viernes: 9am - 6pm",
+      },
+      socialLinks: {
+        showSocialLinks: doc?.showSocialLinks !== false,
+        instagram: doc?.instagram || null,
+        facebook: doc?.facebook || null,
+        twitter: doc?.twitter || null,
+        tiktok: doc?.tiktok || null,
+        whatsappSupport: doc?.whatsappSupport || null,
+      },
+    };
+  } catch (error) {
+    console.error("Failed to fetch store-contact:", error);
+    return {
+      whatsapp: {
+        enabled: true,
+        businessPhone: "584120000000",
+        defaultMessagePrefix: "¡Hola! Quiero completar mi pedido",
+      },
+      contactInfo: {
+        supportEmail: "soporte@tienda.com",
+        supportPhone: "+1 (555) 123-4567",
+        address: "123 Commerce St, Suite 100",
+        cityCountry: "Ciudad de México, México",
+        hours: "Lunes - Viernes: 9am - 6pm",
+      },
+      socialLinks: {
+        showSocialLinks: true,
+        instagram: null,
+        facebook: null,
+        twitter: null,
+        tiktok: null,
+        whatsappSupport: null,
+      },
+    };
+  }
+}
+

@@ -1,14 +1,34 @@
 import { LinkWithChannel } from "../atoms/link-with-channel";
 import { Logo as SharedLogo } from "./shared/logo";
 
+interface LogoProps {
+	logoUrl?: string | null;
+	logoInvertedUrl?: string | null;
+	siteName?: string;
+	inverted?: boolean;
+	className?: string;
+}
+
 /**
  * Site logo with link to homepage.
- * Always renders as a link - no client-side pathname detection needed.
+ * Renders custom image from StoreIdentity if configured in Payload CMS.
  */
-export const Logo = () => {
+export const Logo = ({
+	logoUrl = null,
+	logoInvertedUrl = null,
+	siteName = "Store Homepage",
+	inverted = false,
+	className = "h-7 w-auto",
+}: LogoProps = {}) => {
 	return (
-		<LinkWithChannel href="/" className="flex shrink-0 items-center" aria-label="Homepage">
-			<SharedLogo className="h-7 w-auto" />
+		<LinkWithChannel href="/" className="flex shrink-0 items-center" aria-label={siteName}>
+			<SharedLogo
+				className={className}
+				ariaLabel={siteName}
+				inverted={inverted}
+				logoUrl={logoUrl}
+				logoInvertedUrl={logoInvertedUrl}
+			/>
 		</LinkWithChannel>
 	);
 };

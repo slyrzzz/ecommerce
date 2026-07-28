@@ -18,22 +18,40 @@ interface LogoProps {
 	ariaLabel?: string;
 	/** Invert colors (for dark backgrounds like footer) */
 	inverted?: boolean;
+	/** Custom uploaded logo URL from Payload CMS */
+	logoUrl?: string | null;
+	/** Custom uploaded inverted logo URL from Payload CMS */
+	logoInvertedUrl?: string | null;
 }
 
 /**
- * Paper + Saleor combined logo (100x23, aspect ratio ~4.35:1)
- * Automatically switches between light/dark mode versions.
- *
- * Uses explicit width/height + aspect-ratio to prevent CLS while
- * allowing flexible sizing via className.
+ * Combined logo component supporting custom uploaded images from Payload CMS
+ * or falling back to default Saleor SVG logos.
  */
-export const Logo = ({ className, ariaLabel = "Paper by Saleor", inverted = false }: LogoProps) => {
-	// When inverted, swap the light/dark mode logic
+export const Logo = ({
+	className,
+	ariaLabel = "Store Logo",
+	inverted = false,
+	logoUrl = null,
+	logoInvertedUrl = null,
+}: LogoProps) => {
+	// If a custom logo image was uploaded in admin
+	if (logoUrl || logoInvertedUrl) {
+		const customSrc = (inverted && logoInvertedUrl) ? logoInvertedUrl : (logoUrl || logoInvertedUrl || "/logo.svg");
+		return (
+			/* eslint-disable-next-line @next/next/no-img-element */
+			<img
+				src={customSrc}
+				alt={ariaLabel}
+				className={`max-h-10 w-auto object-contain ${className ?? ""}`}
+			/>
+		);
+	}
+
+	// Default fallback SVG logos
 	const lightModeLogo = inverted ? "/logo-dark.svg" : "/logo.svg";
 	const darkModeLogo = inverted ? "/logo.svg" : "/logo-dark.svg";
 
-	// Base styles: preserve aspect ratio to prevent CLS
-	// Height classes (e.g., h-7) will work correctly with w-auto
 	const baseStyles = "aspect-[100/23]";
 
 	return (

@@ -3,6 +3,7 @@ import { getPayload } from "payload";
 import configPromise from "@payload-config";
 import { getCurrentUser } from "@/lib/payload/auth";
 import { AccountDashboard } from "@/ui/components/account/account-dashboard";
+import { getStoreContact } from "@/lib/payload";
 
 export const metadata = {
 	title: "Mi Cuenta y Pedidos",
@@ -18,6 +19,7 @@ export default async function AccountPage({ params }: { params: Promise<{ channe
 	}
 
 	const payload = await getPayload({ config: configPromise });
+	const storeContact = await getStoreContact();
 	const ordersRes = await payload.find({
 		collection: "orders",
 		where: {
@@ -30,5 +32,12 @@ export default async function AccountPage({ params }: { params: Promise<{ channe
 
 	const orders = ordersRes.docs || [];
 
-	return <AccountDashboard user={user} initialOrders={orders} channel={channel} />;
+	return (
+		<AccountDashboard
+			user={user}
+			initialOrders={orders}
+			channel={channel}
+			whatsappNumber={storeContact.whatsapp.businessPhone}
+		/>
+	);
 }

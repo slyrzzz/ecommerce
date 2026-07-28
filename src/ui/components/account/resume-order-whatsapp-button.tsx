@@ -22,9 +22,16 @@ interface ResumeOrderProps {
 	lines: OrderLine[];
 	totalPrice: number;
 	customer?: CustomerInfo;
+	whatsappNumber?: string;
 }
 
-export function ResumeOrderWhatsAppButton({ orderNumber, lines, totalPrice, customer }: ResumeOrderProps) {
+export function ResumeOrderWhatsAppButton({
+	orderNumber,
+	lines,
+	totalPrice,
+	customer,
+	whatsappNumber = "584120000000",
+}: ResumeOrderProps) {
 	const handleResumeWhatsApp = () => {
 		const itemsText = lines
 			.map((line) => `- ${line.quantity}x ${line.productName} ($${line.price.toFixed(2)})`)
@@ -32,7 +39,6 @@ export function ResumeOrderWhatsAppButton({ orderNumber, lines, totalPrice, cust
 
 		const message = `*¡Hola! Quiero completar mi pedido guardado #${orderNumber}*\n\n*Productos:*\n${itemsText}\n\n*Total:* $${totalPrice.toFixed(2)}\n\n*Datos de Envío:*\nNombre: ${customer?.firstName || ""} ${customer?.lastName || ""}\nTeléfono: ${customer?.phone || ""}\nDirección: ${customer?.address || ""}, ${customer?.city || ""}`;
 
-		const whatsappNumber = "584120000000"; // Default business phone
 		const encodedMessage = encodeURIComponent(message);
 		const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
 

@@ -10,6 +10,9 @@ import { Categories } from './src/lib/payload/collections/Categories';
 import { Products } from './src/lib/payload/collections/Products';
 import { Carts } from './src/lib/payload/collections/Carts';
 import { Orders } from './src/lib/payload/collections/Orders';
+import { StoreManagement } from './src/lib/payload/globals/StoreManagement';
+import { StoreIdentity } from './src/lib/payload/globals/StoreIdentity';
+import { StoreContact } from './src/lib/payload/globals/StoreContact';
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -32,6 +35,11 @@ export default buildConfig({
     Products,
     Carts,
     Orders,
+  ],
+  globals: [
+    StoreManagement,
+    StoreIdentity,
+    StoreContact,
   ],
   plugins: [],
   editor: lexicalEditor({}),

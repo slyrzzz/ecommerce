@@ -20,14 +20,23 @@ interface PayloadCartLine {
 	product: any; // payload product
 }
 
+export interface CartSettings {
+	showFreeShippingBar?: boolean;
+	freeShippingThreshold?: number;
+	showCartFooterMessages?: boolean;
+	freeDeliveryText?: string;
+	returnsText?: string;
+}
+
 interface CartDrawerProps {
 	cartId: string | null;
 	lines: PayloadCartLine[];
 	totalPrice: number;
 	channel: string;
+	settings?: CartSettings;
 }
 
-export function CartDrawer({ cartId, lines, totalPrice, channel }: CartDrawerProps) {
+export function CartDrawer({ cartId, lines, totalPrice, channel, settings }: CartDrawerProps) {
 	const { isOpen, closeCart } = useCart();
 	const [isPending, startTransition] = useTransition();
 
@@ -48,7 +57,12 @@ export function CartDrawer({ cartId, lines, totalPrice, channel }: CartDrawerPro
 		});
 	};
 
-	const freeShippingThreshold = 100;
+	const showFreeShippingBar = settings?.showFreeShippingBar ?? true;
+	const freeShippingThreshold = typeof settings?.freeShippingThreshold === "number" ? settings.freeShippingThreshold : 100;
+	const showCartFooterMessages = settings?.showCartFooterMessages ?? true;
+	const freeDeliveryText = settings?.freeDeliveryText || "Free delivery over";
+	const returnsText = settings?.returnsText || "30-day returns";
+
 	const progressToFreeShipping = Math.min((totalPrice / freeShippingThreshold) * 100, 100);
 	const amountToFreeShipping = Math.max(freeShippingThreshold - totalPrice, 0);
 
@@ -64,7 +78,7 @@ export function CartDrawer({ cartId, lines, totalPrice, channel }: CartDrawerPro
 					<SheetCloseButton className="static" />
 				</SheetHeader>
 
-				{lines.length > 0 && (
+				{showFreeShippingBar && lines.length > 0 && (
 					<div className="bg-secondary/50 border-b border-border px-6 py-4">
 						<div className="mb-2 flex items-center gap-2 text-sm">
 							<Truck className={cn("h-4 w-4", amountToFreeShipping <= 0 && "text-success")} />
@@ -226,16 +240,22 @@ export function CartDrawer({ cartId, lines, totalPrice, channel }: CartDrawerPro
 							</Link>
 						</div>
 
-						<div className="flex items-center justify-center gap-6 border-t border-border px-6 pb-4 pt-4 text-xs text-muted-foreground">
-							<span className="flex items-center gap-1.5">
-								<Truck className="h-4 w-4" />
-								Free delivery over {formatMoney(freeShippingThreshold, currency)}
-							</span>
-							<span className="flex items-center gap-1.5">
-								<RotateCcw className="h-4 w-4" />
-								30-day returns
-							</span>
-						</div>
+						{showCartFooterMessages && (
+							<div className="flex flex-wrap items-center justify-center gap-6 border-t border-border px-6 pb-4 pt-4 text-xs text-muted-foreground">
+								<span className="flex items-center gap-1.5">
+									<Truck className="h-4 w-4 shrink-0" />
+									<span>
+										{freeDeliveryText.includes("$") || /\d/.test(freeDeliveryText)
+											? freeDeliveryText
+											: `${freeDeliveryText} ${formatMoney(freeShippingThreshold, currency)}`}
+									</span>
+								</span>
+								<span className="flex items-center gap-1.5">
+									<RotateCcw className="h-4 w-4 shrink-0" />
+									<span>{returnsText}</span>
+								</span>
+							</div>
+						)}
 					</div>
 				)}
 			</SheetContent>

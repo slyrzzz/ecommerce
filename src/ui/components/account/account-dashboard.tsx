@@ -18,9 +18,15 @@ interface AccountDashboardProps {
 	};
 	initialOrders: any[];
 	channel: string;
+	whatsappNumber?: string;
 }
 
-export function AccountDashboard({ user, initialOrders, channel }: AccountDashboardProps) {
+export function AccountDashboard({
+	user,
+	initialOrders,
+	channel,
+	whatsappNumber = "584120000000",
+}: AccountDashboardProps) {
 	const [userProfile, setUserProfile] = useState(user);
 	const [orders, setOrders] = useState<any[]>(initialOrders);
 
@@ -440,6 +446,7 @@ export function AccountDashboard({ user, initialOrders, channel }: AccountDashbo
 											lines={order.lines || []}
 											totalPrice={Number(order.totalPrice || 0)}
 											customer={order.customer}
+											whatsappNumber={whatsappNumber}
 										/>
 									</div>
 								) : (
