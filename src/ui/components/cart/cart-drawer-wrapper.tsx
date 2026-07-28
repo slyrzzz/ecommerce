@@ -44,13 +44,22 @@ export async function CartDrawerWrapper({ channel }: CartDrawerWrapperProps) {
 				for (const line of cart.lines) {
 					const product = productMap.get(line.merchandiseId);
 					if (product) {
-						const price = product.pricing?.priceRange?.start?.gross?.amount || 0;
+						const price =
+							typeof product.price === "number"
+								? product.price
+								: product.pricing?.priceRange?.start?.gross?.amount || 0;
 						totalAmount += price * line.quantity;
+						const normalizedProduct = {
+							...product,
+							name: product.title || product.name || "Producto",
+							slug: product.slug || "",
+							media: product.media || (product.thumbnail ? [product.thumbnail] : []),
+						};
 						lines.push({
 							id: line.id || line.merchandiseId,
 							merchandiseId: line.merchandiseId,
 							quantity: line.quantity,
-							product,
+							product: normalizedProduct,
 							totalPrice: price * line.quantity,
 						});
 					}

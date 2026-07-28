@@ -24,10 +24,13 @@ export default async function CheckoutPage() {
 					try {
 						const product = await payload.findByID({ collection: "products", id: line.merchandiseId });
 						if (product) {
-							const price = product.pricing?.priceRange?.start?.gross?.amount || 0;
+							const price =
+								typeof product.price === "number"
+									? product.price
+									: product.pricing?.priceRange?.start?.gross?.amount || 0;
 							cartData.totalPrice += price * line.quantity;
 							cartData.lines.push({
-								productName: product.name,
+								productName: product.title || product.name || "Producto",
 								quantity: line.quantity,
 								price: price,
 							});

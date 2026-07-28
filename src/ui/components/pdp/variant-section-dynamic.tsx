@@ -56,6 +56,25 @@ export async function VariantSectionDynamic({ product, channel, searchParams }: 
 				)
 			: null;
 
+	const cookieStore = await cookies();
+	const cartId = cookieStore.get("cartId")?.value || "";
+	let initialQuantityInCart = 0;
+
+	if (cartId) {
+		try {
+			const payload = await getPayload({ config: configPromise });
+			const cart: any = await payload.findByID({ collection: "carts", id: cartId });
+			if (cart && cart.lines) {
+				const existingLine = cart.lines.find((line: any) => line.merchandiseId === product.id);
+				if (existingLine) {
+					initialQuantityInCart = existingLine.quantity || 0;
+				}
+			}
+		} catch {
+			// ignore cart errors
+		}
+	}
+
 	// ── Payload Cart Server Action ────────────────────────────────────────────
 	async function addToCartAction(data: { selectedVariantID: string; product: any }) {
 		"use server";
@@ -115,6 +134,7 @@ export async function VariantSectionDynamic({ product, channel, searchParams }: 
 		console.time("revalidatePath");
 		revalidatePath("/cart");
 		revalidatePath("/");
+		revalidatePath("/", "layout");
 		console.timeEnd("revalidatePath");
 		console.timeEnd("addToCartAction_total");
 	}
@@ -146,6 +166,9 @@ export async function VariantSectionDynamic({ product, channel, searchParams }: 
 				/>
 
 				<AddToCart
+					cartId={cartId}
+					merchandiseId={product.id}
+					initialQuantityInCart={initialQuantityInCart}
 					price={price}
 					compareAtPrice={compareAtPrice}
 					discountPercent={discountPercent}

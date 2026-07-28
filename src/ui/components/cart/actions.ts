@@ -32,6 +32,7 @@ export async function deleteCartLine(cartId: string, merchandiseId: string) {
 	console.time("revalidatePath");
 	revalidatePath("/cart");
 	revalidatePath("/");
+	revalidatePath("/", "layout");
 	console.timeEnd("revalidatePath");
 	console.timeEnd("deleteCartLine_total");
 }
@@ -64,4 +65,5 @@ export async function updateCartLineQuantity(cartId: string, merchandiseId: stri
 
 	revalidatePath("/cart");
 	revalidatePath("/");
+	revalidatePath("/", "layout");
 }
