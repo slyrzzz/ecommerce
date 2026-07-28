@@ -1,5 +1,13 @@
 'use server';
 
-export async function payloadServerFunction(...args: any[]) {
-  // Server Action vacío exigido por RootLayout de Payload CMS en Next.js 15
+import { handleServerFunctions } from '@payloadcms/next/layouts';
+import configPromise from '@payload-config';
+import { importMap } from './importMap';
+
+export async function payloadServerFunction(args: any) {
+  return handleServerFunctions({
+    ...args,
+    config: configPromise,
+    importMap,
+  });
 }

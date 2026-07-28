@@ -35,6 +35,17 @@ async function uploadBufferToCloudinary(
   });
 }
 
+function optimizeCloudinaryUrl(url: unknown): string | null {
+  if (typeof url !== 'string' || !url) return null;
+  if (!url.includes('cloudinary.com') || !url.includes('/image/upload/')) {
+    return url;
+  }
+  if (url.includes('/image/upload/f_auto,q_auto/')) {
+    return url;
+  }
+  return url.replace('/image/upload/', '/image/upload/f_auto,q_auto/');
+}
+
 export const Media: CollectionConfig = {
   slug: 'media',
   upload: {
@@ -43,16 +54,22 @@ export const Media: CollectionConfig = {
     staticDir: process.env.VERCEL ? '/tmp' : 'public/media',
     disableLocalStorage: true,
     adminThumbnail: ({ doc }) =>
-      ((doc as Record<string, unknown>)?.cloudinaryURL ||
-        (doc as Record<string, unknown>)?.url ||
-        null) as string,
+      optimizeCloudinaryUrl(
+        (doc as Record<string, unknown>)?.cloudinaryURL ||
+          (doc as Record<string, unknown>)?.url
+      ) || null,
     handlers: [
       async (req, { doc }) => {
         const targetUrl =
           (doc as Record<string, unknown>)?.cloudinaryURL ||
           (doc as Record<string, unknown>)?.url;
-        if (targetUrl && typeof targetUrl === 'string') {
-          return Response.redirect(targetUrl, 302);
+        if (
+          targetUrl &&
+          typeof targetUrl === 'string' &&
+          /^https?:\/\//i.test(targetUrl)
+        ) {
+          const optimized = optimizeCloudinaryUrl(targetUrl) || targetUrl;
+          return Response.redirect(optimized, 302);
         }
         return null;
       },
@@ -70,9 +87,11 @@ export const Media: CollectionConfig = {
               req.file.data,
               req.file.name || 'image'
             );
-            data.cloudinaryURL = res.secure_url;
+            const optimized =
+              optimizeCloudinaryUrl(res.secure_url) || res.secure_url;
+            data.cloudinaryURL = optimized;
             data.cloudinaryPublicId = res.public_id;
-            data.url = res.secure_url; // URL en el CDN global de Cloudinary
+            data.url = optimized; // URL en el CDN global de Cloudinary optimizada con f_auto, q_auto
           } catch (err) {
             req.payload.logger.error(`Error subiendo imagen a Cloudinary: ${err}`);
           }
@@ -83,7 +102,9 @@ export const Media: CollectionConfig = {
     afterRead: [
       ({ doc }) => {
         if (doc?.cloudinaryURL) {
-          doc.url = doc.cloudinaryURL;
+          doc.url = optimizeCloudinaryUrl(doc.cloudinaryURL) || doc.cloudinaryURL;
+        } else if (doc?.url) {
+          doc.url = optimizeCloudinaryUrl(doc.url) || doc.url;
         }
         return doc;
       },

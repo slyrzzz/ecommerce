@@ -251,3 +251,41 @@ Installed via `npx skills add vercel-labs/agent-skills`:
 1. **[vercel-react-best-practices](.agents/skills/vercel-react-best-practices/SKILL.md)** - 57 React/Next.js performance rules
 2. **[vercel-composition-patterns](.agents/skills/vercel-composition-patterns/SKILL.md)** - React composition patterns (compound components, state management)
 3. **[web-design-guidelines](.agents/skills/web-design-guidelines/SKILL.md)** - 100+ accessibility, UX, and performance rules
+
+---
+
+## Payload CMS 3 & Cloudinary Best Practices
+
+### 1. Server Action Wiring (`actions.ts` & `layout.tsx`)
+- **Never leave `payloadServerFunction` as an empty stub.** Always implement it using `handleServerFunctions` from `@payloadcms/next/layouts`:
+  ```typescript
+  'use server';
+  import { handleServerFunctions } from '@payloadcms/next/layouts';
+  import configPromise from '@payload-config';
+  import { importMap } from './importMap';
+
+  export async function payloadServerFunction(args: any) {
+    return handleServerFunctions({
+      ...args,
+      config: configPromise,
+      importMap,
+    });
+  }
+  ```
+- **Why:** If `payloadServerFunction` returns `undefined`, client-side UI calls like `getDocumentSlots` (`render-document-slots`) return `undefined`, causing `TypeError: Cannot read properties of undefined (reading 'Upload')` and React Hydration Error #418 in admin media/file upload drawers.
+
+### 2. Admin `importMap` Wiring
+- In `src/app/(payload)/importMap.ts`, always re-export the generated import map:
+  ```typescript
+  export { importMap } from './admin/importMap.js';
+  ```
+- This ensures `layout.tsx`, `actions.ts`, and admin views receive the complete map of Lexical and Admin Server Components.
+
+### 3. Cloudinary Automatic CDN Optimization (`f_auto, q_auto`)
+- Always inject `/f_auto,q_auto/` into Cloudinary asset URLs (`/image/upload/f_auto,q_auto/`) within media collection hooks (`beforeChange`, `afterRead`) and `adminThumbnail`.
+- **Why:** Delivers modern WebP/AVIF formats automatically and compresses file sizes by 40%-70% without perceptible loss of visual quality, improving LCP and Core Web Vitals.
+
+### 4. Safe 302 Redirect Handlers in Media Collections
+- When defining custom `handlers` in an upload collection (`upload.handlers`) to redirect `/api/media/file/<filename>`, always validate that `targetUrl` is an absolute HTTP/HTTPS URL (`/^https?:\/\//i.test(targetUrl)`).
+- If the URL is relative or fallback, return `null` so Payload's default `getFileHandler` serves it from local disk or storage without causing an infinite 302 redirect loop.
+
