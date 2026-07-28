@@ -169,8 +169,8 @@ async function ProductContent({
 					<Breadcrumbs items={breadcrumbs} />
 				</div>
 
-				<div className="grid gap-8 lg:grid-cols-[440px_1fr] lg:gap-12 xl:grid-cols-[480px_1fr] xl:gap-16">
-					<div className="lg:sticky lg:top-28 lg:self-start lg:h-fit lg:max-w-[480px]">
+				<div className="grid gap-8 lg:grid-cols-2 lg:gap-16">
+					<div className="lg:sticky lg:top-28 lg:self-start lg:h-fit">
 						<ProductGallery images={images} productName={product.name} />
 					</div>
 

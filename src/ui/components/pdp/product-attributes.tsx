@@ -16,6 +16,10 @@ import {
 	Bluetooth,
 	Star,
 	Wrench,
+	Clock,
+	Zap,
+	Lock,
+	Globe,
 } from "lucide-react";
 import {
 	Accordion,
@@ -77,6 +81,14 @@ function getSpecificationIcon(iconKey?: string | null): ReactNode {
 			return <Shirt className={className} />;
 		case "sparkles":
 			return <Sparkles className={className} />;
+		case "clock":
+			return <Clock className={className} />;
+		case "zap":
+			return <Zap className={className} />;
+		case "lock":
+			return <Lock className={className} />;
+		case "globe":
+			return <Globe className={className} />;
 		default:
 			return null;
 	}
