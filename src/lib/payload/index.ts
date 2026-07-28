@@ -115,19 +115,24 @@ function lexicalToHtml(node: any): string {
         return childrenHtml;
       case 'paragraph':
         return `<p>${childrenHtml}</p>`;
-      case 'text':
-        let text = node.text || "";
-        if (node.format & 1) text = `<strong>${text}</strong>`;
-        if (node.format & 2) text = `<em>${text}</em>`;
-        return text;
-      case 'heading':
-        const tag = `h${node.tag || 1}`;
+      case 'heading': {
+        const tagStr = String(node.tag || 'h2').toLowerCase();
+        const tag = tagStr.startsWith('h') ? tagStr : `h${tagStr}`;
         return `<${tag}>${childrenHtml}</${tag}>`;
-      case 'list':
+      }
+      case 'list': {
         const listTag = node.tag === 'ol' ? 'ol' : 'ul';
         return `<${listTag}>${childrenHtml}</${listTag}>`;
+      }
       case 'listitem':
         return `<li>${childrenHtml}</li>`;
+      case 'quote':
+        return `<blockquote>${childrenHtml}</blockquote>`;
+      case 'link':
+      case 'autolink': {
+        const href = node.fields?.url || node.url || '#';
+        return `<a href="${href}" target="_blank" rel="noopener noreferrer">${childrenHtml}</a>`;
+      }
       default:
         return childrenHtml;
     }
@@ -136,9 +141,19 @@ function lexicalToHtml(node: any): string {
   if (node.root) {
     return lexicalToHtml(node.root);
   }
+
+  if (node.type === 'linebreak') {
+    return '<br />';
+  }
   
   if (node.type === 'text') {
-    return node.text || "";
+    let text = node.text || "";
+    if (node.format & 1) text = `<strong>${text}</strong>`;
+    if (node.format & 2) text = `<em>${text}</em>`;
+    if (node.format & 4) text = `<s>${text}</s>`;
+    if (node.format & 8) text = `<u>${text}</u>`;
+    if (node.format & 16) text = `<code>${text}</code>`;
+    return text;
   }
   
   return "";
@@ -170,6 +185,18 @@ function mapPayloadProductToCommerce(doc: any): NonNullable<ProductDetailsQuery[
 
   const categoryDoc = doc.category && doc.category.length > 0 ? doc.category[0] : null;
 
+  const specificationAttributes = Array.isArray(doc.specifications)
+    ? doc.specifications
+        .filter((spec: any) => spec && spec.name && spec.value)
+        .map((spec: any, idx: number) => ({
+          attribute: {
+            name: String(spec.name).trim(),
+            slug: String(spec.name).toLowerCase().trim().replace(/[^a-z0-9]+/g, "-") || `spec-${idx}`,
+          },
+          values: [{ name: String(spec.value).trim() }],
+        }))
+    : [];
+
   return {
     id: doc.id,
     slug: doc.slug,
@@ -187,6 +214,7 @@ function mapPayloadProductToCommerce(doc: any): NonNullable<ProductDetailsQuery[
       }
     },
     attributes: [
+      ...specificationAttributes,
       {
         attribute: { name: 'Color', slug: 'color' },
         values: [{ name: 'Default' }]
@@ -201,7 +229,15 @@ function mapPayloadProductToCommerce(doc: any): NonNullable<ProductDetailsQuery[
         pricing: {
           price: { gross: { amount: priceNum, currency: 'USD' } }
         },
+        selectionAttributes: [
+          {
+            attribute: { name: 'Color', slug: 'color' },
+            values: [{ name: 'Default' }]
+          }
+        ],
+        nonSelectionAttributes: specificationAttributes,
         attributes: [
+          ...specificationAttributes,
           {
             attribute: { name: 'Color', slug: 'color' },
             values: [{ name: 'Default' }]

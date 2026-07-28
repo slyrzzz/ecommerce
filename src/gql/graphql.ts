@@ -56,6 +56,14 @@ export type ProductDetailsQuery = {
         attribute: { slug?: string | null; name?: string | null };
         values: Array<{ name?: string | null }>;
       }> | null;
+      selectionAttributes?: Array<{
+        attribute: { slug?: string | null; name?: string | null };
+        values: Array<{ name?: string | null; value?: string | null }>;
+      }> | null;
+      nonSelectionAttributes?: Array<{
+        attribute: { slug?: string | null; name?: string | null };
+        values: Array<{ name?: string | null; value?: string | null }>;
+      }> | null;
     }> | null;
   } | null;
 };

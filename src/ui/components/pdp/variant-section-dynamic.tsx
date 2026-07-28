@@ -139,7 +139,7 @@ export async function VariantSectionDynamic({ product, channel, searchParams }: 
 
 			<form action={boundAddToCart} className="order-3 mt-4 space-y-6">
 				<VariantSelectionSection
-					variants={variants}
+					variants={variants as any}
 					selectedVariantId={selectedVariantID}
 					productSlug={product.slug}
 					channel={channel}

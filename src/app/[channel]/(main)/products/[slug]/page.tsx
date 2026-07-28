@@ -240,6 +240,18 @@ function parseDescription(description: string | null | undefined): string[] | nu
 		const parsed = parser.parse(JSON.parse(description));
 		return parsed.map((html: string) => xss(html));
 	} catch {
+		try {
+			const json = JSON.parse(description);
+			if (json && Array.isArray(json.blocks)) {
+				const htmls = json.blocks
+					.map((b: any) => b?.data?.text)
+					.filter(Boolean)
+					.map((t: string) => xss(t));
+				if (htmls.length > 0) return htmls;
+			}
+		} catch {
+			// not valid JSON
+		}
 		return [xss(`<p>${description}</p>`)];
 	}
 }

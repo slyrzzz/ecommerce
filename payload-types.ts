@@ -156,66 +156,10 @@ export interface Media {
   id: string;
   alt: string;
   /**
-   * Cloudinary Media Information
+   * URL directa en CDN de Cloudinary
    */
-  cloudinary?: {
-    /**
-     * Cloudinary Public ID (used for transformations)
-     */
-    public_id?: string | null;
-    /**
-     * Type of the resource (image, video, raw)
-     */
-    resource_type?: string | null;
-    /**
-     * File format
-     */
-    format?: string | null;
-    /**
-     * Secure delivery URL
-     */
-    secure_url?: string | null;
-    /**
-     * File size in bytes
-     */
-    bytes?: number | null;
-    /**
-     * Creation timestamp
-     */
-    created_at?: string | null;
-    /**
-     * Current version number
-     */
-    version?: string | null;
-    /**
-     * Unique version identifier
-     */
-    version_id?: string | null;
-    /**
-     * Width in pixels
-     */
-    width?: number | null;
-    /**
-     * Height in pixels
-     */
-    height?: number | null;
-    /**
-     * Duration in seconds (for videos)
-     */
-    duration?: number | null;
-    /**
-     * Number of pages (for PDFs)
-     */
-    pages?: number | null;
-    /**
-     * Which page of the PDF to use for thumbnails (changes will apply after saving)
-     */
-    selected_page?: number | null;
-    /**
-     * URL for the thumbnail image (automatically generated for PDFs)
-     */
-    thumbnail_url?: string | null;
-  };
+  cloudinaryURL?: string | null;
+  cloudinaryPublicId?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -229,21 +173,26 @@ export interface Media {
   focalY?: number | null;
 }
 /**
+ * Organiza las categorías de productos de la tienda.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "categories".
  */
 export interface Category {
   id: string;
+  /**
+   * Nombre visible de la categoría en la tienda.
+   */
   title: string;
   /**
-   * URL amigable (ej. ropa-de-verano)
+   * Identificador para la URL (ej. ropa-de-verano). En minúsculas y separado por guiones.
    */
   slug: string;
   updatedAt: string;
   createdAt: string;
 }
 /**
- * Gestión del catálogo de productos.
+ * Gestión completa del catálogo de productos (sin barra lateral dividida).
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "products".
@@ -251,11 +200,19 @@ export interface Category {
 export interface Product {
   id: string;
   /**
-   * Nombre claro y conciso del producto.
+   * Nombre claro y atractivo que verán los clientes en la tienda.
    */
   title: string;
   /**
-   * Detalla las características de tu producto. Usa estilos, listas y emojis para destacar información.
+   * Determina si el producto se muestra públicamente.
+   */
+  status: 'draft' | 'published';
+  /**
+   * Selecciona una o más categorías para organizar el producto.
+   */
+  category: (string | Category)[];
+  /**
+   * Detalla características y beneficios. Puedes usar subtítulos, negritas y listas.
    */
   description: {
     root: {
@@ -273,19 +230,27 @@ export interface Product {
     [k: string]: unknown;
   };
   /**
-   * Código de referencia interno único.
+   * Precio final que se cobrará al cliente en la tienda.
    */
-  sku?: string | null;
+  price: number;
   /**
-   * Cantidad de unidades disponibles para la venta.
-   */
-  inventory: number;
-  /**
-   * Precio original sin descuento. Aparecerá tachado si es mayor al precio actual.
+   * Si es mayor al Precio Actual, aparecerá tachado indicando descuento.
    */
   compareAtPrice?: number | null;
   /**
-   * Agrega pares de especificaciones técnicas (ej. Material -> Acero, Movimiento -> Cuarzo).
+   * Código único para identificación en tu inventario.
+   */
+  sku?: string | null;
+  /**
+   * Cantidad física disponible para la venta inmediata.
+   */
+  inventory: number;
+  /**
+   * Sube imágenes claras (recomendado formato 1:1 o cuadrado). La primera imagen será la portada.
+   */
+  media: (string | Media)[];
+  /**
+   * Agrega pares de datos técnicos (Ejemplo: Material -> Acero Inoxidable, Color -> Negro Mate).
    */
   specifications?:
     | {
@@ -295,23 +260,7 @@ export interface Product {
       }[]
     | null;
   /**
-   * Sube imágenes cuadradas (1:1) para mantener un diseño limpio. La primera imagen será la principal.
-   */
-  media: (string | Media)[];
-  /**
-   * Determina si el producto es visible en la tienda.
-   */
-  status: 'draft' | 'published';
-  /**
-   * Precio final de venta (aplicará el cobro sobre este valor).
-   */
-  price: number;
-  /**
-   * Asigna una o más categorías a este producto.
-   */
-  category: (string | Category)[];
-  /**
-   * Identificador único en la URL. Usualmente en minúsculas y separado por guiones.
+   * Identificador para la URL de la tienda (ejemplo: smartpulse-x7-wearable). En minúsculas y separado por guiones.
    */
   slug: string;
   updatedAt: string;
@@ -447,24 +396,8 @@ export interface UsersSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
-  cloudinary?:
-    | T
-    | {
-        public_id?: T;
-        resource_type?: T;
-        format?: T;
-        secure_url?: T;
-        bytes?: T;
-        created_at?: T;
-        version?: T;
-        version_id?: T;
-        width?: T;
-        height?: T;
-        duration?: T;
-        pages?: T;
-        selected_page?: T;
-        thumbnail_url?: T;
-      };
+  cloudinaryURL?: T;
+  cloudinaryPublicId?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -493,10 +426,14 @@ export interface CategoriesSelect<T extends boolean = true> {
  */
 export interface ProductsSelect<T extends boolean = true> {
   title?: T;
+  status?: T;
+  category?: T;
   description?: T;
+  price?: T;
+  compareAtPrice?: T;
   sku?: T;
   inventory?: T;
-  compareAtPrice?: T;
+  media?: T;
   specifications?:
     | T
     | {
@@ -504,10 +441,6 @@ export interface ProductsSelect<T extends boolean = true> {
         value?: T;
         id?: T;
       };
-  media?: T;
-  status?: T;
-  price?: T;
-  category?: T;
   slug?: T;
   updatedAt?: T;
   createdAt?: T;

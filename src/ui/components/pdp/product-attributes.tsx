@@ -59,7 +59,7 @@ export function ProductAttributes({
 	const displayAttributes = attributes.filter((attr) => !["Size", "Color"].includes(attr.name));
 
 	return (
-		<Accordion type="multiple" defaultValue={["description"]} className="w-full">
+		<Accordion type="multiple" defaultValue={["description", "details"]} className="w-full">
 			{descriptionHtml && descriptionHtml.length > 0 && (
 				<AccordionItemWithContext value="description" className="border-border">
 					<AccordionTrigger className="py-4 text-sm font-medium hover:no-underline">
