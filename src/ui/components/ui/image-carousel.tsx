@@ -95,7 +95,7 @@ export function ImageCarousel({
 	// Handle empty images (after hooks to satisfy rules of hooks)
 	if (!images.length) {
 		return (
-			<div className="flex aspect-[4/5] w-full items-center justify-center rounded-lg bg-secondary">
+			<div className="flex aspect-square w-full items-center justify-center rounded-lg bg-secondary">
 				<span className="text-muted-foreground">No image available</span>
 			</div>
 		);
@@ -112,12 +112,12 @@ export function ImageCarousel({
 				}}
 				className="group w-full"
 			>
-				<div className="relative aspect-[4/5] w-full overflow-hidden rounded-lg bg-secondary">
+				<div className="relative aspect-square w-full overflow-hidden rounded-lg bg-secondary">
 					<CarouselContent className="ml-0">
 						{images.map((image, index) => (
 							<CarouselItem key={image.url} className="pl-0">
 								<div
-									className={cn("relative aspect-[4/5] w-full", onImageClick && "cursor-pointer")}
+									className={cn("relative aspect-square w-full", onImageClick && "cursor-pointer")}
 									onClick={() => onImageClick?.(index)}
 								>
 									<Image
@@ -167,7 +167,7 @@ export function ImageCarousel({
 							key={image.url}
 							onClick={() => scrollToImage(index)}
 							className={cn(
-								"relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-md transition-all",
+								"relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-md transition-all",
 								selectedIndex === index
 									? "ring-2 ring-foreground ring-offset-2 ring-offset-background"
 									: "opacity-60 hover:opacity-100",

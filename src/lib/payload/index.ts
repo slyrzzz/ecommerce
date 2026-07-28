@@ -192,6 +192,7 @@ function mapPayloadProductToCommerce(doc: any): NonNullable<ProductDetailsQuery[
           attribute: {
             name: String(spec.name).trim(),
             slug: String(spec.name).toLowerCase().trim().replace(/[^a-z0-9]+/g, "-") || `spec-${idx}`,
+            icon: spec.icon || "none",
           },
           values: [{ name: String(spec.value).trim() }],
         }))

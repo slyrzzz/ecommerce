@@ -41,7 +41,7 @@ export type ProductDetailsQuery = {
       } | null;
     } | null;
     attributes?: Array<{
-      attribute: { slug?: string | null; name?: string | null };
+      attribute: { slug?: string | null; name?: string | null; icon?: string | null };
       values: Array<{ name?: string | null }>;
     }> | null;
     variants?: Array<{
@@ -53,7 +53,7 @@ export type ProductDetailsQuery = {
         price?: { gross: { amount: number; currency: string } } | null;
       } | null;
       attributes?: Array<{
-        attribute: { slug?: string | null; name?: string | null };
+        attribute: { slug?: string | null; name?: string | null; icon?: string | null };
         values: Array<{ name?: string | null }>;
       }> | null;
       selectionAttributes?: Array<{

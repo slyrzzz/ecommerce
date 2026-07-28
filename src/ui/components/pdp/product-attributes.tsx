@@ -1,6 +1,22 @@
 "use client";
 
-import { Shirt, Leaf, Droplets, Ruler, Sparkles } from "lucide-react";
+import {
+	Shirt,
+	Leaf,
+	Droplets,
+	Ruler,
+	Sparkles,
+	Check,
+	Layers,
+	Scale,
+	Shield,
+	Battery,
+	Cpu,
+	Wifi,
+	Bluetooth,
+	Star,
+	Wrench,
+} from "lucide-react";
 import {
 	Accordion,
 	AccordionItemWithContext,
@@ -13,6 +29,7 @@ import { type ReactNode } from "react";
 interface Attribute {
 	name: string;
 	value: string | boolean | string[];
+	icon?: string | null;
 }
 
 interface ProductAttributesProps {
@@ -25,14 +42,45 @@ interface ProductAttributesProps {
 	careInstructions?: string | null;
 }
 
-// Map attribute names to icons
-const attributeIcons: Record<string, ReactNode> = {
-	Material: <Shirt className="h-4 w-4" />,
-	"Made with Recycled Fibers": <Leaf className="h-4 w-4" />,
-	Waterproof: <Droplets className="h-4 w-4" />,
-	Fit: <Ruler className="h-4 w-4" />,
-	"Key Features": <Sparkles className="h-4 w-4" />,
-};
+function getSpecificationIcon(iconKey?: string | null): ReactNode {
+	if (!iconKey || iconKey === "none") return null;
+	const className = "h-4 w-4 shrink-0";
+	switch (iconKey.toLowerCase()) {
+		case "check":
+			return <Check className={className} />;
+		case "layers":
+			return <Layers className={className} />;
+		case "ruler":
+			return <Ruler className={className} />;
+		case "weight":
+		case "scale":
+			return <Scale className={className} />;
+		case "shield":
+			return <Shield className={className} />;
+		case "droplets":
+			return <Droplets className={className} />;
+		case "battery":
+			return <Battery className={className} />;
+		case "cpu":
+			return <Cpu className={className} />;
+		case "wifi":
+			return <Wifi className={className} />;
+		case "bluetooth":
+			return <Bluetooth className={className} />;
+		case "star":
+			return <Star className={className} />;
+		case "leaf":
+			return <Leaf className={className} />;
+		case "wrench":
+			return <Wrench className={className} />;
+		case "shirt":
+			return <Shirt className={className} />;
+		case "sparkles":
+			return <Sparkles className={className} />;
+		default:
+			return null;
+	}
+}
 
 function formatValue(value: string | boolean | string[]): ReactNode {
 	if (typeof value === "boolean") return value ? "Yes" : "No";
@@ -85,7 +133,7 @@ export function ProductAttributes({
 							{displayAttributes.map((attr) => (
 								<div key={attr.name} className="flex items-start justify-between gap-4 text-sm">
 									<span className="flex items-center gap-2 text-muted-foreground">
-										{attributeIcons[attr.name]}
+										{getSpecificationIcon(attr.icon)}
 										{attr.name}
 									</span>
 									<span className="text-right font-medium">{formatValue(attr.value)}</span>

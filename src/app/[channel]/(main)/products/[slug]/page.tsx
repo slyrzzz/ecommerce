@@ -169,8 +169,8 @@ async function ProductContent({
 					<Breadcrumbs items={breadcrumbs} />
 				</div>
 
-				<div className="grid gap-8 lg:grid-cols-2 lg:gap-16">
-					<div className="lg:sticky lg:top-24 lg:self-start">
+				<div className="grid gap-8 lg:grid-cols-[440px_1fr] lg:gap-12 xl:grid-cols-[480px_1fr] xl:gap-16">
+					<div className="lg:sticky lg:top-28 lg:self-start lg:h-fit lg:max-w-[480px]">
 						<ProductGallery images={images} productName={product.name} />
 					</div>
 
@@ -266,6 +266,7 @@ function extractProductAttributes(product: NonNullable<ProductDetailsQuery["prod
 		.filter((attr) => !internalAttributeSlugs.includes((attr.attribute.slug ?? "").toLowerCase()))
 		.map((attr) => ({
 			name: attr.attribute.name!,
+			icon: attr.attribute.icon ?? "none",
 			value:
 				attr.values.length === 1
 					? attr.values[0]?.name ?? ""
