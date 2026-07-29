@@ -3,6 +3,7 @@ import { type Metadata } from "next";
 import { CACHE_PROFILES, applyCacheProfile } from "@/lib/cache-manifest";
 import { ProductList } from "@/ui/components/product-list";
 import { getProducts, getStoreIdentity } from "@/lib/payload";
+import { HeroBanner } from "@/ui/components/home/hero-banner";
 
 export async function generateMetadata(): Promise<Metadata> {
 	const identity = await getStoreIdentity();
@@ -40,6 +41,9 @@ async function getFeaturedProducts(channel: string) {
 export default function Page(props: { params: Promise<{ channel: string }> }) {
 	return (
 		<section className="mx-auto max-w-7xl p-8 pb-16">
+			<Suspense fallback={null}>
+				<HeroBanner />
+			</Suspense>
 			<h2 className="sr-only">Product list</h2>
 			<Suspense
 				fallback={

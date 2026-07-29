@@ -261,6 +261,21 @@ export async function getStoreIdentity() {
       logoUrl: doc?.logo && typeof doc.logo === "object" ? doc.logo.url : null,
       logoInvertedUrl: doc?.logoInverted && typeof doc.logoInverted === "object" ? doc.logoInverted.url : null,
       faviconUrl: doc?.favicon && typeof doc.favicon === "object" ? doc.favicon.url : null,
+      announcement: {
+        enabled: doc?.announcement?.enabled !== false,
+        text: doc?.announcement?.text || "Envío gratis en compras mayores a $100 USD • Calidad Premium Garantizada",
+        linkUrl: doc?.announcement?.linkUrl || "/products",
+        linkLabel: doc?.announcement?.linkLabel || "Ver más",
+      },
+      hero: {
+        enabled: doc?.hero?.enabled !== false,
+        badge: doc?.hero?.badge || "COLECCIÓN DESTACADA",
+        title: doc?.hero?.title || "Calidad y Elegancia en Cada Detalle",
+        description: doc?.hero?.description || "Descubre nuestra selección curada de productos diseñados para ofrecerte el mejor rendimiento y estilo.",
+        ctaText: doc?.hero?.ctaText || "Explorar Catálogo",
+        ctaLink: doc?.hero?.ctaLink || "/products",
+        backgroundImageUrl: doc?.hero?.backgroundImage && typeof doc?.hero?.backgroundImage === "object" ? doc.hero.backgroundImage.url : null,
+      },
     };
   } catch (error) {
     console.error("Failed to fetch store-identity:", error);
@@ -272,6 +287,21 @@ export async function getStoreIdentity() {
       logoUrl: null,
       logoInvertedUrl: null,
       faviconUrl: null,
+      announcement: {
+        enabled: true,
+        text: "Envío gratis en compras mayores a $100 USD • Calidad Premium Garantizada",
+        linkUrl: "/products",
+        linkLabel: "Ver más",
+      },
+      hero: {
+        enabled: true,
+        badge: "COLECCIÓN DESTACADA",
+        title: "Calidad y Elegancia en Cada Detalle",
+        description: "Descubre nuestra selección curada de productos diseñados para ofrecerte el mejor rendimiento y estilo.",
+        ctaText: "Explorar Catálogo",
+        ctaLink: "/products",
+        backgroundImageUrl: null,
+      },
     };
   }
 }

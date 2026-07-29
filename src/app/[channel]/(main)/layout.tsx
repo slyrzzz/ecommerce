@@ -1,10 +1,12 @@
 import { type ReactNode, Suspense } from "react";
 import { Footer } from "@/ui/components/footer";
 import { Header } from "@/ui/components/header";
+import { AnnouncementBar } from "@/ui/components/announcement-bar";
 import { CartProvider, CartDrawerWrapper } from "@/ui/components/cart";
 import { type Metadata } from "next";
 import { getStoreIdentity } from "@/lib/payload";
 import { Logo } from "@/ui/components/shared/logo";
+
 
 export async function generateMetadata(): Promise<Metadata> {
 	const identity = await getStoreIdentity();
@@ -93,6 +95,9 @@ export default async function RootLayout(props: {
 
 	return (
 		<CartProvider>
+			<Suspense fallback={null}>
+				<AnnouncementBar />
+			</Suspense>
 			<Suspense fallback={<HeaderSkeleton />}>
 				<Header channel={channel} />
 			</Suspense>

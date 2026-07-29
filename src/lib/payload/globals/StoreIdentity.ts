@@ -91,7 +91,134 @@ export const StoreIdentity: GlobalConfig = {
 						},
 					],
 				},
+				{
+					label: "Barra de Anuncio",
+					description: "Configura la barra de aviso superior que aparece arriba de la cabecera del sitio.",
+					fields: [
+						{
+							type: "group",
+							name: "announcement",
+							label: "Barra de Anuncio (Superior)",
+							fields: [
+								{
+									name: "enabled",
+									type: "checkbox",
+									label: "Mostrar barra de anuncio superior",
+									defaultValue: true,
+								},
+								{
+									name: "text",
+									type: "text",
+									label: "Texto del Anuncio",
+									defaultValue: "Envío gratis en compras mayores a $100 USD • Calidad Premium Garantizada",
+									required: true,
+									admin: {
+										description: "Mensaje conciso que verán todos los usuarios al entrar a la tienda.",
+										condition: (_, siblingData) => Boolean(siblingData?.enabled),
+									},
+								},
+								{
+									name: "linkUrl",
+									type: "text",
+									label: "URL del Enlace (Opcional)",
+									defaultValue: "/products",
+									admin: {
+										description: "Ejemplo: /products o /category/relojes",
+										condition: (_, siblingData) => Boolean(siblingData?.enabled),
+									},
+								},
+								{
+									name: "linkLabel",
+									type: "text",
+									label: "Texto del Enlace (Opcional)",
+									defaultValue: "Ver más",
+									admin: {
+										condition: (_, siblingData) => Boolean(siblingData?.enabled),
+									},
+								},
+							],
+						},
+					],
+				},
+				{
+					label: "Hero Banner (Home)",
+					description: "Configura el banner principal que aparece en la parte superior de la página principal (Home).",
+					fields: [
+						{
+							type: "group",
+							name: "hero",
+							label: "Hero Banner Principal",
+							fields: [
+								{
+									name: "enabled",
+									type: "checkbox",
+									label: "Mostrar Hero Banner en el Home",
+									defaultValue: true,
+								},
+								{
+									name: "badge",
+									type: "text",
+									label: "Etiqueta Superior (Opcional)",
+									defaultValue: "COLECCIÓN DESTACADA",
+									admin: {
+										description: "Texto sutil en mayúsculas sobre el título principal.",
+										condition: (_, siblingData) => Boolean(siblingData?.enabled),
+									},
+								},
+								{
+									name: "title",
+									type: "text",
+									label: "Titular Principal (H1)",
+									defaultValue: "Calidad y Elegancia en Cada Detalle",
+									required: true,
+									admin: {
+										description: "Título corto e impactante para tu tienda.",
+										condition: (_, siblingData) => Boolean(siblingData?.enabled),
+									},
+								},
+								{
+									name: "description",
+									type: "textarea",
+									label: "Subtítulo / Descripción",
+									defaultValue: "Descubre nuestra selección curada de productos diseñados para ofrecerte el mejor rendimiento y estilo.",
+									admin: {
+										condition: (_, siblingData) => Boolean(siblingData?.enabled),
+									},
+								},
+								{
+									name: "ctaText",
+									type: "text",
+									label: "Texto del Botón Principal (CTA)",
+									defaultValue: "Explorar Catálogo",
+									admin: {
+										condition: (_, siblingData) => Boolean(siblingData?.enabled),
+									},
+								},
+								{
+									name: "ctaLink",
+									type: "text",
+									label: "Enlace del Botón",
+									defaultValue: "/products",
+									admin: {
+										condition: (_, siblingData) => Boolean(siblingData?.enabled),
+									},
+								},
+								{
+									name: "backgroundImage",
+									type: "upload",
+									relationTo: "media",
+									label: "Imagen de Portada (Opcional)",
+									admin: {
+										description: "Imagen visual de acompañamiento o fondo para el Hero Banner. Si se deja vacío, se utilizará un diseño minimalista limpio.",
+										condition: (_, siblingData) => Boolean(siblingData?.enabled),
+									},
+								},
+							],
+						},
+					],
+				},
 			],
 		},
 	],
 };
+
