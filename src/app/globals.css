@@ -54,21 +54,28 @@
 .template-default .doc-controls__publish,
 .template-default button[type="submit"],
 .template-default .btn--style-primary {
-	background: #3b82f6 !important;
+	background: #2563eb !important;
 	color: #ffffff !important;
-	border: 1px solid #60a5fa !important;
+	border: none !important;
+	border-radius: 6px !important;
+	padding: 0.5rem 1.25rem !important;
 	font-weight: 600 !important;
-	box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3) !important;
-	transition: all 0.2s ease-in-out !important;
+	font-size: 0.875rem !important;
+	line-height: 1.25rem !important;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) !important;
+	transition: all 0.15s ease-in-out !important;
+	display: inline-flex !important;
+	align-items: center !important;
+	justify-content: center !important;
+	height: 36px !important;
 }
 
 .template-default .doc-controls__save:hover,
 .template-default .doc-controls__publish:hover,
 .template-default button[type="submit"]:hover,
 .template-default .btn--style-primary:hover {
-	background: #2563eb !important;
-	border-color: #93c5fd !important;
-	box-shadow: 0 6px 16px rgba(59, 130, 246, 0.45) !important;
+	background: #1d4ed8 !important;
+	box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35) !important;
 	transform: translateY(-1px);
 }
 
@@ -80,6 +87,86 @@
 .template-default .btn--style-secondary:hover {
 	border-color: #3b82f6 !important;
 	background: rgba(59, 130, 246, 0.1) !important;
+}
+
+/* ── Payload Admin Panel: Dialog & Modal Text Contrast Fix ── */
+.template-default [role="dialog"],
+.template-default .modal,
+.template-default .drawer,
+.template-default [class*="modal"],
+.template-default [class*="dialog"],
+.template-default [class*="drawer"] {
+	color: #f8fafc !important;
+	background-color: #1e293b !important;
+}
+.template-default [role="dialog"] *,
+.template-default .modal *,
+.template-default [class*="modal"] *,
+.template-default [class*="dialog"] * {
+	color: inherit;
+}
+.template-default [role="dialog"] button,
+.template-default .modal button {
+	color: #ffffff !important;
+}
+
+/* ── Payload Admin Panel: Sidebar (Panel Izquierdo) ── */
+/* Encabezados de grupo (label del botón toggle) */
+.template-default .nav-group__label {
+	color: #94a3b8 !important;
+	font-size: 0.7rem !important;
+	text-transform: uppercase !important;
+	letter-spacing: 0.07em !important;
+	font-weight: 700 !important;
+}
+
+/* Botón toggle del grupo (el que expande/colapsa) */
+.template-default .nav-group__toggle {
+	padding: 0.6rem 0.75rem !important;
+	margin: 0.15rem 0 !important;
+	border-radius: 8px !important;
+	width: 100% !important;
+	color: #94a3b8 !important;
+	transition: background 0.15s ease, color 0.15s ease !important;
+}
+
+.template-default .nav-group__toggle:hover {
+	background: rgba(255, 255, 255, 0.06) !important;
+	color: #cbd5e1 !important;
+}
+
+/* Links individuales dentro de un grupo (colecciones, globals, etc.) */
+.template-default .nav-group__content a {
+	display: flex !important;
+	align-items: center !important;
+	padding: 0.5rem 0.85rem !important;
+	margin: 0.2rem 0 !important;
+	border-radius: 7px !important;
+	background: rgba(255, 255, 255, 0.04) !important;
+	border: 1px solid rgba(255, 255, 255, 0.07) !important;
+	color: #e2e8f0 !important;
+	font-size: 0.875rem !important;
+	font-weight: 500 !important;
+	text-decoration: none !important;
+	transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease, color 0.15s ease !important;
+}
+
+/* Hover: iluminación suave + desplazamiento sutil */
+.template-default .nav-group__content a:hover {
+	background: rgba(255, 255, 255, 0.1) !important;
+	border-color: rgba(255, 255, 255, 0.18) !important;
+	color: #ffffff !important;
+	transform: translateX(3px) !important;
+}
+
+/* Estado activo (página actual) */
+.template-default .nav-group__content a[aria-current="page"],
+.template-default .nav-group__content a.active,
+.template-default .nav-group__content a[class*="active"] {
+	background: rgba(37, 99, 235, 0.25) !important;
+	border-color: rgba(59, 130, 246, 0.5) !important;
+	color: #93c5fd !important;
+	font-weight: 600 !important;
 }
 
 /* ── Payload Admin Panel: Clear Card Tabs & Form Field Contrast ── */

@@ -35,10 +35,9 @@ export default buildConfig({
       },
     },
   },
-  // Si no se define PANEL_ROUTE, se usa un hash por defecto para evitar exposición
-  // Importante: Al no tener NEXT_PUBLIC_, esta var solo vive en el servidor
+  // Configuración de rutas administrativas del CMS
   routes: {
-    admin: process.env.PANEL_ROUTE || '/panel-secreto',
+    admin: process.env.PANEL_ROUTE || '/admin',
   },
   // Colecciones (las definiremos en la Fase 2)
   collections: [

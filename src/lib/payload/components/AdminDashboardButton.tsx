@@ -13,7 +13,7 @@ export const AdminDashboardButton: React.FC = () => {
 			}}
 		>
 			<Link
-				href="/panel-secreto"
+				href="/admin"
 				style={{
 					display: "flex",
 					alignItems: "center",

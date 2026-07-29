@@ -1,9 +1,18 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 
 export const AdminHeaderIcon: React.FC = () => {
 	const [iconUrl, setIconUrl] = useState<string | null>(null);
+	const pathname = usePathname();
+
+	const isAuthPage =
+		pathname?.endsWith("/login") ||
+		pathname?.includes("/login") ||
+		pathname?.includes("/logout") ||
+		pathname?.includes("/create-first-user") ||
+		pathname?.includes("/forgot");
 
 	useEffect(() => {
 		async function fetchIdentity() {
@@ -53,28 +62,30 @@ export const AdminHeaderIcon: React.FC = () => {
 					<path d="M16 10a4 4 0 0 1-8 0" />
 				</svg>
 			)}
-			<a
-				href="/panel-secreto"
-				style={{
-					display: "inline-flex",
-					alignItems: "center",
-					gap: "6px",
-					padding: "6px 12px",
-					backgroundColor: "#2563eb",
-					color: "#ffffff",
-					borderRadius: "6px",
-					fontSize: "13px",
-					fontWeight: 600,
-					textDecoration: "none",
-					boxShadow: "0 2px 6px rgba(37, 99, 235, 0.25)",
-					whiteSpace: "nowrap",
-				}}
-				title="Ir a las Colecciones del Dashboard Principal"
-			>
-				<span>🏠</span>
-				<span>Ir al Dashboard Principal</span>
-			</a>
+			{!isAuthPage && (
+				<a
+					href="/admin"
+					style={{
+						display: "inline-flex",
+						alignItems: "center",
+						gap: "6px",
+						padding: "6px 12px",
+						backgroundColor: "#2563eb",
+						color: "#ffffff",
+						borderRadius: "6px",
+						fontSize: "13px",
+						fontWeight: 600,
+						textDecoration: "none",
+						boxShadow: "0 2px 6px rgba(37, 99, 235, 0.25)",
+						whiteSpace: "nowrap",
+					}}
+					title="Ir a las Colecciones del Dashboard Principal"
+				>
+					<span>Ir al Dashboard Principal</span>
+				</a>
+			)}
 		</div>
 	);
 };
+
 
