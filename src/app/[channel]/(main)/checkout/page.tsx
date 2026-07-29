@@ -5,6 +5,12 @@ import { CheckoutForm } from "./CheckoutForm";
 import { localeConfig } from "@/config/locale";
 import { getCurrentUser } from "@/lib/payload/auth";
 import { getStoreContact } from "@/lib/payload";
+import { type Metadata } from "next";
+
+export const metadata: Metadata = {
+	title: "Finalizar compra",
+	description: "Completa tus datos y finaliza tu pedido",
+};
 
 export default async function CheckoutPage() {
 	const cookieStore = await cookies();

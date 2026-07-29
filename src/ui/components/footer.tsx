@@ -1,9 +1,18 @@
 import Link from "next/link";
-import { LinkWithChannel } from "../atoms/link-with-channel";
 import { CopyrightText } from "./copyright-text";
 import { Logo } from "./shared/logo";
-import { getCategories, getStoreIdentity, getStoreContact } from "@/lib/payload";
-import { Instagram, Facebook, Twitter, MessageCircle } from "lucide-react";
+import { getStoreIdentity, getStoreContact } from "@/lib/payload";
+import {
+	Instagram,
+	Facebook,
+	Twitter,
+	MessageCircle,
+	Mail,
+	Phone,
+	MapPin,
+	Clock,
+} from "lucide-react";
+import { FooterLocaleSwitcher } from "./footer-locale-switcher";
 
 // Default footer links
 const defaultFooterLinks = {
@@ -22,7 +31,6 @@ const defaultFooterLinks = {
 };
 
 export async function Footer({ channel }: { channel: string }) {
-	const categories = await getCategories();
 	const storeIdentity = await getStoreIdentity();
 	const storeContact = await getStoreContact();
 
@@ -109,21 +117,51 @@ export async function Footer({ channel }: { channel: string }) {
 						)}
 					</div>
 
-					{/* Payload Categories */}
+					{/* Contacto y Horarios (StoreContact) */}
 					<div>
-						<h4 className="mb-4 text-sm font-medium text-neutral-300">Collections</h4>
-						<ul className="space-y-3">
-							{categories.map((category) => (
-								<li key={category.id}>
-									<LinkWithChannel
-										href={`/categories/${category.slug}`}
-										prefetch={false}
-										className="text-sm text-neutral-400 transition-colors hover:text-neutral-200"
-									>
-										{category.name}
-									</LinkWithChannel>
+						<h4 className="mb-4 text-sm font-medium text-neutral-300">Contacto</h4>
+						<ul className="space-y-3 text-sm text-neutral-400">
+							{storeContact.contactInfo.address && (
+								<li className="flex items-start gap-2.5">
+									<MapPin className="mt-0.5 h-4 w-4 shrink-0 text-neutral-500" />
+									<span>
+										{storeContact.contactInfo.address}
+										{storeContact.contactInfo.cityCountry && (
+											<span className="block text-xs text-neutral-500">
+												{storeContact.contactInfo.cityCountry}
+											</span>
+										)}
+									</span>
 								</li>
-							))}
+							)}
+							{storeContact.contactInfo.supportPhone && (
+								<li className="flex items-center gap-2.5">
+									<Phone className="h-4 w-4 shrink-0 text-neutral-500" />
+									<a
+										href={`tel:${storeContact.contactInfo.supportPhone.replace(/[^\d+]/g, "")}`}
+										className="transition-colors hover:text-neutral-200"
+									>
+										{storeContact.contactInfo.supportPhone}
+									</a>
+								</li>
+							)}
+							{storeContact.contactInfo.supportEmail && (
+								<li className="flex items-center gap-2.5">
+									<Mail className="h-4 w-4 shrink-0 text-neutral-500" />
+									<a
+										href={`mailto:${storeContact.contactInfo.supportEmail}`}
+										className="transition-colors hover:text-neutral-200"
+									>
+										{storeContact.contactInfo.supportEmail}
+									</a>
+								</li>
+							)}
+							{storeContact.contactInfo.hours && (
+								<li className="flex items-start gap-2.5">
+									<Clock className="mt-0.5 h-4 w-4 shrink-0 text-neutral-500" />
+									<span>{storeContact.contactInfo.hours}</span>
+								</li>
+							)}
 						</ul>
 					</div>
 
@@ -168,6 +206,7 @@ export async function Footer({ channel }: { channel: string }) {
 						<CopyrightText holder={storeIdentity.copyrightHolder} />
 					</p>
 					<div className="flex items-center gap-6">
+						<FooterLocaleSwitcher />
 						<Link
 							href="/privacy"
 							prefetch={false}

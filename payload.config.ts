@@ -1,6 +1,8 @@
 import { buildConfig } from 'payload';
 import { mongooseAdapter } from '@payloadcms/db-mongodb';
 import { lexicalEditor } from '@payloadcms/richtext-lexical';
+import { es } from '@payloadcms/translations/languages/es';
+import { en } from '@payloadcms/translations/languages/en';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -18,6 +20,10 @@ const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
 
 export default buildConfig({
+  i18n: {
+    supportedLanguages: { es, en },
+    fallbackLanguage: 'es',
+  },
   // Panel de administración camuflado mediante variable de entorno
   admin: {
     user: 'users',
