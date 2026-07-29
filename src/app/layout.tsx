@@ -19,7 +19,9 @@ export async function generateMetadata(): Promise<Metadata> {
 		...(identity.faviconUrl
 			? {
 					icons: {
-						icon: identity.faviconUrl,
+						icon: [{ url: identity.faviconUrl }],
+						shortcut: [identity.faviconUrl],
+						apple: [{ url: identity.faviconUrl }],
 					},
 			  }
 			: {}),

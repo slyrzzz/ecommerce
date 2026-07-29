@@ -260,7 +260,12 @@ export async function getStoreIdentity() {
       copyrightHolder: doc?.copyrightHolder || "Saleor Demo Store",
       logoUrl: doc?.logo && typeof doc.logo === "object" ? doc.logo.url : null,
       logoInvertedUrl: doc?.logoInverted && typeof doc.logoInverted === "object" ? doc.logoInverted.url : null,
-      faviconUrl: doc?.favicon && typeof doc.favicon === "object" ? doc.favicon.url : null,
+      faviconUrl: (() => {
+        const rawUrl = doc?.favicon && typeof doc.favicon === "object" ? doc.favicon.url : (typeof doc?.favicon === "string" ? doc.favicon : null);
+        if (!rawUrl) return null;
+        const version = (doc?.favicon && typeof doc.favicon === "object" && doc.favicon.updatedAt) || doc?.updatedAt || "";
+        return `${rawUrl}${rawUrl.includes("?") ? "&" : "?"}v=${encodeURIComponent(version)}`;
+      })(),
       announcement: {
         enabled: doc?.announcement?.enabled !== false,
         text: doc?.announcement?.text || "Envío gratis en compras mayores a $100 USD • Calidad Premium Garantizada",
