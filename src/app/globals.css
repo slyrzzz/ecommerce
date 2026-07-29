@@ -99,7 +99,9 @@
 
 /* Links individuales dentro de un grupo (colecciones, globals, etc.) */
 .template-default .nav-group__content a,
-.nav-group__content a {
+.nav-group__content a,
+.template-default .nav-group__content .nav__link,
+.nav-group__content .nav__link {
 	display: flex !important;
 	align-items: center !important;
 	padding: 0.5rem 0.85rem !important;
@@ -116,7 +118,9 @@
 
 /* Hover: iluminación suave + desplazamiento sutil */
 .template-default .nav-group__content a:hover,
-.nav-group__content a:hover {
+.nav-group__content a:hover,
+.template-default .nav-group__content .nav__link:hover,
+.nav-group__content .nav__link:hover {
 	background: rgba(255, 255, 255, 0.1) !important;
 	border-color: rgba(255, 255, 255, 0.18) !important;
 	color: #ffffff !important;
@@ -129,7 +133,14 @@
 .template-default .nav-group__content a.active,
 .nav-group__content a.active,
 .template-default .nav-group__content a[class*="active"],
-.nav-group__content a[class*="active"] {
+.nav-group__content a[class*="active"],
+.template-default .nav-group__content .nav__link[aria-current="page"],
+.nav-group__content .nav__link[aria-current="page"],
+.template-default .nav-group__content .nav__link.active,
+.nav-group__content .nav__link.active,
+.template-default .nav-group__content .nav__link[class*="active"],
+.nav-group__content .nav__link[class*="active"],
+.nav-group__content div.nav__link {
 	background: rgba(255, 255, 255, 0.15) !important;
 	border-color: rgba(255, 255, 255, 0.3) !important;
 	color: #ffffff !important;
