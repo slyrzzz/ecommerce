@@ -91,28 +91,41 @@
 
 /* ── Payload Admin Panel: Dialog & Modal Text Contrast Fix ── */
 .template-default [role="dialog"],
+[role="dialog"],
 .template-default .modal,
+.modal,
 .template-default .drawer,
+.drawer,
 .template-default [class*="modal"],
+[class*="modal"],
 .template-default [class*="dialog"],
-.template-default [class*="drawer"] {
+[class*="dialog"],
+.template-default [class*="drawer"],
+[class*="drawer"] {
 	color: #f8fafc !important;
 	background-color: #1e293b !important;
 }
 .template-default [role="dialog"] *,
+[role="dialog"] *,
 .template-default .modal *,
+.modal *,
 .template-default [class*="modal"] *,
-.template-default [class*="dialog"] * {
+[class*="modal"] *,
+.template-default [class*="dialog"] *,
+[class*="dialog"] * {
 	color: inherit;
 }
 .template-default [role="dialog"] button,
-.template-default .modal button {
+[role="dialog"] button,
+.template-default .modal button,
+.modal button {
 	color: #ffffff !important;
 }
 
 /* ── Payload Admin Panel: Sidebar (Panel Izquierdo) ── */
 /* Encabezados de grupo (label del botón toggle) */
-.template-default .nav-group__label {
+.template-default .nav-group__label,
+.nav-group__label {
 	color: #94a3b8 !important;
 	font-size: 0.7rem !important;
 	text-transform: uppercase !important;
@@ -121,7 +134,8 @@
 }
 
 /* Botón toggle del grupo (el que expande/colapsa) */
-.template-default .nav-group__toggle {
+.template-default .nav-group__toggle,
+.nav-group__toggle {
 	padding: 0.6rem 0.75rem !important;
 	margin: 0.15rem 0 !important;
 	border-radius: 8px !important;
@@ -130,13 +144,15 @@
 	transition: background 0.15s ease, color 0.15s ease !important;
 }
 
-.template-default .nav-group__toggle:hover {
+.template-default .nav-group__toggle:hover,
+.nav-group__toggle:hover {
 	background: rgba(255, 255, 255, 0.06) !important;
 	color: #cbd5e1 !important;
 }
 
 /* Links individuales dentro de un grupo (colecciones, globals, etc.) */
-.template-default .nav-group__content a {
+.template-default .nav-group__content a,
+.nav-group__content a {
 	display: flex !important;
 	align-items: center !important;
 	padding: 0.5rem 0.85rem !important;
@@ -152,7 +168,8 @@
 }
 
 /* Hover: iluminación suave + desplazamiento sutil */
-.template-default .nav-group__content a:hover {
+.template-default .nav-group__content a:hover,
+.nav-group__content a:hover {
 	background: rgba(255, 255, 255, 0.1) !important;
 	border-color: rgba(255, 255, 255, 0.18) !important;
 	color: #ffffff !important;
@@ -161,13 +178,17 @@
 
 /* Estado activo (página actual) */
 .template-default .nav-group__content a[aria-current="page"],
+.nav-group__content a[aria-current="page"],
 .template-default .nav-group__content a.active,
-.template-default .nav-group__content a[class*="active"] {
+.nav-group__content a.active,
+.template-default .nav-group__content a[class*="active"],
+.nav-group__content a[class*="active"] {
 	background: rgba(37, 99, 235, 0.25) !important;
 	border-color: rgba(59, 130, 246, 0.5) !important;
 	color: #93c5fd !important;
 	font-weight: 600 !important;
 }
+
 
 /* ── Payload Admin Panel: Clear Card Tabs & Form Field Contrast ── */
 .template-default .tabs-field__tabs {
