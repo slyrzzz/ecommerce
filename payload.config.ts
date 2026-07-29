@@ -27,6 +27,12 @@ export default buildConfig({
   // Panel de administración camuflado mediante variable de entorno
   admin: {
     user: 'users',
+    components: {
+      beforeNavLinks: ['/src/lib/payload/components/AdminDashboardButton#AdminDashboardButton'],
+      graphics: {
+        Icon: '/src/lib/payload/components/AdminHeaderIcon#AdminHeaderIcon',
+      },
+    },
   },
   // Si no se define PANEL_ROUTE, se usa un hash por defecto para evitar exposición
   // Importante: Al no tener NEXT_PUBLIC_, esta var solo vive en el servidor
