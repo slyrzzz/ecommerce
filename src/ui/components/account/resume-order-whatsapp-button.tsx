@@ -23,6 +23,7 @@ interface ResumeOrderProps {
 	totalPrice: number;
 	customer?: CustomerInfo;
 	whatsappNumber?: string;
+	whatsappPrefix?: string;
 }
 
 export function ResumeOrderWhatsAppButton({
@@ -31,13 +32,18 @@ export function ResumeOrderWhatsAppButton({
 	totalPrice,
 	customer,
 	whatsappNumber = "584120000000",
+	whatsappPrefix = "¡Hola! Quiero completar mi pedido",
 }: ResumeOrderProps) {
 	const handleResumeWhatsApp = () => {
 		const itemsText = lines
 			.map((line) => `- ${line.quantity}x ${line.productName} ($${line.price.toFixed(2)})`)
 			.join("\n");
 
-		const message = `*¡Hola! Quiero completar mi pedido guardado #${orderNumber}*\n\n*Productos:*\n${itemsText}\n\n*Total:* $${totalPrice.toFixed(2)}\n\n*Datos de Envío:*\nNombre: ${customer?.firstName || ""} ${customer?.lastName || ""}\nTeléfono: ${customer?.phone || ""}\nDirección: ${customer?.address || ""}, ${customer?.city || ""}`;
+		const headerText = whatsappPrefix
+			? `*${whatsappPrefix} (Pedido Guardado #${orderNumber})*`
+			: `*Pedido Guardado #${orderNumber}*`;
+
+		const message = `${headerText}\n\n*Productos:*\n${itemsText}\n\n*Total:* $${totalPrice.toFixed(2)}\n\n*Datos de Envío:*\nNombre: ${customer?.firstName || ""} ${customer?.lastName || ""}\nTeléfono: ${customer?.phone || ""}\nDirección: ${customer?.address || ""}, ${customer?.city || ""}`;
 
 		const encodedMessage = encodeURIComponent(message);
 		const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;

@@ -2,13 +2,27 @@ import { type ReactNode, Suspense } from "react";
 import { Footer } from "@/ui/components/footer";
 import { Header } from "@/ui/components/header";
 import { CartProvider, CartDrawerWrapper } from "@/ui/components/cart";
-import { brandConfig } from "@/config/brand";
+import { type Metadata } from "next";
+import { getStoreIdentity } from "@/lib/payload";
 import { Logo } from "@/ui/components/shared/logo";
 
-export const metadata = {
-	title: brandConfig.siteName,
-	description: brandConfig.description,
-};
+export async function generateMetadata(): Promise<Metadata> {
+	const identity = await getStoreIdentity();
+	return {
+		title: {
+			default: identity.siteName,
+			template: `%s | ${identity.siteName}`,
+		},
+		description: identity.description,
+		...(identity.faviconUrl
+			? {
+					icons: {
+						icon: identity.faviconUrl,
+					},
+			  }
+			: {}),
+	};
+}
 
 function HeaderSkeleton() {
 	return (

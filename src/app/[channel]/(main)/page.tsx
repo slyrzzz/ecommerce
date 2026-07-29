@@ -1,13 +1,18 @@
 import { Suspense } from "react";
+import { type Metadata } from "next";
 import { CACHE_PROFILES, applyCacheProfile } from "@/lib/cache-manifest";
 import { ProductList } from "@/ui/components/product-list";
-import { getProducts } from "@/lib/payload";
+import { getProducts, getStoreIdentity } from "@/lib/payload";
 
-export const metadata = {
-	title: "ACME Storefront, powered by Saleor & Next.js",
-	description:
-		"Storefront Next.js Example for building performant e-commerce experiences with Saleor - the composable, headless commerce platform for global brands.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+	const identity = await getStoreIdentity();
+	return {
+		title: {
+			absolute: identity.siteName,
+		},
+		description: identity.description,
+	};
+}
 
 /**
  * Cached function to fetch featured products.

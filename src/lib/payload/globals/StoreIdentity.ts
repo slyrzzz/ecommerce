@@ -60,7 +60,7 @@ export const StoreIdentity: GlobalConfig = {
 				},
 				{
 					label: "Logotipo e Iconos",
-					description: "Imágenes de marca que se mostrarán en la tienda. Si se dejan vacías, se utilizarán las imágenes o iconos por defecto.",
+					description: "Imágenes de marca que se mostrarán en la cabecera, pie de página y pestaña del navegador. Se recomiendan archivos SVG o PNG con fondo transparente.",
 					fields: [
 						{
 							name: "logo",
@@ -68,7 +68,7 @@ export const StoreIdentity: GlobalConfig = {
 							relationTo: "media",
 							label: "Logotipo Principal (Cabecera)",
 							admin: {
-								description: "Sube un archivo de imagen o SVG con fondo transparente para el Header.",
+								description: "Sube una imagen o SVG con fondo transparente (formato horizontal / apaisado). Tamaño recomendado: 180x40 px a 240x60 px (altura visual adaptada a 40px en cabecera).",
 							},
 						},
 						{
@@ -77,7 +77,7 @@ export const StoreIdentity: GlobalConfig = {
 							relationTo: "media",
 							label: "Logotipo Invertido / Claro (Pie de página)",
 							admin: {
-								description: "Versión en color blanco o claro para mostrarse sobre fondos oscuros (Footer).",
+								description: "Versión en color blanco o claro para fondos oscuros (Footer). Tamaño recomendado: 180x40 px a 240x60 px.",
 							},
 						},
 						{
@@ -86,7 +86,7 @@ export const StoreIdentity: GlobalConfig = {
 							relationTo: "media",
 							label: "Favicon (Icono de pestaña)",
 							admin: {
-								description: "Icono pequeño en formato PNG o ICO (16x16 o 32x32).",
+								description: "Icono cuadrado para la pestaña del navegador en formato PNG, ICO o SVG. Tamaño recomendado: 32x32 px o 64x64 px.",
 							},
 						},
 					],

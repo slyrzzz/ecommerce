@@ -22,13 +22,15 @@ export interface ICheckoutStrategy {
 
 export class WhatsAppCheckoutStrategy implements ICheckoutStrategy {
 	private sellerPhone: string;
+	private messagePrefix: string;
 
-	constructor(sellerPhone: string) {
+	constructor(sellerPhone: string, messagePrefix: string = "¡Hola! Quiero completar mi pedido") {
 		this.sellerPhone = sellerPhone;
+		this.messagePrefix = messagePrefix;
 	}
 
 	execute(customer: CheckoutCustomerData, cart: CheckoutCartData): void {
-		let message = `*Nuevo Pedido*\n\n`;
+		let message = this.messagePrefix ? `${this.messagePrefix}\n\n*Nuevo Pedido*\n\n` : `*Nuevo Pedido*\n\n`;
 		
 		message += `*Cliente:* ${customer.firstName} ${customer.lastName}\n`;
 		message += `*Teléfono:* ${customer.phone}\n`;

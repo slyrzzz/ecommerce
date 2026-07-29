@@ -10,10 +10,12 @@ export function CheckoutForm({
 	cartData,
 	currentUser,
 	whatsappNumber = "584120000000",
+	whatsappPrefix = "¡Hola! Quiero completar mi pedido",
 }: {
 	cartData: CheckoutCartData;
 	currentUser?: any;
 	whatsappNumber?: string;
+	whatsappPrefix?: string;
 }) {
 	const [customer, setCustomer] = useState<CheckoutCustomerData>({
 		firstName: currentUser?.firstName || "",
@@ -64,7 +66,7 @@ export function CheckoutForm({
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
-		const strategy = new WhatsAppCheckoutStrategy(whatsappNumber);
+		const strategy = new WhatsAppCheckoutStrategy(whatsappNumber, whatsappPrefix);
 		strategy.execute(customer, cartData);
 	};
 

@@ -1,15 +1,30 @@
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import { type ReactNode } from "react";
-import { rootMetadata } from "@/lib/seo";
+import { type Metadata } from "next";
+import { getStoreIdentity } from "@/lib/payload";
+import { getMetadataBase } from "@/lib/seo";
 import { localeConfig } from "@/config/locale";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
-/**
- * Root metadata for the entire site.
- * Configuration is in src/lib/seo/config.ts
- */
-export const metadata = rootMetadata;
+export async function generateMetadata(): Promise<Metadata> {
+	const identity = await getStoreIdentity();
+	return {
+		title: {
+			default: identity.siteName,
+			template: `%s | ${identity.siteName}`,
+		},
+		description: identity.description,
+		metadataBase: getMetadataBase(),
+		...(identity.faviconUrl
+			? {
+					icons: {
+						icon: identity.faviconUrl,
+					},
+			  }
+			: {}),
+	};
+}
 
 export default function RootLayout(props: { children: ReactNode }) {
 	const { children } = props;

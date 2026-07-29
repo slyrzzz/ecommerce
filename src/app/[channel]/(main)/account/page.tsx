@@ -38,6 +38,7 @@ export default async function AccountPage({ params }: { params: Promise<{ channe
 			initialOrders={orders}
 			channel={channel}
 			whatsappNumber={storeContact.whatsapp.businessPhone}
+			whatsappPrefix={storeContact.whatsapp.defaultMessagePrefix}
 		/>
 	);
 }

@@ -57,6 +57,7 @@ export default async function CheckoutPage() {
 				cartData={cartData}
 				currentUser={user}
 				whatsappNumber={storeContact.whatsapp.businessPhone}
+				whatsappPrefix={storeContact.whatsapp.defaultMessagePrefix}
 			/>
 		</section>
 	);
