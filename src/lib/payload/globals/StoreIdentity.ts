@@ -209,7 +209,7 @@ export const StoreIdentity: GlobalConfig = {
 									relationTo: "media",
 									label: "Imagen de Portada (Opcional)",
 									admin: {
-										description: "Imagen visual de acompañamiento o fondo para el Hero Banner. Si se deja vacío, se utilizará un diseño minimalista limpio.",
+										description: "Imagen de fondo para el Hero Banner. Tamaño recomendado: 1920x600 px o relación de aspecto horizontal 16:5. Formatos recomendados: JPG o WebP de alta resolución.",
 										condition: (_, siblingData) => Boolean(siblingData?.enabled),
 									},
 								},

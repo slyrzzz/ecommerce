@@ -15,41 +15,42 @@ export async function HeroBanner() {
 
 	return (
 		<div className="relative mb-12 overflow-hidden rounded-2xl border border-border bg-black text-white shadow-xl">
-			{/* Imagen de fondo opcional con capa de contraste oscuro */}
+			{/* Imagen de fondo con mayor opacidad para apreciar la foto correctamente */}
 			{hasBgImage && (
 				<div
-					className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-40 transition-transform duration-700 hover:scale-105"
+					className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-85 transition-transform duration-700 hover:scale-105"
 					style={{ backgroundImage: `url(${hero.backgroundImageUrl})` }}
 					aria-hidden="true"
 				/>
 			)}
 
-			{/* Gradiente sutil para garantizar legibilidad óptima en todos los dispositivos */}
-			<div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-transparent" />
+			{/* Gradiente lateral suave (a la izquierda) para legibilidad del texto sin tapar la foto a la derecha */}
+			<div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/40 to-transparent" />
 
-			{/* Contenedor principal del Hero */}
-			<div className="relative z-10 mx-auto max-w-4xl px-6 py-14 sm:px-12 sm:py-20 lg:py-24">
+			{/* Contenedor alineado a la izquierda (mr-auto) y más compacto para dejar lucir la foto */}
+			<div className="relative z-10 mr-auto max-w-2xl px-6 py-12 sm:px-10 sm:py-16 lg:py-20">
 				{hero.badge && (
-					<p className="mb-3 inline-block rounded-full bg-white/10 px-3 py-1 text-xs font-semibold tracking-widest text-neutral-300 uppercase backdrop-blur-sm">
+					<p className="mb-3 inline-block rounded-full bg-white/15 px-3 py-1 text-xs font-semibold tracking-widest text-neutral-200 uppercase backdrop-blur-sm">
 						{hero.badge}
 					</p>
 				)}
 
-				<h1 className="text-3xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
+				{/* Titular de tamaño mediano y elegante (text-2xl -> lg:text-4xl) */}
+				<h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl lg:text-4xl">
 					{hero.title}
 				</h1>
 
 				{hero.description && (
-					<p className="mt-4 max-w-2xl text-base leading-relaxed text-neutral-300 sm:text-lg">
+					<p className="mt-3 max-w-xl text-sm leading-relaxed text-neutral-200 sm:text-base">
 						{hero.description}
 					</p>
 				)}
 
 				{hero.ctaText && (
-					<div className="mt-8 flex flex-wrap items-center gap-4">
+					<div className="mt-6 flex flex-wrap items-center gap-4">
 						<Link
 							href={hero.ctaLink || "/products"}
-							className="inline-flex h-11 items-center justify-center rounded-lg bg-white px-6 font-semibold text-black shadow-sm transition-all hover:bg-neutral-100 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-white/50"
+							className="inline-flex h-10 items-center justify-center rounded-lg bg-white px-5 text-sm font-semibold text-black shadow-sm transition-all hover:bg-neutral-100 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-white/50"
 						>
 							{hero.ctaText}
 						</Link>
