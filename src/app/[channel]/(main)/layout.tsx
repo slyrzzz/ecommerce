@@ -13,15 +13,11 @@ export async function generateMetadata(): Promise<Metadata> {
 	return {
 		title: identity.siteName,
 		description: identity.description,
-		...(identity.faviconUrl
-			? {
-					icons: {
-						icon: [{ url: identity.faviconUrl }],
-						shortcut: [identity.faviconUrl],
-						apple: [{ url: identity.faviconUrl }],
-					},
-			  }
-			: {}),
+		icons: {
+			icon: [{ url: identity.faviconUrl || "/favicon-32x32.png" }],
+			shortcut: [identity.faviconUrl || "/favicon-32x32.png"],
+			apple: [{ url: identity.faviconUrl || "/favicon-32x32.png" }],
+		},
 	};
 }
 
