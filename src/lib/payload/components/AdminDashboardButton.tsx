@@ -31,7 +31,6 @@ export const AdminDashboardButton: React.FC = () => {
 					cursor: "pointer",
 				}}
 			>
-				<span style={{ fontSize: "16px" }}>🏠</span>
 				<span>Ir al Dashboard Principal</span>
 			</Link>
 		</div>
