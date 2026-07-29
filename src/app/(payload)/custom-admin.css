@@ -1,0 +1,119 @@
+/* ── custom-admin.css: Estilos exclusivos y seguros para el Panel de Administración Payload 3 ──
+ * NO IMPORTA @tailwind base para evitar conflictos con los formularios, campos y modales nativos.
+ */
+
+/* ── Menú Lateral (Sidebar Izquierdo) ── */
+/* Encabezados de grupo (categorías) */
+.nav-group__label {
+	color: #94a3b8 !important;
+	font-size: 0.7rem !important;
+	text-transform: uppercase !important;
+	letter-spacing: 0.07em !important;
+	font-weight: 700 !important;
+}
+
+/* Botón colapsable del grupo */
+.nav-group__toggle {
+	padding: 0.6rem 0.75rem !important;
+	margin: 0.15rem 0 !important;
+	border-radius: 8px !important;
+	width: 100% !important;
+	color: #94a3b8 !important;
+	transition: background 0.15s ease, color 0.15s ease !important;
+}
+
+.nav-group__toggle:hover {
+	background: rgba(255, 255, 255, 0.06) !important;
+	color: #cbd5e1 !important;
+}
+
+/* Enlaces individuales (colecciones y globals) en forma de tarjeta/píldora */
+.nav-group__content a,
+.nav-group__content .nav__link {
+	display: flex !important;
+	align-items: center !important;
+	padding: 0.5rem 0.85rem !important;
+	margin: 0.2rem 0 !important;
+	border-radius: 7px !important;
+	background: rgba(255, 255, 255, 0.04) !important;
+	border: 1px solid rgba(255, 255, 255, 0.07) !important;
+	color: #e2e8f0 !important;
+	font-size: 0.875rem !important;
+	font-weight: 500 !important;
+	text-decoration: none !important;
+	transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease, color 0.15s ease !important;
+}
+
+/* Hover en enlace: iluminación suave + desplazamiento sutil */
+.nav-group__content a:hover,
+.nav-group__content .nav__link:hover {
+	background: rgba(255, 255, 255, 0.1) !important;
+	border-color: rgba(255, 255, 255, 0.18) !important;
+	color: #ffffff !important;
+	transform: translateX(3px) !important;
+}
+
+/* Estado activo (página actual seleccionada) */
+.nav-group__content a[aria-current="page"],
+.nav-group__content a.active,
+.nav-group__content a[class*="active"],
+.nav-group__content .nav__link[aria-current="page"],
+.nav-group__content .nav__link.active,
+.nav-group__content .nav__link[class*="active"],
+.nav-group__content div.nav__link {
+	background: rgba(37, 99, 235, 0.25) !important;
+	border-color: rgba(59, 130, 246, 0.5) !important;
+	color: #93c5fd !important;
+	font-weight: 600 !important;
+}
+
+/* ── Botones principales en el Encabezado (Guardar / Publicar) ── */
+.doc-controls__save,
+.doc-controls__publish {
+	background: #2563eb !important;
+	color: #ffffff !important;
+	border: none !important;
+	border-radius: 6px !important;
+	padding: 0.5rem 1.25rem !important;
+	font-weight: 600 !important;
+	font-size: 0.875rem !important;
+	line-height: 1.25rem !important;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) !important;
+	transition: all 0.15s ease-in-out !important;
+	display: inline-flex !important;
+	align-items: center !important;
+	justify-content: center !important;
+	height: 36px !important;
+}
+
+.doc-controls__save:hover,
+.doc-controls__publish:hover {
+	background: #1d4ed8 !important;
+	box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35) !important;
+	transform: translateY(-1px);
+}
+
+/* ── Pestañas (Tabs) en las tarjetas de edición ── */
+.tabs-field__tabs {
+	border-bottom: 2px solid #27272a !important;
+	margin-bottom: 1.5rem !important;
+	gap: 0.5rem !important;
+}
+
+.tabs-field__tab-button {
+	padding: 0.65rem 1.25rem !important;
+	border-radius: 8px 8px 0 0 !important;
+	font-weight: 500 !important;
+	transition: all 0.2s ease !important;
+}
+
+.tabs-field__tab-button--active {
+	background: #1e293b !important;
+	color: #60a5fa !important;
+	border-bottom: 3px solid #3b82f6 !important;
+	font-weight: 700 !important;
+}
+
+.tabs-field__tab-button:hover:not(.tabs-field__tab-button--active) {
+	background: rgba(148, 163, 184, 0.1) !important;
+}
