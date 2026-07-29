@@ -60,8 +60,8 @@ export function CartDrawer({ cartId, lines, totalPrice, channel, settings }: Car
 	const showFreeShippingBar = settings?.showFreeShippingBar ?? true;
 	const freeShippingThreshold = typeof settings?.freeShippingThreshold === "number" ? settings.freeShippingThreshold : 100;
 	const showCartFooterMessages = settings?.showCartFooterMessages ?? true;
-	const freeDeliveryText = settings?.freeDeliveryText || "Free delivery over";
-	const returnsText = settings?.returnsText || "30-day returns";
+	const freeDeliveryText = settings?.freeDeliveryText || "Envío gratis desde";
+	const returnsText = settings?.returnsText || "Devoluciones en 30 días";
 
 	const progressToFreeShipping = Math.min((totalPrice / freeShippingThreshold) * 100, 100);
 	const amountToFreeShipping = Math.max(freeShippingThreshold - totalPrice, 0);
@@ -72,8 +72,8 @@ export function CartDrawer({ cartId, lines, totalPrice, channel, settings }: Car
 				<SheetHeader className="justify-between border-b border-border px-6 py-4">
 					<div className="flex items-center gap-3">
 						<ShoppingBag className="h-5 w-5" />
-						<SheetTitle>Your Bag</SheetTitle>
-						<span className="text-sm text-muted-foreground">({itemCount} items)</span>
+						<SheetTitle>Tu Carrito</SheetTitle>
+						<span className="text-sm text-muted-foreground">({itemCount} {itemCount === 1 ? "producto" : "productos"})</span>
 					</div>
 					<SheetCloseButton className="static" />
 				</SheetHeader>
@@ -84,10 +84,10 @@ export function CartDrawer({ cartId, lines, totalPrice, channel, settings }: Car
 							<Truck className={cn("h-4 w-4", amountToFreeShipping <= 0 && "text-success")} />
 							{amountToFreeShipping > 0 ? (
 								<span>
-									Add <strong>{formatMoney(amountToFreeShipping, currency)}</strong> more for free shipping
+									Agrega <strong>{formatMoney(amountToFreeShipping, currency)}</strong> más para envío gratis
 								</span>
 							) : (
-								<span className="font-medium text-success">You qualify for free shipping!</span>
+								<span className="font-medium text-success">¡Calificas para envío gratis!</span>
 							)}
 						</div>
 						<div className="h-1.5 overflow-hidden rounded-full bg-border">
@@ -108,16 +108,16 @@ export function CartDrawer({ cartId, lines, totalPrice, channel, settings }: Car
 							<div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-secondary">
 								<ShoppingBag className="h-8 w-8 text-muted-foreground" />
 							</div>
-							<h3 className="mb-2 text-lg font-medium">Your bag is empty</h3>
+							<h3 className="mb-2 text-lg font-medium">Tu carrito está vacío</h3>
 							<p className="mb-6 text-sm text-muted-foreground">
-								Looks like you haven&apos;t added anything to your bag yet.
+								Parece que aún no has agregado nada a tu carrito.
 							</p>
 							<Link
 								href={`/${channel}/products`}
 								onClick={closeCart}
 								className="hover:bg-primary/90 inline-flex h-10 items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground transition-colors"
 							>
-								Start Shopping
+								Comenzar a comprar
 							</Link>
 						</div>
 					) : (
@@ -163,7 +163,7 @@ export function CartDrawer({ cartId, lines, totalPrice, channel, settings }: Car
 														disabled={isPending}
 													>
 														<Trash2 className="h-4 w-4" />
-														<span className="sr-only">Remove {product.name}</span>
+														<span className="sr-only">Eliminar {product.name}</span>
 													</Button>
 												</div>
 
@@ -176,7 +176,7 @@ export function CartDrawer({ cartId, lines, totalPrice, channel, settings }: Car
 															className="p-2 transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-40"
 														>
 															<Minus className="h-3 w-3" />
-															<span className="sr-only">Decrease quantity</span>
+															<span className="sr-only">Disminuir cantidad</span>
 														</button>
 														<span className="w-8 text-center text-sm font-medium">{line.quantity}</span>
 														<button
@@ -186,7 +186,7 @@ export function CartDrawer({ cartId, lines, totalPrice, channel, settings }: Car
 															className="p-2 transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-40"
 														>
 															<Plus className="h-3 w-3" />
-															<span className="sr-only">Increase quantity</span>
+															<span className="sr-only">Aumentar cantidad</span>
 														</button>
 													</div>
 
@@ -213,8 +213,8 @@ export function CartDrawer({ cartId, lines, totalPrice, channel, settings }: Car
 								<span>{formatMoney(totalPrice, currency)}</span>
 							</div>
 							<div className="flex items-center justify-between text-sm">
-								<span className="text-muted-foreground">Shipping</span>
-								<span>{totalPrice >= freeShippingThreshold ? "Free" : "Calculated at checkout"}</span>
+								<span className="text-muted-foreground">Envío</span>
+								<span>{totalPrice >= freeShippingThreshold ? "Gratis" : "Calculado en el checkout"}</span>
 							</div>
 							<div className="flex items-center justify-between border-t border-border pt-2 text-base font-semibold">
 								<span>Total</span>
@@ -228,7 +228,7 @@ export function CartDrawer({ cartId, lines, totalPrice, channel, settings }: Car
 								onClick={closeCart}
 								className="hover:bg-primary/90 group inline-flex h-12 w-full items-center justify-center gap-2 rounded-md bg-primary text-base font-medium text-primary-foreground transition-colors"
 							>
-								<span>Checkout</span>
+								<span>Finalizar Compra</span>
 								<ArrowRight className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-1" />
 							</Link>
 							<Link
@@ -236,7 +236,7 @@ export function CartDrawer({ cartId, lines, totalPrice, channel, settings }: Car
 								onClick={closeCart}
 								className="inline-flex h-12 w-full items-center justify-center rounded-md border border-border bg-transparent text-base font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
 							>
-								Continue Shopping
+								Seguir Comprando
 							</Link>
 						</div>
 

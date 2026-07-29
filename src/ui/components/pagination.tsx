@@ -40,7 +40,7 @@ export function Pagination({
 				})}
 				aria-disabled={!pageInfo.hasPreviousPage}
 			>
-				Previous
+				Anterior
 			</Link>
 
 			<Link
@@ -52,7 +52,7 @@ export function Pagination({
 				})}
 				aria-disabled={!pageInfo.hasNextPage}
 			>
-				Next
+				Siguiente
 			</Link>
 		</nav>
 	);

@@ -45,7 +45,7 @@ export function VariantNameSelector({
 	variants,
 	selectedVariantId,
 	onSelect,
-	label = "Variant",
+	label = "Opción",
 	isPending,
 }: VariantNameSelectorProps) {
 	// Check if prices differ between variants (show price if so)
@@ -86,9 +86,9 @@ export function VariantNameSelector({
 					// Build accessible label
 					const accessibleParts = [
 						variant.name,
-						isOutOfStock && "out of stock",
+						isOutOfStock && "agotado",
 						showPrices && price && formatMoney(price.amount, price.currency),
-						discountPercent && `${discountPercent}% off`,
+						discountPercent && `- ${discountPercent}%`,
 					].filter(Boolean);
 
 					return (
@@ -106,7 +106,7 @@ export function VariantNameSelector({
 										: "border-border bg-background text-foreground hover:border-foreground",
 									isOutOfStock && "cursor-not-allowed text-muted-foreground line-through opacity-60",
 								)}
-								title={isOutOfStock ? `${variant.name} - Out of stock` : undefined}
+								title={isOutOfStock ? `${variant.name} - Agotado` : undefined}
 								aria-label={accessibleParts.join(", ")}
 								aria-pressed={isSelected}
 							>

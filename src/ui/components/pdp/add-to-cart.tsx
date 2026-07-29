@@ -31,10 +31,10 @@ function AddToCartButton({
 	const { pending } = useFormStatus();
 
 	const getButtonText = () => {
-		if (pending) return "Adding...";
-		if (!disabled) return "Add to bag";
-		if (disabledReason === "out-of-stock") return "Out of stock";
-		return "Select options";
+		if (pending) return "Agregando...";
+		if (!disabled) return "Agregar al carrito";
+		if (disabledReason === "out-of-stock") return "Agotado";
+		return "Seleccionar opciones";
 	};
 
 	return (
@@ -89,12 +89,12 @@ function QuantitySelector({
 				className="h-10 w-10 rounded-md text-foreground hover:bg-secondary"
 			>
 				<Minus className="h-4 w-4" />
-				<span className="sr-only">Decrease quantity</span>
+				<span className="sr-only">Disminuir cantidad</span>
 			</Button>
 
 			<div className="flex items-center gap-2 text-base font-medium">
 				<ShoppingBag className="h-4 w-4 text-primary" />
-				<span>{isPending ? "Updating..." : `${quantity} in bag`}</span>
+				<span>{isPending ? "Actualizando..." : `${quantity} en carrito`}</span>
 			</div>
 
 			<Button
@@ -106,7 +106,7 @@ function QuantitySelector({
 				className="h-10 w-10 rounded-md text-foreground hover:bg-secondary"
 			>
 				<Plus className="h-4 w-4" />
-				<span className="sr-only">Increase quantity</span>
+				<span className="sr-only">Aumentar cantidad</span>
 			</Button>
 		</div>
 	);
@@ -158,14 +158,14 @@ export function AddToCart({
 					<svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
 						<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
 					</svg>
-					Secure checkout
+					Compra segura
 				</span>
 				<span className="flex items-center gap-1.5">
 					<svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
 						<path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
 						<path d="M9 22V12h6v10" />
 					</svg>
-					Free delivery over €100
+					Envío gratis en pedidos de más de $100
 				</span>
 			</div>
 		</div>

@@ -9,10 +9,7 @@ import { Logo } from "@/ui/components/shared/logo";
 export async function generateMetadata(): Promise<Metadata> {
 	const identity = await getStoreIdentity();
 	return {
-		title: {
-			default: identity.siteName,
-			template: `%s | ${identity.siteName}`,
-		},
+		title: identity.siteName,
 		description: identity.description,
 		...(identity.faviconUrl
 			? {

@@ -2,8 +2,8 @@ import { Suspense } from "react";
 import { LoginMode } from "@/ui/components/auth/login-mode";
 
 export const metadata = {
-	title: "Log In",
-	description: "Log in to your account to save your addresses, view orders, and checkout quickly.",
+	title: "Iniciar sesión",
+	description: "Inicia sesión en tu cuenta para ver tus pedidos y agilizar tus compras.",
 };
 
 export default function LoginPage() {

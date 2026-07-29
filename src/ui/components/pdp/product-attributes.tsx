@@ -114,7 +114,7 @@ function getSpecificationIcon(iconKey?: string | null): ReactNode {
 }
 
 function formatValue(value: string | boolean | string[]): ReactNode {
-	if (typeof value === "boolean") return value ? "Yes" : "No";
+	if (typeof value === "boolean") return value ? "Sí" : "No";
 	if (Array.isArray(value)) {
 		return (
 			<div className="flex flex-wrap justify-end gap-1">
@@ -142,7 +142,7 @@ export function ProductAttributes({
 			{descriptionHtml && descriptionHtml.length > 0 && (
 				<AccordionItemWithContext value="description" className="border-border">
 					<AccordionTrigger className="py-4 text-sm font-medium hover:no-underline">
-						Description
+						Descripción
 					</AccordionTrigger>
 					<AccordionContent>
 						<div className="prose prose-sm max-w-none text-muted-foreground prose-headings:text-foreground prose-p:text-muted-foreground prose-a:text-foreground prose-strong:text-foreground">
@@ -157,7 +157,7 @@ export function ProductAttributes({
 			{displayAttributes.length > 0 && (
 				<AccordionItemWithContext value="details" className="border-border">
 					<AccordionTrigger className="py-4 text-sm font-medium hover:no-underline">
-						Product Details
+						Detalles del Producto
 					</AccordionTrigger>
 					<AccordionContent>
 						<div className="grid gap-3">
@@ -178,7 +178,7 @@ export function ProductAttributes({
 			{careInstructions && (
 				<AccordionItemWithContext value="care" className="border-border">
 					<AccordionTrigger className="py-4 text-sm font-medium hover:no-underline">
-						Care Instructions
+						Instrucciones de cuidado
 					</AccordionTrigger>
 					<AccordionContent className="leading-relaxed text-muted-foreground">
 						{careInstructions}
@@ -188,11 +188,11 @@ export function ProductAttributes({
 
 			<AccordionItemWithContext value="shipping" className="border-border">
 				<AccordionTrigger className="py-4 text-sm font-medium hover:no-underline">
-					Shipping & Returns
+					Envío y Devoluciones
 				</AccordionTrigger>
 				<AccordionContent className="leading-relaxed text-muted-foreground">
-					<p className="mb-2">Free shipping on orders over €100. Standard delivery 3-5 business days.</p>
-					<p>Free returns within 30 days of purchase. Items must be unworn with tags attached.</p>
+					<p className="mb-2">Envío gratis en pedidos de más de $100. Entrega estándar en 3-5 días hábiles.</p>
+					<p>Devoluciones gratis dentro de los 30 días posteriores a la compra. Los artículos deben estar sin usar y con etiquetas.</p>
 				</AccordionContent>
 			</AccordionItemWithContext>
 		</Accordion>

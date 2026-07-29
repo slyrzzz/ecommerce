@@ -52,11 +52,11 @@ export function ColorSwatchOption({ option, isSelected, onSelect, isPending }: O
 				)}
 				title={
 					isOutOfStock
-						? `${option.name} - Out of stock`
+						? `${option.name} - Agotado`
 						: isIncompatible
-							? `${option.name} - Will change other selections`
+							? `${option.name} - Cambiará otras opciones`
 							: option.discountPercent
-								? `${option.name} - ${option.discountPercent}% off`
+								? `${option.name} - ${option.discountPercent}% desc.`
 								: option.name
 				}
 				aria-label={accessibleLabel}

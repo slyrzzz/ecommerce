@@ -2,8 +2,8 @@ import { Suspense } from "react";
 import { SignUpForm } from "@/ui/components/sign-up-form";
 
 export const metadata = {
-	title: "Create Account",
-	description: "Create a new account to save your addresses and order history.",
+	title: "Crear Cuenta",
+	description: "Crea una nueva cuenta para guardar tus direcciones e historial de pedidos.",
 };
 
 export default function SignUpPage() {

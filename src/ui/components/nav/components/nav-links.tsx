@@ -6,7 +6,7 @@ export const NavLinks = async ({ channel }: { channel: string }) => {
 
 	return (
 		<>
-			<NavLink href="/products">All</NavLink>
+			<NavLink href="/products">Todos</NavLink>
 			{categories.map((category) => (
 				<NavLink key={category.id} href={`/categories/${category.slug}`}>
 					{category.name}

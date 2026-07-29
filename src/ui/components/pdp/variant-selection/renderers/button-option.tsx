@@ -35,8 +35,8 @@ export function ButtonOption({
 	// Build accessible label with context
 	const accessibleParts = [
 		labelPrefix ? `${labelPrefix} ${option.name}` : option.name,
-		isOutOfStock && "out of stock",
-		hasDiscount && `${option.discountPercent}% off`,
+		isOutOfStock && "agotado",
+		hasDiscount && `${option.discountPercent}% de descuento`,
 	].filter(Boolean);
 
 	return (
@@ -65,11 +65,11 @@ export function ButtonOption({
 				)}
 				title={
 					isOutOfStock
-						? `${option.name} - Out of stock`
+						? `${option.name} - Agotado`
 						: isIncompatible
-							? `${option.name} - Will change other selections`
+							? `${option.name} - Cambiará otras opciones`
 							: option.discountPercent
-								? `${option.name} - ${option.discountPercent}% off`
+								? `${option.name} - ${option.discountPercent}% desc.`
 								: undefined
 				}
 				aria-label={accessibleParts.join(", ")}

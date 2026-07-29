@@ -17,16 +17,16 @@ import { FooterLocaleSwitcher } from "./footer-locale-switcher";
 // Default footer links
 const defaultFooterLinks = {
 	support: [
-		{ label: "Contact Us", href: "/contact" },
-		{ label: "FAQs", href: "/faq" },
-		{ label: "Shipping", href: "/shipping" },
-		{ label: "Returns", href: "/returns" },
+		{ label: "Contacto", href: "/contact" },
+		{ label: "Preguntas Frecuentes", href: "/faq" },
+		{ label: "Envío", href: "/shipping" },
+		{ label: "Devoluciones", href: "/returns" },
 	],
 	company: [
-		{ label: "About", href: "/about" },
-		{ label: "Sustainability", href: "/sustainability" },
-		{ label: "Careers", href: "/careers" },
-		{ label: "Press", href: "/press" },
+		{ label: "Sobre nosotros", href: "/about" },
+		{ label: "Sostenibilidad", href: "/sustainability" },
+		{ label: "Carreras", href: "/careers" },
+		{ label: "Prensa", href: "/press" },
 	],
 };
 
@@ -167,7 +167,7 @@ export async function Footer({ channel }: { channel: string }) {
 
 					{/* Static Support links */}
 					<div>
-						<h4 className="mb-4 text-sm font-medium text-neutral-300">Support</h4>
+						<h4 className="mb-4 text-sm font-medium text-neutral-300">Soporte</h4>
 						<ul className="space-y-3">
 							{defaultFooterLinks.support.map((link) => (
 								<li key={link.href}>
@@ -183,7 +183,7 @@ export async function Footer({ channel }: { channel: string }) {
 						</ul>
 					</div>
 					<div>
-						<h4 className="mb-4 text-sm font-medium text-neutral-300">Company</h4>
+						<h4 className="mb-4 text-sm font-medium text-neutral-300">Empresa</h4>
 						<ul className="space-y-3">
 							{defaultFooterLinks.company.map((link) => (
 								<li key={link.href}>
@@ -212,14 +212,14 @@ export async function Footer({ channel }: { channel: string }) {
 							prefetch={false}
 							className="text-xs text-neutral-500 transition-colors hover:text-neutral-300"
 						>
-							Privacy Policy
+							Política de Privacidad
 						</Link>
 						<Link
 							href="/terms"
 							prefetch={false}
 							className="text-xs text-neutral-500 transition-colors hover:text-neutral-300"
 						>
-							Terms of Service
+							Términos de Servicio
 						</Link>
 					</div>
 				</div>

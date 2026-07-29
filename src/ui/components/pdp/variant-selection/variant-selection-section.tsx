@@ -185,13 +185,21 @@ export function VariantSelectionSection({
 
 				const isUnavailable = unavailableInfo?.slug === group.slug;
 				const unavailableMessage = isUnavailable
-					? `No ${group.name.toLowerCase()} available in ${unavailableInfo.blockedBy}`
+					? `No hay ${group.name.toLowerCase()} disponible en ${unavailableInfo.blockedBy}`
 					: undefined;
 
 				return (
 					<VariantSelector
 						key={group.slug}
-						label={group.name}
+						label={
+							group.name === "Size"
+								? "Talla"
+								: group.name === "Color"
+									? "Color"
+									: group.name === "Material"
+										? "Material"
+										: group.name
+						}
 						options={options}
 						selectedId={optimisticSelections[group.slug]}
 						attributeSlug={group.slug}

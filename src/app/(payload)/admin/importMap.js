@@ -22,6 +22,8 @@ import { UploadFeatureClient as UploadFeatureClient_e70f5e05f09f93e00b997edb1ef0
 import { HorizontalRuleFeatureClient as HorizontalRuleFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { InlineToolbarFeatureClient as InlineToolbarFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { IconPicker as IconPicker_cf7fb81802d81dae8a4829a6608dd395 } from '@/lib/payload/components/IconPicker'
+import { AdminHeaderIcon as AdminHeaderIcon_a1b29b51ac6cbdda4ba6dae2bd54c981 } from '@/lib/payload/components/AdminHeaderIcon'
+import { AdminDashboardButton as AdminDashboardButton_94368557f75c4491aee82566e0227cc2 } from '@/lib/payload/components/AdminDashboardButton'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 
 /** @type import('payload').ImportMap */
@@ -50,5 +52,7 @@ export const importMap = {
   "@payloadcms/richtext-lexical/client#HorizontalRuleFeatureClient": HorizontalRuleFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/richtext-lexical/client#InlineToolbarFeatureClient": InlineToolbarFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@/lib/payload/components/IconPicker#IconPicker": IconPicker_cf7fb81802d81dae8a4829a6608dd395,
+  "@/lib/payload/components/AdminHeaderIcon#AdminHeaderIcon": AdminHeaderIcon_a1b29b51ac6cbdda4ba6dae2bd54c981,
+  "@/lib/payload/components/AdminDashboardButton#AdminDashboardButton": AdminDashboardButton_94368557f75c4491aee82566e0227cc2,
   "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1
 }

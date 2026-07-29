@@ -30,7 +30,11 @@ export class WhatsAppCheckoutStrategy implements ICheckoutStrategy {
 	}
 
 	execute(customer: CheckoutCustomerData, cart: CheckoutCartData): void {
-		let message = this.messagePrefix ? `${this.messagePrefix}\n\n*Nuevo Pedido*\n\n` : `*Nuevo Pedido*\n\n`;
+		const prefix =
+			this.messagePrefix && this.messagePrefix.trim() !== ""
+				? this.messagePrefix.trim()
+				: "¡Hola! Quiero completar mi pedido";
+		let message = `${prefix}\n\n*Nuevo Pedido*\n\n`;
 		
 		message += `*Cliente:* ${customer.firstName} ${customer.lastName}\n`;
 		message += `*Teléfono:* ${customer.phone}\n`;

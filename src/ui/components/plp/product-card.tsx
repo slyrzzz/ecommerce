@@ -90,7 +90,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
 							variant={product.badge === "Sale" ? "destructive" : "default"}
 							className="absolute left-3 top-3"
 						>
-							{product.badge}
+							{product.badge === "Sale" ? "Oferta" : product.badge === "New" ? "Nuevo" : product.badge}
 						</Badge>
 					)}
 
@@ -99,7 +99,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
 						<div className="absolute bottom-0 left-0 right-0 hidden translate-y-2 p-3 opacity-0 transition-all duration-300 md:block md:group-hover:translate-y-0 md:group-hover:opacity-100">
 							<Button className="w-full" size="sm" onClick={handleQuickAdd} type="button">
 								<Plus className="mr-1.5 h-4 w-4" />
-								Quick Add
+								Agregar rápido
 							</Button>
 						</div>
 					)}

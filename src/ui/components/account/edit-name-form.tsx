@@ -39,19 +39,19 @@ export function EditNameForm({ firstName, lastName }: Props) {
 		return (
 			<div className="flex items-center justify-between">
 				<div>
-					<p className="text-sm text-muted-foreground">Name</p>
+					<p className="text-sm text-muted-foreground">Nombre</p>
 					<p className="font-medium">
-						{firstName || lastName ? `${firstName} ${lastName}`.trim() : "Not set"}
+						{firstName || lastName ? `${firstName} ${lastName}`.trim() : "No establecido"}
 					</p>
 				</div>
 				<div className="flex items-center gap-2">
 					{success && (
 						<span aria-live="polite" className="text-sm text-green-600">
-							Updated
+							Actualizado
 						</span>
 					)}
 					<Button variant="ghost" size="sm" onClick={() => setIsEditing(true)}>
-						Edit
+						Editar
 					</Button>
 				</div>
 			</div>
@@ -67,7 +67,7 @@ export function EditNameForm({ firstName, lastName }: Props) {
 			)}
 			<div className="grid gap-4 sm:grid-cols-2">
 				<div className="space-y-1.5">
-					<Label htmlFor="firstName">First name</Label>
+					<Label htmlFor="firstName">Nombre</Label>
 					<Input
 						id="firstName"
 						name="firstName"
@@ -77,13 +77,13 @@ export function EditNameForm({ firstName, lastName }: Props) {
 					/>
 				</div>
 				<div className="space-y-1.5">
-					<Label htmlFor="lastName">Last name</Label>
+					<Label htmlFor="lastName">Apellido</Label>
 					<Input id="lastName" name="lastName" autoComplete="family-name" defaultValue={lastName} required />
 				</div>
 			</div>
 			<div className="flex gap-2">
 				<Button type="submit" size="sm" disabled={isPending}>
-					{isPending ? "Saving…" : "Save"}
+					{isPending ? "Guardando..." : "Guardar"}
 				</Button>
 				<Button
 					type="button"
@@ -94,7 +94,7 @@ export function EditNameForm({ firstName, lastName }: Props) {
 						setError("");
 					}}
 				>
-					Cancel
+					Cancelar
 				</Button>
 			</div>
 		</form>

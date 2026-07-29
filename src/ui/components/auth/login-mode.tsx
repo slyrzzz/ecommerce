@@ -27,12 +27,12 @@ export function LoginMode() {
 		setError("");
 
 		if (!email || !EMAIL_RE.test(email)) {
-			setError("Please enter a valid email address");
+			setError("Por favor ingresa un correo electrónico válido");
 			return;
 		}
 
 		if (!password) {
-			setError("Please enter your password");
+			setError("Por favor ingresa tu contraseña");
 			return;
 		}
 
@@ -48,7 +48,7 @@ export function LoginMode() {
 			const data = await response.json();
 
 			if (!response.ok || data.errors?.length) {
-				setError(data.errors?.[0]?.message || "Invalid email or password. Please try again.");
+				setError(data.errors?.[0]?.message || "Correo o contraseña inválidos. Por favor intenta de nuevo.");
 				return;
 			}
 
@@ -57,7 +57,7 @@ export function LoginMode() {
 				router.refresh();
 			}
 		} catch {
-			setError("An error occurred. Please try again.");
+			setError("Ocurrió un error. Por favor intenta de nuevo.");
 		} finally {
 			setIsSubmitting(false);
 		}
@@ -68,7 +68,7 @@ export function LoginMode() {
 		setResetMessage("");
 
 		if (!email || !EMAIL_RE.test(email)) {
-			setError("Please enter a valid email address first");
+			setError("Por favor ingresa un correo electrónico válido primero");
 			return;
 		}
 
@@ -91,16 +91,16 @@ export function LoginMode() {
 			};
 
 			if (data.errors?.length) {
-				setError(data.errors[0].message || "Failed to send reset link");
+				setError(data.errors[0].message || "No se pudo enviar el enlace de recuperación");
 				return;
 			}
 
 			setResetEmailSent(true);
 			setResetMessage(
-				`If an account exists for ${email}, a password reset link has been sent. Note: You can only request one reset link every 15 minutes.`,
+				`Si existe una cuenta para ${email}, se ha enviado un enlace de recuperación de contraseña. Nota: Solo puedes solicitar un enlace de recuperación cada 15 minutos.`,
 			);
 		} catch {
-			setError("An error occurred. Please try again.");
+			setError("Ocurrió un error. Por favor intenta de nuevo.");
 		} finally {
 			setIsSubmitting(false);
 		}
@@ -110,14 +110,14 @@ export function LoginMode() {
 		<div className="mx-auto my-16 w-full max-w-md">
 			<div className="rounded-lg border border-border bg-card p-8 shadow-sm">
 				<div className="mb-6 text-center">
-					<h1 className="text-2xl font-semibold">Welcome Back</h1>
+					<h1 className="text-2xl font-semibold">Bienvenido de vuelta</h1>
 					<p className="mt-2 text-sm text-muted-foreground">
-						Don&apos;t have an account?{" "}
+						¿No tienes una cuenta?{" "}
 						<Link
 							href={`/${params.channel}/signup`}
 							className="font-medium text-foreground underline underline-offset-2 hover:no-underline"
 						>
-							Sign up
+							Regístrate
 						</Link>
 					</p>
 				</div>
@@ -137,14 +137,14 @@ export function LoginMode() {
 
 					<div className="space-y-1.5">
 						<Label htmlFor="email" className="text-sm font-medium">
-							Email address
+							Correo electrónico
 						</Label>
 						<div className="relative">
 							<Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
 							<Input
 								id="email"
 								type="email"
-								placeholder="you@example.com"
+								placeholder="tu@ejemplo.com"
 								autoComplete="email"
 								spellCheck={false}
 								value={email}
@@ -160,14 +160,14 @@ export function LoginMode() {
 
 					<div className="space-y-1.5">
 						<Label htmlFor="password" className="text-sm font-medium">
-							Password
+							Contraseña
 						</Label>
 						<div className="relative">
 							<Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
 							<Input
 								id="password"
 								type={showPassword ? "text" : "password"}
-								placeholder="Enter your password"
+								placeholder="Ingresa tu contraseña"
 								autoComplete="current-password"
 								value={password}
 								onChange={(e) => setPassword(e.target.value)}
@@ -177,7 +177,7 @@ export function LoginMode() {
 							<button
 								type="button"
 								onClick={() => setShowPassword(!showPassword)}
-								aria-label={showPassword ? "Hide password" : "Show password"}
+								aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
 								className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
 							>
 								{showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -192,12 +192,12 @@ export function LoginMode() {
 							disabled={isSubmitting}
 							className="text-sm text-muted-foreground underline underline-offset-2 hover:text-foreground hover:no-underline disabled:opacity-50"
 						>
-							{resetEmailSent ? "Resend link?" : "Forgot password?"}
+							{resetEmailSent ? "¿Reenviar enlace?" : "¿Olvidaste tu contraseña?"}
 						</button>
 					</div>
 
 					<Button type="submit" disabled={isSubmitting} className="h-12 w-full text-base font-semibold">
-						{isSubmitting ? "Signing in…" : "Sign In"}
+						{isSubmitting ? "Iniciando sesión..." : "Iniciar Sesión"}
 					</Button>
 				</form>
 			</div>

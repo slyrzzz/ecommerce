@@ -64,5 +64,5 @@ export function getCopyrightText(
 	year: number = new Date().getFullYear(),
 	holder: string = brandConfig.copyrightHolder,
 ): string {
-	return `© ${year} ${holder}. All rights reserved.`;
+	return `© ${year} ${holder}. Todos los derechos reservados.`;
 }
