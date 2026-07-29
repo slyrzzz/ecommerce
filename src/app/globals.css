@@ -89,38 +89,11 @@
 	background: rgba(59, 130, 246, 0.1) !important;
 }
 
-/* ── Payload Admin Panel: Dialog & Modal Text Contrast Fix ── */
-.template-default [role="dialog"],
-[role="dialog"],
-.template-default .modal,
-.modal,
-.template-default .drawer,
-.drawer,
-.template-default [class*="modal"],
-[class*="modal"],
-.template-default [class*="dialog"],
-[class*="dialog"],
-.template-default [class*="drawer"],
-[class*="drawer"] {
+/* ── Payload Admin Panel: Dialog Text Contrast Fix (Sin alterar fondos azules ni cajones nativos de Payload) ── */
+[role="alertdialog"] {
 	color: #f8fafc !important;
-	background-color: #1e293b !important;
 }
-.template-default [role="dialog"] *,
-[role="dialog"] *,
-.template-default .modal *,
-.modal *,
-.template-default [class*="modal"] *,
-[class*="modal"] *,
-.template-default [class*="dialog"] *,
-[class*="dialog"] * {
-	color: inherit;
-}
-.template-default [role="dialog"] button,
-[role="dialog"] button,
-.template-default .modal button,
-.modal button {
-	color: #ffffff !important;
-}
+
 
 /* ── Payload Admin Panel: Sidebar (Panel Izquierdo) ── */
 /* Encabezados de grupo (label del botón toggle) */
@@ -183,16 +156,16 @@
 .nav-group__content a.active,
 .template-default .nav-group__content a[class*="active"],
 .nav-group__content a[class*="active"] {
-	background: rgba(37, 99, 235, 0.25) !important;
-	border-color: rgba(59, 130, 246, 0.5) !important;
-	color: #93c5fd !important;
+	background: rgba(255, 255, 255, 0.15) !important;
+	border-color: rgba(255, 255, 255, 0.3) !important;
+	color: #ffffff !important;
 	font-weight: 600 !important;
 }
 
 
 /* ── Payload Admin Panel: Clear Card Tabs & Form Field Contrast ── */
 .template-default .tabs-field__tabs {
-	border-bottom: 2px solid #334155 !important;
+	border-bottom: 2px solid #27272a !important;
 	margin-bottom: 1.5rem !important;
 	gap: 0.5rem !important;
 }
@@ -205,9 +178,9 @@
 }
 
 .template-default .tabs-field__tab-button--active {
-	background: #1e293b !important;
-	color: #60a5fa !important;
-	border-bottom: 3px solid #3b82f6 !important;
+	background: #18181b !important;
+	color: #ffffff !important;
+	border-bottom: 3px solid #ffffff !important;
 	font-weight: 700 !important;
 }
 

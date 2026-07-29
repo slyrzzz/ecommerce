@@ -13,7 +13,7 @@ export async function AnnouncementBar() {
 
 	return (
 		<div
-			className="w-full bg-slate-900 px-4 py-2 text-center text-xs font-medium tracking-wide text-slate-100 sm:text-sm dark:bg-slate-950 dark:text-slate-200"
+			className="w-full bg-black px-4 py-2.5 text-center text-xs font-medium tracking-wide text-white sm:text-sm"
 			role="region"
 			aria-label="Anuncio importante"
 		>
@@ -22,7 +22,7 @@ export async function AnnouncementBar() {
 				{announcement.linkUrl && (
 					<Link
 						href={announcement.linkUrl}
-						className="inline-flex items-center font-semibold text-white underline decoration-slate-400 underline-offset-4 transition-colors hover:decoration-white"
+						className="inline-flex items-center font-semibold text-white underline decoration-neutral-400 underline-offset-4 transition-colors hover:decoration-white"
 					>
 						{announcement.linkLabel || "Ver más"}
 						<span aria-hidden="true" className="ml-1">
