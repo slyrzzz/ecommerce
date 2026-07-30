@@ -120,27 +120,39 @@
 	background: rgba(148, 163, 184, 0.1) !important;
 }
 
-/* ── ELIMINAR CUALQUIER BLUR O DESENFOQUE DEL HEADER EN LAS PANTALLAS DE EDICIÓN ── */
-.doc-header,
-.doc-header__wrapper,
-.collection-edit__header,
-.global-edit__header,
-header[class*="doc-header"],
-header[class*="edit__header"],
-.doc-header * {
+/* ── ELIMINAR DE RAÍZ CUALQUIER DESENFOQUE (BLUR), FILTRO O CAPA BORROSA EN FORMULARIOS Y MANEJO DE TIENDA ── */
+.global-edit *,
+.collection-edit *,
+.doc-header *,
+header[class*="doc-header"] *,
+div[class*="edit"] *,
+form[class*="edit"] *,
+.field-type,
+.field-type *,
+.tabs-field,
+.tabs-field *,
+.group-field,
+.group-field * {
 	backdrop-filter: none !important;
 	-webkit-backdrop-filter: none !important;
-	background: transparent !important;
+	filter: none !important;
+	-webkit-filter: none !important;
+	mask: none !important;
+	-webkit-mask: none !important;
 }
 
-/* Evitar que el header cubra los campos y bloquee clics al reordenar doc-controls */
+/* Evitar que cualquier encabezado flotante cubra o sombree el formulario en Manejo de Tienda */
 .doc-header,
 header[class*="doc-header"],
 .collection-edit__header,
 .global-edit__header,
 header[class*="edit__header"] {
+	position: static !important;
 	height: auto !important;
 	min-height: 0 !important;
+	background: transparent !important;
+	box-shadow: none !important;
+	z-index: 1 !important;
 	pointer-events: none !important;
 }
 
@@ -159,16 +171,15 @@ form[class*="edit__form"] {
 	z-index: 1 !important;
 }
 
-/* El contenido (pestañas y campos) se ubica arriba y siempre nítido */
+/* El contenido (pestañas y campos) se ubica arriba y siempre nítido al 100% */
 .collection-edit__main-wrapper,
 .global-edit__main-wrapper,
-div[class*="edit__main-wrapper"] {
+div[class*="edit__main-wrapper"],
+.collection-edit__main,
+.global-edit__main {
 	order: 1 !important;
 	position: relative !important;
-	z-index: 5 !important;
-	filter: none !important;
-	backdrop-filter: none !important;
-	-webkit-backdrop-filter: none !important;
+	z-index: 20 !important;
 	opacity: 1 !important;
 	pointer-events: auto !important;
 }
@@ -248,6 +259,37 @@ a[class*="card"]:hover {
 .card:hover .card__actions,
 .card:hover .card__click {
 	color: #ffffff !important;
+}
+
+/* ── Soporte Responsive Mobile-Friendly para Menú Lateral y Dashboard ── */
+@media (max-width: 768px) {
+	.nav-group__content a,
+	.nav-group__content .nav__link {
+		padding: 0.65rem 0.8rem !important;
+		font-size: 0.9rem !important;
+	}
+
+	.doc-controls {
+		margin-top: 1.5rem !important;
+		margin-bottom: 1rem !important;
+		padding-top: 1rem !important;
+	}
+
+	.doc-controls__wrapper {
+		justify-content: stretch !important;
+	}
+
+	.doc-controls__save,
+	.doc-controls__publish,
+	button[class*="doc-controls__save"] {
+		width: 100% !important;
+		justify-content: center !important;
+	}
+
+	.card,
+	.dashboard__card {
+		padding: 1.25rem 1.25rem !important;
+	}
 }
 
 

@@ -49,8 +49,6 @@ export const AdminSidebarHeader: React.FC = () => {
 		fetchIdentity();
 	}, []);
 
-	const storeInitial = (storeData.siteName && storeData.siteName.charAt(0).toUpperCase()) || "T";
-
 	return (
 		<div
 			style={{
@@ -60,6 +58,9 @@ export const AdminSidebarHeader: React.FC = () => {
 				display: "flex",
 				flexDirection: "column",
 				gap: "14px",
+				boxSizing: "border-box",
+				width: "100%",
+				maxWidth: "100%",
 			}}
 		>
 			{/* 1. Logotipo de la Tienda (Si el usuario cargó una imagen de logo) */}
@@ -79,92 +80,78 @@ export const AdminSidebarHeader: React.FC = () => {
 				</div>
 			)}
 
-			{/* 2. Tarjeta de Identidad de Tienda (Estilo Foto 3 sin gradientes: Slate profesional) */}
+			{/* 2. Tarjeta de Identidad de Tienda (Sin insignia de letra, solo Nombre y Eslogan) */}
 			<div
 				style={{
 					display: "flex",
-					alignItems: "center",
-					gap: "12px",
+					flexDirection: "column",
+					justifyContent: "center",
 					padding: "10px 12px",
 					backgroundColor: "rgba(255, 255, 255, 0.05)",
 					border: "1px solid rgba(255, 255, 255, 0.1)",
 					borderRadius: "12px",
 					boxShadow: "0 2px 8px rgba(0, 0, 0, 0.25)",
 					overflow: "hidden",
+					boxSizing: "border-box",
+					width: "100%",
+					maxWidth: "100%",
 				}}
 			>
-				{/* Badge/Insignia con inicial */}
-				<div
+				<span
 					style={{
-						width: "38px",
-						height: "38px",
-						borderRadius: "10px",
-						backgroundColor: "#1e293b",
-						border: "1px solid rgba(255, 255, 255, 0.15)",
-						display: "flex",
-						alignItems: "center",
-						justifyContent: "center",
 						color: "#ffffff",
-						fontWeight: 700,
-						fontSize: "17px",
-						flexShrink: 0,
-						boxShadow: "inset 0 1px 0 rgba(255, 255, 255, 0.1)",
+						fontWeight: 600,
+						fontSize: "15px",
+						lineHeight: "1.25",
+						whiteSpace: "nowrap",
+						overflow: "hidden",
+						textOverflow: "ellipsis",
+						display: "block",
 					}}
+					title={storeData.siteName}
 				>
-					{storeInitial}
-				</div>
-
-				{/* Nombre de Tienda y Eslogan */}
-				<div style={{ display: "flex", flexDirection: "column", overflow: "hidden", minWidth: 0 }}>
-					<span
-						style={{
-							color: "#ffffff",
-							fontWeight: 600,
-							fontSize: "15px",
-							lineHeight: "1.25",
-							whiteSpace: "nowrap",
-							overflow: "hidden",
-							textOverflow: "ellipsis",
-						}}
-						title={storeData.siteName}
-					>
-						{storeData.siteName}
-					</span>
-					<span
-						style={{
-							color: "#94a3b8",
-							fontSize: "12px",
-							lineHeight: "1.3",
-							whiteSpace: "nowrap",
-							overflow: "hidden",
-							textOverflow: "ellipsis",
-						}}
-						title={storeData.tagline}
-					>
-						{storeData.tagline}
-					</span>
-				</div>
+					{storeData.siteName}
+				</span>
+				<span
+					style={{
+						color: "#94a3b8",
+						fontSize: "12px",
+						lineHeight: "1.3",
+						whiteSpace: "nowrap",
+						overflow: "hidden",
+						textOverflow: "ellipsis",
+						display: "block",
+						marginTop: "2px",
+					}}
+					title={storeData.tagline}
+				>
+					{storeData.tagline}
+				</span>
 			</div>
 
-			{/* 3. Botón "Ir al Dashboard Principal" */}
+			{/* 3. Botón "Ir al Dashboard Principal" adaptable para móvil y desktop */}
 			<Link
 				href="/admin"
 				style={{
 					display: "flex",
 					alignItems: "center",
 					justifyContent: "center",
-					gap: "10px",
-					padding: "11px 14px",
+					padding: "10px 10px",
 					backgroundColor: "#2563eb",
 					color: "#ffffff",
 					borderRadius: "10px",
 					textDecoration: "none",
 					fontWeight: 600,
-					fontSize: "14px",
+					fontSize: "13.5px",
+					lineHeight: "1.25",
 					boxShadow: "0 4px 12px rgba(37, 99, 235, 0.3)",
 					transition: "all 0.2s ease",
 					cursor: "pointer",
+					boxSizing: "border-box",
 					width: "100%",
+					maxWidth: "100%",
+					whiteSpace: "normal",
+					textAlign: "center",
 				}}
 			>
 				<span>Ir al Dashboard Principal</span>
