@@ -117,3 +117,40 @@
 .tabs-field__tab-button:hover:not(.tabs-field__tab-button--active) {
 	background: rgba(148, 163, 184, 0.1) !important;
 }
+
+/* ── Mover la barra de Guardar / Publicar al final de las opciones del formulario ── */
+.collection-edit__form,
+.global-edit__form,
+form[class*="edit__form"] {
+	display: flex !important;
+	flex-direction: column !important;
+}
+
+/* El contenido (pestañas y campos) se ubica arriba */
+.collection-edit__main-wrapper,
+.global-edit__main-wrapper,
+div[class*="edit__main-wrapper"] {
+	order: 1 !important;
+}
+
+/* La barra de controles de documento se ubica abajo, justo cuando terminan las opciones */
+.doc-controls {
+	order: 10 !important;
+	position: static !important;
+	margin-top: 2.5rem !important;
+	margin-bottom: 2rem !important;
+	padding-top: 1.5rem !important;
+	padding-bottom: 1rem !important;
+	border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+	background: transparent !important;
+	box-shadow: none !important;
+}
+
+/* Alinear el botón de Guardar a la derecha de manera limpia */
+.doc-controls__wrapper {
+	display: flex !important;
+	justify-content: flex-end !important;
+	align-items: center !important;
+	width: 100% !important;
+}
+
