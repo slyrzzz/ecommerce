@@ -3,6 +3,7 @@ import {
   lexicalEditor,
   HeadingFeature,
 } from '@payloadcms/richtext-lexical';
+import { formatSlugHook } from '../utils/slug-utils';
 
 export const Products: CollectionConfig = {
   slug: 'products',
@@ -20,7 +21,7 @@ export const Products: CollectionConfig = {
       tabs: [
         {
           label: 'Información Básica',
-          description: 'Detalles principales y estado de publicación en la tienda.',
+          description: 'Detalles principales, enlace web y estado de publicación en la tienda.',
           fields: [
             {
               type: 'row',
@@ -53,15 +54,38 @@ export const Products: CollectionConfig = {
               ],
             },
             {
-              name: 'category',
-              type: 'relationship',
-              relationTo: 'categories',
-              hasMany: true,
-              required: true,
-              label: 'Categoría(s) del Producto *',
-              admin: {
-                description: 'Selecciona una o más categorías para organizar el producto.',
-              },
+              type: 'row',
+              fields: [
+                {
+                  name: 'slug',
+                  type: 'text',
+                  required: true,
+                  unique: true,
+                  label: 'URL Slug (Enlace permanente) *',
+                  hooks: {
+                    beforeValidate: [formatSlugHook('title')],
+                  },
+                  admin: {
+                    width: '50%',
+                    description: 'Enlace amigable (ej: gamuza-blanca). Se llena automáticamente del nombre o puedes editarlo.',
+                    components: {
+                      Field: '@/lib/payload/components/SlugInput#SlugInput',
+                    },
+                  },
+                },
+                {
+                  name: 'category',
+                  type: 'relationship',
+                  relationTo: 'categories',
+                  hasMany: true,
+                  required: true,
+                  label: 'Categoría(s) del Producto *',
+                  admin: {
+                    width: '50%',
+                    description: 'Selecciona una o más categorías para organizar el producto.',
+                  },
+                },
+              ],
             },
             {
               name: 'description',
@@ -195,22 +219,6 @@ export const Products: CollectionConfig = {
                   ],
                 },
               ],
-            },
-          ],
-        },
-        {
-          label: 'SEO y URL Slug',
-          description: 'Configuración del enlace permanente en la tienda web.',
-          fields: [
-            {
-              name: 'slug',
-              type: 'text',
-              required: true,
-              unique: true,
-              label: 'URL Slug *',
-              admin: {
-                description: 'Identificador para la URL de la tienda (ejemplo: smartpulse-x7-wearable). En minúsculas y separado por guiones.',
-              },
             },
           ],
         },
