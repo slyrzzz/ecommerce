@@ -6,16 +6,16 @@
 /* Encabezados de grupo (categorías) */
 .nav-group__label {
 	color: #94a3b8 !important;
-	font-size: 0.7rem !important;
+	font-size: 0.8rem !important;
 	text-transform: uppercase !important;
-	letter-spacing: 0.07em !important;
+	letter-spacing: 0.08em !important;
 	font-weight: 700 !important;
 }
 
 /* Botón colapsable del grupo */
 .nav-group__toggle {
-	padding: 0.6rem 0.75rem !important;
-	margin: 0.15rem 0 !important;
+	padding: 0.7rem 0.85rem !important;
+	margin: 0.3rem 0 !important;
 	border-radius: 8px !important;
 	width: 100% !important;
 	color: #94a3b8 !important;
@@ -27,33 +27,34 @@
 	color: #cbd5e1 !important;
 }
 
-/* Enlaces individuales (colecciones y globals) en forma de tarjeta/píldora */
+/* Enlaces individuales (colecciones y globals) en forma de tarjeta Slate ampliada */
 .nav-group__content a,
 .nav-group__content .nav__link {
 	display: flex !important;
 	align-items: center !important;
-	padding: 0.5rem 0.85rem !important;
-	margin: 0.2rem 0 !important;
-	border-radius: 7px !important;
-	background: rgba(255, 255, 255, 0.04) !important;
-	border: 1px solid rgba(255, 255, 255, 0.07) !important;
+	padding: 0.75rem 1rem !important;
+	margin: 0.35rem 0 !important;
+	border-radius: 10px !important;
+	background: rgba(255, 255, 255, 0.05) !important;
+	border: 1px solid rgba(255, 255, 255, 0.09) !important;
 	color: #e2e8f0 !important;
-	font-size: 0.875rem !important;
-	font-weight: 500 !important;
+	font-size: 0.95rem !important;
+	font-weight: 600 !important;
 	text-decoration: none !important;
-	transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease, color 0.15s ease !important;
+	transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease, color 0.15s ease, box-shadow 0.15s ease !important;
 }
 
 /* Hover en enlace: iluminación suave + desplazamiento sutil */
 .nav-group__content a:hover,
 .nav-group__content .nav__link:hover {
 	background: rgba(255, 255, 255, 0.1) !important;
-	border-color: rgba(255, 255, 255, 0.18) !important;
+	border-color: rgba(255, 255, 255, 0.22) !important;
 	color: #ffffff !important;
-	transform: translateX(3px) !important;
+	transform: translateX(4px) !important;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
 }
 
-/* Estado activo (página actual seleccionada) */
+/* Estado activo (página actual seleccionada: Slate contraste premium sin azul neón) */
 .nav-group__content a[aria-current="page"],
 .nav-group__content a.active,
 .nav-group__content a[class*="active"],
@@ -61,10 +62,11 @@
 .nav-group__content .nav__link.active,
 .nav-group__content .nav__link[class*="active"],
 .nav-group__content div.nav__link {
-	background: rgba(37, 99, 235, 0.25) !important;
-	border-color: rgba(59, 130, 246, 0.5) !important;
-	color: #93c5fd !important;
-	font-weight: 600 !important;
+	background: rgba(255, 255, 255, 0.15) !important;
+	border-color: rgba(255, 255, 255, 0.4) !important;
+	color: #ffffff !important;
+	font-weight: 700 !important;
+	box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4) !important;
 }
 
 /* ── Botones principales en el Encabezado (Guardar / Publicar) ── */
@@ -153,4 +155,58 @@ div[class*="edit__main-wrapper"] {
 	align-items: center !important;
 	width: 100% !important;
 }
+
+/* ── Tarjetas / Botones Flotantes del Dashboard Principal (/admin home) ── */
+.card,
+.dashboard__card,
+.dashboard__group .card,
+.collection-list__card,
+a[class*="card"] {
+	background: rgba(255, 255, 255, 0.05) !important;
+	border: 1px solid rgba(255, 255, 255, 0.09) !important;
+	border-radius: 14px !important;
+	padding: 1.5rem 1.75rem !important;
+	min-height: 95px !important;
+	display: flex !important;
+	align-items: center !important;
+	justify-content: space-between !important;
+	transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+}
+
+.card:hover,
+.dashboard__card:hover,
+.dashboard__group .card:hover,
+.collection-list__card:hover,
+a[class*="card"]:hover {
+	background: rgba(255, 255, 255, 0.09) !important;
+	border-color: rgba(255, 255, 255, 0.25) !important;
+	transform: translateY(-3px) !important;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6) !important;
+}
+
+/* Títulos de las colecciones en las tarjetas del dashboard */
+.card__title,
+.dashboard__card-title,
+.card h2,
+.card h3,
+.card span {
+	font-size: 1.15rem !important;
+	font-weight: 700 !important;
+	color: #ffffff !important;
+	letter-spacing: -0.01em !important;
+}
+
+/* Botones de acción o "+" dentro de la tarjeta */
+.card__actions,
+.card__click {
+	color: #94a3b8 !important;
+	transition: color 0.15s ease !important;
+}
+
+.card:hover .card__actions,
+.card:hover .card__click {
+	color: #ffffff !important;
+}
+
 

@@ -28,7 +28,7 @@ export default buildConfig({
   admin: {
     user: 'users',
     components: {
-      beforeNavLinks: ['@/lib/payload/components/AdminDashboardButton#AdminDashboardButton'],
+      beforeNavLinks: ['@/lib/payload/components/AdminSidebarHeader#AdminSidebarHeader'],
       graphics: {
         Icon: '@/lib/payload/components/AdminHeaderIcon#AdminHeaderIcon',
         Logo: '@/lib/payload/components/AdminHeaderIcon#AdminHeaderIcon',
