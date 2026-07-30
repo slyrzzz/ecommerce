@@ -9,7 +9,8 @@
 		"build": "next build",
 		"start": "next start",
 		"lint": "eslint",
-		"lint:fix": "eslint --fix"
+		"lint:fix": "eslint --fix",
+		"seed:pages": "tsx --env-file=.env src/lib/payload/seed-pages-cli.ts"
 	},
 	"dependencies": {
 		"@headlessui/react": "1.7.18",

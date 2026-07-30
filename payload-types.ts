@@ -72,6 +72,8 @@ export interface Config {
     categories: Category;
     products: Product;
     carts: Cart;
+    orders: Order;
+    pages: Page;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -84,6 +86,8 @@ export interface Config {
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     products: ProductsSelect<false> | ProductsSelect<true>;
     carts: CartsSelect<false> | CartsSelect<true>;
+    orders: OrdersSelect<false> | OrdersSelect<true>;
+    pages: PagesSelect<false> | PagesSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -93,8 +97,16 @@ export interface Config {
     defaultIDType: string;
   };
   fallbackLocale: null;
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    'store-management': StoreManagement;
+    'store-identity': StoreIdentity;
+    'store-contact': StoreContact;
+  };
+  globalsSelect: {
+    'store-management': StoreManagementSelect<false> | StoreManagementSelect<true>;
+    'store-identity': StoreIdentitySelect<false> | StoreIdentitySelect<true>;
+    'store-contact': StoreContactSelect<false> | StoreContactSelect<true>;
+  };
   locale: null;
   widgets: {
     collections: CollectionsWidget;
@@ -129,6 +141,11 @@ export interface UserAuthOperations {
  */
 export interface User {
   id: string;
+  firstName?: string | null;
+  lastName?: string | null;
+  phone?: string | null;
+  address?: string | null;
+  city?: string | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -256,6 +273,7 @@ export interface Product {
     | {
         name: string;
         value: string;
+        icon?: string | null;
         id?: string | null;
       }[]
     | null;
@@ -279,6 +297,80 @@ export interface Cart {
         id?: string | null;
       }[]
     | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Pedidos guardados o realizados por clientes. Puedes consultar el teléfono y datos de envío para contactar por WhatsApp o procesar la orden.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "orders".
+ */
+export interface Order {
+  id: string;
+  orderNumber: string;
+  user?: (string | null) | User;
+  status: 'saved' | 'whatsapp_sent' | 'processing' | 'completed' | 'cancelled';
+  customer: {
+    firstName: string;
+    lastName: string;
+    phone: string;
+    address: string;
+    city: string;
+  };
+  lines?:
+    | {
+        productName: string;
+        quantity: number;
+        price: number;
+        merchandiseId?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  totalPrice: number;
+  currency?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Páginas informativas de la tienda (ej: Preguntas Frecuentes, Envío, Devoluciones, Contacto).
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages".
+ */
+export interface Page {
+  id: string;
+  /**
+   * Nombre de la página visible para los usuarios.
+   */
+  title: string;
+  /**
+   * Identificador URL (ej. faq, envio, contacto, devoluciones).
+   */
+  slug: string;
+  status?: ('published' | 'draft') | null;
+  /**
+   * Si está activo, aparecerá un enlace a esta página en el pie de página.
+   */
+  showInFooter?: boolean | null;
+  /**
+   * Escribe y da formato al contenido de la página (títulos, listas, negritas, enlaces).
+   */
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -325,6 +417,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'carts';
         value: string | Cart;
+      } | null)
+    | ({
+        relationTo: 'orders';
+        value: string | Order;
+      } | null)
+    | ({
+        relationTo: 'pages';
+        value: string | Page;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -373,6 +473,11 @@ export interface PayloadMigration {
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
+  firstName?: T;
+  lastName?: T;
+  phone?: T;
+  address?: T;
+  city?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -439,6 +544,7 @@ export interface ProductsSelect<T extends boolean = true> {
     | {
         name?: T;
         value?: T;
+        icon?: T;
         id?: T;
       };
   slug?: T;
@@ -457,6 +563,50 @@ export interface CartsSelect<T extends boolean = true> {
         quantity?: T;
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "orders_select".
+ */
+export interface OrdersSelect<T extends boolean = true> {
+  orderNumber?: T;
+  user?: T;
+  status?: T;
+  customer?:
+    | T
+    | {
+        firstName?: T;
+        lastName?: T;
+        phone?: T;
+        address?: T;
+        city?: T;
+      };
+  lines?:
+    | T
+    | {
+        productName?: T;
+        quantity?: T;
+        price?: T;
+        merchandiseId?: T;
+        id?: T;
+      };
+  totalPrice?: T;
+  currency?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages_select".
+ */
+export interface PagesSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  status?: T;
+  showInFooter?: T;
+  content?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -499,6 +649,218 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * Configura la apariencia, barra de progreso para envío gratis y mensajes informativos del Carrito de Compras.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "store-management".
+ */
+export interface StoreManagement {
+  id: string;
+  freeShipping?: {
+    enabled?: boolean | null;
+    /**
+     * Monto que el cliente debe alcanzar en el subtotal de su carrito para obtener envío gratis (ej: 50, 100, 150).
+     */
+    thresholdAmount?: number | null;
+  };
+  footerMessages?: {
+    enabled?: boolean | null;
+    /**
+     * Texto que acompaña el ícono de envío. Si no incluye un monto, se añadirá automáticamente el monto configurado arriba.
+     */
+    freeDeliveryText?: string | null;
+    /**
+     * Texto que acompaña el ícono de devolución.
+     */
+    returnsText?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Configura el nombre de tu tienda, logotipo, eslogan, descripción SEO y texto de copyright.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "store-identity".
+ */
+export interface StoreIdentity {
+  id: string;
+  /**
+   * Nombre principal usado en el título de la pestaña del navegador y cabecera.
+   */
+  siteName: string;
+  /**
+   * Breve frase promocional o lema que se muestra en el pie de página.
+   */
+  tagline?: string | null;
+  /**
+   * Descripción por defecto para buscadores (Google) y redes sociales.
+   */
+  description?: string | null;
+  /**
+   * Nombre que aparece al final del pie de página después de © y el año actual.
+   */
+  copyrightHolder?: string | null;
+  /**
+   * Sube una imagen o SVG con fondo transparente (formato horizontal / apaisado). Tamaño recomendado: 180x40 px a 240x60 px (altura visual adaptada a 40px en cabecera).
+   */
+  logo?: (string | null) | Media;
+  /**
+   * Versión en color blanco o claro para fondos oscuros (Footer). Tamaño recomendado: 180x40 px a 240x60 px.
+   */
+  logoInverted?: (string | null) | Media;
+  /**
+   * Icono cuadrado para la pestaña del navegador en formato PNG, ICO o SVG. Tamaño recomendado: 32x32 px o 64x64 px.
+   */
+  favicon?: (string | null) | Media;
+  announcement?: {
+    enabled?: boolean | null;
+    /**
+     * Mensaje conciso que verán todos los usuarios al entrar a la tienda.
+     */
+    text?: string | null;
+    /**
+     * Ejemplo: /products o /category/relojes
+     */
+    linkUrl?: string | null;
+    linkLabel?: string | null;
+  };
+  hero?: {
+    enabled?: boolean | null;
+    /**
+     * Texto sutil en mayúsculas sobre el título principal.
+     */
+    badge?: string | null;
+    /**
+     * Título corto e impactante para tu tienda.
+     */
+    title?: string | null;
+    description?: string | null;
+    ctaText?: string | null;
+    ctaLink?: string | null;
+    /**
+     * Imagen de fondo para el Hero Banner. Tamaño recomendado: 1920x600 px o relación de aspecto horizontal 16:5. Formatos recomendados: JPG o WebP de alta resolución.
+     */
+    backgroundImage?: (string | null) | Media;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Configura el número de WhatsApp comercial para pedidos, información de contacto de soporte y enlaces a redes sociales.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "store-contact".
+ */
+export interface StoreContact {
+  id: string;
+  enabled?: boolean | null;
+  /**
+   * Código de país seguido del número telefónico, sin símbolo + ni espacios (ejemplo: 584120000000, 5215500000000, 34600000000).
+   */
+  businessPhone: string;
+  /**
+   * Frase inicial del mensaje automático en WhatsApp.
+   */
+  defaultMessagePrefix?: string | null;
+  supportEmail?: string | null;
+  supportPhone?: string | null;
+  address?: string | null;
+  cityCountry?: string | null;
+  hours?: string | null;
+  showSocialLinks?: boolean | null;
+  /**
+   * Ejemplo: https://instagram.com/tumarca o @tumarca
+   */
+  instagram?: string | null;
+  facebook?: string | null;
+  twitter?: string | null;
+  tiktok?: string | null;
+  whatsappSupport?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "store-management_select".
+ */
+export interface StoreManagementSelect<T extends boolean = true> {
+  freeShipping?:
+    | T
+    | {
+        enabled?: T;
+        thresholdAmount?: T;
+      };
+  footerMessages?:
+    | T
+    | {
+        enabled?: T;
+        freeDeliveryText?: T;
+        returnsText?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "store-identity_select".
+ */
+export interface StoreIdentitySelect<T extends boolean = true> {
+  siteName?: T;
+  tagline?: T;
+  description?: T;
+  copyrightHolder?: T;
+  logo?: T;
+  logoInverted?: T;
+  favicon?: T;
+  announcement?:
+    | T
+    | {
+        enabled?: T;
+        text?: T;
+        linkUrl?: T;
+        linkLabel?: T;
+      };
+  hero?:
+    | T
+    | {
+        enabled?: T;
+        badge?: T;
+        title?: T;
+        description?: T;
+        ctaText?: T;
+        ctaLink?: T;
+        backgroundImage?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "store-contact_select".
+ */
+export interface StoreContactSelect<T extends boolean = true> {
+  enabled?: T;
+  businessPhone?: T;
+  defaultMessagePrefix?: T;
+  supportEmail?: T;
+  supportPhone?: T;
+  address?: T;
+  cityCountry?: T;
+  hours?: T;
+  showSocialLinks?: T;
+  instagram?: T;
+  facebook?: T;
+  twitter?: T;
+  tiktok?: T;
+  whatsappSupport?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
