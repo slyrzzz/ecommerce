@@ -27,11 +27,18 @@ export async function Footer({ channel }: { channel: string }) {
 	const storeContact = await getStoreContact();
 	const footerPages = await getFooterPages();
 
+	const supportPages = footerPages.filter(
+		(page) => !page.footerColumn || page.footerColumn === "soporte",
+	);
+	const companyPages = footerPages.filter(
+		(page) => page.footerColumn === "empresa",
+	);
+
 	const dynamicSupportLinks =
 		footerPages.length > 0
 			? [
 					{ label: "Contacto", href: `/${channel}/contact` },
-					...footerPages.map((page) => ({
+					...supportPages.map((page) => ({
 						label: page.title,
 						href: `/${channel}/pages/${page.slug}`,
 					})),
@@ -43,7 +50,13 @@ export async function Footer({ channel }: { channel: string }) {
 					{ label: "Devoluciones", href: `/${channel}/pages/devoluciones` },
 			  ];
 
-	const companyLinks = getDefaultCompanyLinks(channel);
+	const companyLinks =
+		footerPages.length > 0
+			? companyPages.map((page) => ({
+					label: page.title,
+					href: `/${channel}/pages/${page.slug}`,
+			  }))
+			: getDefaultCompanyLinks(channel);
 
 	return (
 		<footer className="bg-foreground text-background">
@@ -176,39 +189,47 @@ export async function Footer({ channel }: { channel: string }) {
 						</ul>
 					</div>
 
-					{/* Support links (Dinámicas del CMS) */}
-					<div>
-						<h4 className="mb-4 text-sm font-medium text-neutral-300">Soporte</h4>
-						<ul className="space-y-3">
-							{dynamicSupportLinks.map((link) => (
-								<li key={link.href}>
-									<Link
-										href={link.href}
-										prefetch={false}
-										className="text-sm text-neutral-400 transition-colors hover:text-neutral-200"
-									>
-										{link.label}
-									</Link>
-								</li>
-							))}
-						</ul>
-					</div>
-					<div>
-						<h4 className="mb-4 text-sm font-medium text-neutral-300">Empresa</h4>
-						<ul className="space-y-3">
-							{companyLinks.map((link) => (
-								<li key={link.href}>
-									<Link
-										href={link.href}
-										prefetch={false}
-										className="text-sm text-neutral-400 transition-colors hover:text-neutral-200"
-									>
-										{link.label}
-									</Link>
-								</li>
-							))}
-						</ul>
-					</div>
+					{/* Support links (Dinámicas del CMS y controlables) */}
+					{storeIdentity.footerColumns?.showSupportColumn !== false && (
+						<div>
+							<h4 className="mb-4 text-sm font-medium text-neutral-300">
+								{storeIdentity.footerColumns?.supportTitle || "Soporte"}
+							</h4>
+							<ul className="space-y-3">
+								{dynamicSupportLinks.map((link) => (
+									<li key={link.href}>
+										<Link
+											href={link.href}
+											prefetch={false}
+											className="text-sm text-neutral-400 transition-colors hover:text-neutral-200"
+										>
+											{link.label}
+										</Link>
+									</li>
+								))}
+							</ul>
+						</div>
+					)}
+					{storeIdentity.footerColumns?.showCompanyColumn !== false && (
+						<div>
+							<h4 className="mb-4 text-sm font-medium text-neutral-300">
+								{storeIdentity.footerColumns?.companyTitle || "Empresa"}
+							</h4>
+							<ul className="space-y-3">
+								{companyLinks.map((link) => (
+									<li key={link.href}>
+										<Link
+											href={link.href}
+											prefetch={false}
+											className="text-sm text-neutral-400 transition-colors hover:text-neutral-200"
+										>
+											{link.label}
+										</Link>
+									</li>
+								))}
+							</ul>
+						</div>
+					)}
 				</div>
 
 				{/* Bottom bar */}

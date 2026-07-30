@@ -217,6 +217,69 @@ export const StoreIdentity: GlobalConfig = {
 						},
 					],
 				},
+				{
+					label: "Pie de Página (Footer)",
+					description: "Configura la visibilidad y los títulos de las columnas de enlaces en el pie de página.",
+					fields: [
+						{
+							type: "group",
+							name: "footerColumns",
+							label: "Columnas del Footer",
+							fields: [
+								{
+									type: "row",
+									fields: [
+										{
+											name: "showSupportColumn",
+											type: "checkbox",
+											label: "Mostrar columna 'Soporte'",
+											defaultValue: true,
+											admin: {
+												width: "50%",
+												description: "Activa o desactiva toda la columna de enlaces de Soporte en el Footer.",
+											},
+										},
+										{
+											name: "supportTitle",
+											type: "text",
+											label: "Título de la Columna 1",
+											defaultValue: "Soporte",
+											admin: {
+												width: "50%",
+												condition: (_, siblingData) => Boolean(siblingData?.showSupportColumn),
+											},
+										},
+									],
+								},
+								{
+									type: "row",
+									fields: [
+										{
+											name: "showCompanyColumn",
+											type: "checkbox",
+											label: "Mostrar columna 'Empresa'",
+											defaultValue: true,
+											admin: {
+												width: "50%",
+												description: "Activa o desactiva toda la columna de enlaces de Empresa en el Footer.",
+											},
+										},
+										{
+											name: "companyTitle",
+											type: "text",
+											label: "Título de la Columna 2",
+											defaultValue: "Empresa",
+											admin: {
+												width: "50%",
+												condition: (_, siblingData) => Boolean(siblingData?.showCompanyColumn),
+											},
+										},
+									],
+								},
+							],
+						},
+					],
+				},
 			],
 		},
 	],

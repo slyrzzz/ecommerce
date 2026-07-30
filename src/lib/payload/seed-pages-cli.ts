@@ -67,6 +67,7 @@ async function runSeed() {
       title: "Preguntas Frecuentes",
       slug: "faq",
       showInFooter: true,
+      footerColumn: "soporte" as const,
       status: "published" as const,
       sections: [
         {
@@ -87,6 +88,7 @@ async function runSeed() {
       title: "Información de Envíos",
       slug: "envio",
       showInFooter: true,
+      footerColumn: "soporte" as const,
       status: "published" as const,
       sections: [
         {
@@ -103,6 +105,7 @@ async function runSeed() {
       title: "Política de Devoluciones",
       slug: "devoluciones",
       showInFooter: true,
+      footerColumn: "soporte" as const,
       status: "published" as const,
       sections: [
         {
@@ -119,6 +122,7 @@ async function runSeed() {
       title: "Sobre nosotros",
       slug: "sobre-nosotros",
       showInFooter: true,
+      footerColumn: "empresa" as const,
       status: "published" as const,
       sections: [
         {
@@ -135,6 +139,7 @@ async function runSeed() {
       title: "Sostenibilidad",
       slug: "sostenibilidad",
       showInFooter: true,
+      footerColumn: "empresa" as const,
       status: "published" as const,
       sections: [
         {
@@ -146,7 +151,8 @@ async function runSeed() {
     {
       title: "Carreras",
       slug: "carreras",
-      showInFooter: false,
+      showInFooter: true,
+      footerColumn: "empresa" as const,
       status: "published" as const,
       sections: [
         {
@@ -158,7 +164,8 @@ async function runSeed() {
     {
       title: "Prensa",
       slug: "prensa",
-      showInFooter: false,
+      showInFooter: true,
+      footerColumn: "empresa" as const,
       status: "published" as const,
       sections: [
         {
@@ -170,6 +177,7 @@ async function runSeed() {
   ];
 
   let createdCount = 0;
+  let updatedCount = 0;
   for (const p of pageSeeds) {
     try {
       const existing = await payload.find({
@@ -181,7 +189,16 @@ async function runSeed() {
       });
 
       if (existing.docs.length > 0) {
-        console.log(`  ↻ Página ya existente omitida: "${p.title}" (/pages/${p.slug})`);
+        await payload.update({
+          collection: 'pages' as any,
+          id: existing.docs[0].id,
+          data: {
+            showInFooter: p.showInFooter,
+            footerColumn: p.footerColumn,
+          },
+        });
+        updatedCount++;
+        console.log(`  ↻ Página existente actualizada (columna: ${p.footerColumn}): "${p.title}" (/pages/${p.slug})`);
         continue;
       }
 
@@ -191,19 +208,20 @@ async function runSeed() {
           title: p.title,
           slug: p.slug,
           showInFooter: p.showInFooter,
+          footerColumn: p.footerColumn,
           status: p.status,
           content: makeLexicalRichDoc(p.sections),
         },
       });
 
       createdCount++;
-      console.log(`  ✓ Página creada con éxito: "${p.title}" (/pages/${p.slug})`);
+      console.log(`  ✓ Página creada con éxito (columna: ${p.footerColumn}): "${p.title}" (/pages/${p.slug})`);
     } catch (e: any) {
       console.error(`  ✗ Error en página "${p.title}":`, e instanceof Error ? e.message : e);
     }
   }
 
-  console.log(`\n✅ Sembrado finalizado. Se crearon ${createdCount} páginas en MongoDB.`);
+  console.log(`\n✅ Sembrado finalizado. Se crearon ${createdCount} y actualizaron ${updatedCount} páginas en MongoDB.`);
   process.exit(0);
 }
 

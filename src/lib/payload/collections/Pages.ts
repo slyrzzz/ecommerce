@@ -54,17 +54,32 @@ export const Pages: CollectionConfig = {
           ],
           label: 'Estado',
           admin: {
-            width: '50%',
+            width: '33%',
           },
         },
         {
           name: 'showInFooter',
           type: 'checkbox',
           defaultValue: true,
-          label: 'Mostrar enlace en el Footer de la tienda',
+          label: 'Mostrar en el Footer',
           admin: {
-            width: '50%',
-            description: 'Si está activo, aparecerá un enlace a esta página en el pie de página.',
+            width: '33%',
+            description: 'Si está activo, aparecerá en el pie de página.',
+          },
+        },
+        {
+          name: 'footerColumn',
+          type: 'select',
+          defaultValue: 'soporte',
+          options: [
+            { label: 'Columna: Soporte', value: 'soporte' },
+            { label: 'Columna: Empresa', value: 'empresa' },
+          ],
+          label: 'Columna en el Footer',
+          admin: {
+            width: '34%',
+            description: 'Elige en qué columna aparecerá el enlace.',
+            condition: (_, siblingData) => Boolean(siblingData?.showInFooter),
           },
         },
       ],

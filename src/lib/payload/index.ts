@@ -151,7 +151,7 @@ export async function getPageBySlug(slug: string): Promise<{ title: string; slug
   return null;
 }
 
-export async function getFooterPages(): Promise<Array<{ title: string; slug: string }>> {
+export async function getFooterPages(): Promise<Array<{ title: string; slug: string; footerColumn?: 'soporte' | 'empresa' }>> {
   try {
     const payload = await getPayload({ config: configPromise });
     const pages = await payload.find({
@@ -165,6 +165,7 @@ export async function getFooterPages(): Promise<Array<{ title: string; slug: str
     return pages.docs.map((doc: any) => ({
       title: doc.title,
       slug: doc.slug,
+      footerColumn: doc.footerColumn || 'soporte',
     }));
   } catch (error) {
     console.error("Error fetching footer pages:", error);
@@ -363,6 +364,12 @@ export async function getStoreIdentity() {
         ctaLink: doc?.hero?.ctaLink || "/products",
         backgroundImageUrl: doc?.hero?.backgroundImage && typeof doc?.hero?.backgroundImage === "object" ? doc.hero.backgroundImage.url : null,
       },
+      footerColumns: {
+        showSupportColumn: doc?.footerColumns?.showSupportColumn !== false,
+        supportTitle: doc?.footerColumns?.supportTitle || "Soporte",
+        showCompanyColumn: doc?.footerColumns?.showCompanyColumn !== false,
+        companyTitle: doc?.footerColumns?.companyTitle || "Empresa",
+      },
     };
   } catch (error) {
     console.error("Failed to fetch store-identity:", error);
@@ -388,6 +395,12 @@ export async function getStoreIdentity() {
         ctaText: "Explorar Catálogo",
         ctaLink: "/products",
         backgroundImageUrl: null,
+      },
+      footerColumns: {
+        showSupportColumn: true,
+        supportTitle: "Soporte",
+        showCompanyColumn: true,
+        companyTitle: "Empresa",
       },
     };
   }
