@@ -120,19 +120,57 @@
 	background: rgba(148, 163, 184, 0.1) !important;
 }
 
+/* ── ELIMINAR CUALQUIER BLUR O DESENFOQUE DEL HEADER EN LAS PANTALLAS DE EDICIÓN ── */
+.doc-header,
+.doc-header__wrapper,
+.collection-edit__header,
+.global-edit__header,
+header[class*="doc-header"],
+header[class*="edit__header"],
+.doc-header * {
+	backdrop-filter: none !important;
+	-webkit-backdrop-filter: none !important;
+	background: transparent !important;
+}
+
+/* Evitar que el header cubra los campos y bloquee clics al reordenar doc-controls */
+.doc-header,
+header[class*="doc-header"],
+.collection-edit__header,
+.global-edit__header,
+header[class*="edit__header"] {
+	height: auto !important;
+	min-height: 0 !important;
+	pointer-events: none !important;
+}
+
+.doc-header *,
+header[class*="doc-header"] * {
+	pointer-events: auto !important;
+}
+
 /* ── Mover la barra de Guardar / Publicar al final de las opciones del formulario ── */
 .collection-edit__form,
 .global-edit__form,
 form[class*="edit__form"] {
 	display: flex !important;
 	flex-direction: column !important;
+	position: relative !important;
+	z-index: 1 !important;
 }
 
-/* El contenido (pestañas y campos) se ubica arriba */
+/* El contenido (pestañas y campos) se ubica arriba y siempre nítido */
 .collection-edit__main-wrapper,
 .global-edit__main-wrapper,
 div[class*="edit__main-wrapper"] {
 	order: 1 !important;
+	position: relative !important;
+	z-index: 5 !important;
+	filter: none !important;
+	backdrop-filter: none !important;
+	-webkit-backdrop-filter: none !important;
+	opacity: 1 !important;
+	pointer-events: auto !important;
 }
 
 /* La barra de controles de documento se ubica abajo, justo cuando terminan las opciones */
@@ -146,6 +184,8 @@ div[class*="edit__main-wrapper"] {
 	border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
 	background: transparent !important;
 	box-shadow: none !important;
+	z-index: 10 !important;
+	pointer-events: auto !important;
 }
 
 /* Alinear el botón de Guardar a la derecha de manera limpia */
@@ -154,6 +194,7 @@ div[class*="edit__main-wrapper"] {
 	justify-content: flex-end !important;
 	align-items: center !important;
 	width: 100% !important;
+	pointer-events: auto !important;
 }
 
 /* ── Tarjetas / Botones Flotantes del Dashboard Principal (/admin home) ── */

@@ -20,7 +20,8 @@ export const AdminHeaderIcon: React.FC = () => {
 				const res = await fetch("/api/globals/store-identity", { cache: "no-store" });
 				if (!res.ok) return;
 				const doc = await res.json();
-				const customUrl = doc?.logo?.url || doc?.logoInverted?.url || doc?.favicon?.url;
+				// Mostrar en el breadcrumb ÚNICAMENTE el favicon. Si no hay favicon, mostrar por defecto el icono de Payload.
+				const customUrl = doc?.favicon?.url;
 				if (customUrl) {
 					setIconUrl(customUrl);
 				}
@@ -36,30 +37,29 @@ export const AdminHeaderIcon: React.FC = () => {
 			{iconUrl ? (
 				<img
 					src={iconUrl}
-					alt="Logotipo Tienda"
+					alt="Favicon Tienda"
 					style={{
-						height: "32px",
-						width: "auto",
-						maxWidth: "160px",
+						height: "26px",
+						width: "26px",
 						objectFit: "contain",
 						display: "block",
+						borderRadius: "4px",
 					}}
 				/>
 			) : (
 				<svg
 					width="26"
 					height="26"
-					viewBox="0 0 24 24"
+					viewBox="0 0 25 25"
 					fill="none"
-					stroke="currentColor"
-					strokeWidth="2"
-					strokeLinecap="round"
-					strokeLinejoin="round"
-					style={{ color: "#3b82f6", shrink: 0 }}
+					xmlns="http://www.w3.org/2000/svg"
+					style={{ shrink: 0, display: "block" }}
 				>
-					<path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
-					<path d="M3 6h18" />
-					<path d="M16 10a4 4 0 0 1-8 0" />
+					<path
+						d="M12.5 0C5.59644 0 0 5.59644 0 12.5C0 19.4036 5.59644 25 12.5 25C19.4036 25 25 19.4036 25 12.5C25 5.59644 19.4036 0 12.5 0ZM17.1875 18.75H13.4375L7.8125 7.5H11.5625L17.1875 18.75Z"
+						fill="#ffffff"
+						fillOpacity="0.85"
+					/>
 				</svg>
 			)}
 			{!isAuthPage && (
