@@ -88,6 +88,54 @@ export const Products: CollectionConfig = {
               ],
             },
             {
+              type: 'row',
+              fields: [
+                {
+                  name: 'brand',
+                  type: 'text',
+                  label: 'Marca del Producto',
+                  admin: {
+                    width: '50%',
+                    description: 'Ejemplo: Apple, Audi, Nike, Sony...',
+                  },
+                },
+                {
+                  name: 'showBrandInCard',
+                  type: 'checkbox',
+                  label: 'Mostrar en tarjetas de catálogo',
+                  defaultValue: true,
+                  admin: {
+                    width: '25%',
+                    description: 'Visible junto a la categoría.',
+                  },
+                },
+                {
+                  name: 'showBrandInPDP',
+                  type: 'checkbox',
+                  label: 'Mostrar en página del producto (PDP)',
+                  defaultValue: true,
+                  admin: {
+                    width: '25%',
+                    description: 'Visible sobre el título del producto.',
+                  },
+                },
+              ],
+            },
+            {
+              type: 'row',
+              fields: [
+                {
+                  name: 'model',
+                  type: 'text',
+                  label: 'Modelo / Referencia',
+                  admin: {
+                    width: '50%',
+                    description: 'Ejemplo: WH-1000XM5, POLO-WHT-01, A3294...',
+                  },
+                },
+              ],
+            },
+            {
               name: 'description',
               type: 'richText',
               required: true,

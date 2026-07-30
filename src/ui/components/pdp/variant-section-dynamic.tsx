@@ -143,15 +143,21 @@ export async function VariantSectionDynamic({ product, channel, searchParams }: 
 
 	return (
 		<>
-			<div className="order-1 flex items-center gap-2">
+			<div className="order-1 flex items-center gap-1.5">
+				{(product as any).brand && (product as any).showBrandInPDP && (
+					<>
+						<span className="text-sm font-semibold text-neutral-800">{(product as any).brand}</span>
+						{product.category && <span className="text-neutral-300">•</span>}
+					</>
+				)}
 				{product.category && <span className="text-sm text-muted-foreground">{product.category.name}</span>}
 				{isOnSale && (
-					<Badge variant="destructive" className="text-xs">
+					<Badge variant="destructive" className="ml-1 text-xs">
 						Oferta
 					</Badge>
 				)}
 				{!isAvailable && (
-					<Badge variant="secondary" className="text-xs">
+					<Badge variant="secondary" className="ml-1 text-xs">
 						Agotado
 					</Badge>
 				)}

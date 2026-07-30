@@ -271,10 +271,24 @@ function mapPayloadProductToCommerce(doc: any): NonNullable<ProductDetailsQuery[
         }))
     : [];
 
+  const brandAttribute = doc.brand ? [{
+    attribute: { name: 'Marca', slug: 'marca', icon: 'none' },
+    values: [{ name: String(doc.brand).trim() }],
+  }] : [];
+
+  const modelAttribute = doc.model ? [{
+    attribute: { name: 'Modelo', slug: 'modelo', icon: 'none' },
+    values: [{ name: String(doc.model).trim() }],
+  }] : [];
+
   return {
     id: doc.id,
     slug: doc.slug,
     name: doc.title,
+    brand: doc.brand ? String(doc.brand).trim() : null,
+    model: doc.model ? String(doc.model).trim() : null,
+    showBrandInCard: doc.showBrandInCard !== false,
+    showBrandInPDP: doc.showBrandInPDP !== false,
     description: descriptionJson,
     seoTitle: doc.title,
     seoDescription: doc.description ? (typeof doc.description === 'string' ? doc.description : htmlContent.replace(/<[^>]*>/g, '').slice(0, 150)) : doc.title,
@@ -295,6 +309,8 @@ function mapPayloadProductToCommerce(doc: any): NonNullable<ProductDetailsQuery[
       }
     },
     attributes: [
+      ...brandAttribute,
+      ...modelAttribute,
       ...specificationAttributes,
       {
         attribute: { name: 'Color', slug: 'color' },
@@ -319,8 +335,14 @@ function mapPayloadProductToCommerce(doc: any): NonNullable<ProductDetailsQuery[
             values: [{ name: 'Default' }]
           }
         ],
-        nonSelectionAttributes: specificationAttributes,
+        nonSelectionAttributes: [
+          ...brandAttribute,
+          ...modelAttribute,
+          ...specificationAttributes,
+        ],
         attributes: [
+          ...brandAttribute,
+          ...modelAttribute,
           ...specificationAttributes,
           {
             attribute: { name: 'Color', slug: 'color' },

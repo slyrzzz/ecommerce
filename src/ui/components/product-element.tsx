@@ -41,8 +41,14 @@ export function ProductElement({
 					<div className="mt-2 flex justify-between">
 						<div>
 							<h3 className="mt-1 text-sm font-semibold text-neutral-900">{product.name}</h3>
-							<p className="mt-1 text-sm text-neutral-500" data-testid="ProductElement_Category">
-								{product.category?.name}
+							<p className="mt-1 flex items-center gap-1.5 text-sm text-neutral-500" data-testid="ProductElement_Category">
+								{(product as any).brand && (product as any).showBrandInCard && (
+									<>
+										<span className="font-medium text-neutral-700">{(product as any).brand}</span>
+										{product.category?.name && <span className="text-neutral-300">•</span>}
+									</>
+								)}
+								{product.category?.name && <span>{product.category?.name}</span>}
 							</p>
 						</div>
 						<div className="mt-1 flex flex-col items-end" data-testid="ProductElement_PriceRange">

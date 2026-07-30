@@ -137,7 +137,8 @@ async function ProductContent({
 		name: product.name,
 		description: product.seoDescription || product.name,
 		images: images.length > 0 ? images.map((img) => img.url) : undefined,
-		brand: product.category?.name,
+		brand: (product as any).brand || product.category?.name,
+		sku: (product as any).model || null,
 		url: `/${params.channel}/products/${product.slug}`,
 		priceRange: product.pricing?.priceRange?.start?.gross
 			? {
@@ -178,6 +179,11 @@ async function ProductContent({
 						<h1 className="order-2 text-balance text-3xl font-semibold tracking-tight lg:text-4xl">
 							{product.name}
 						</h1>
+						{(product as any).model && (
+							<p className="order-2 -mt-1 text-sm font-medium text-neutral-500">
+								Modelo: <span className="text-neutral-700">{(product as any).model}</span>
+							</p>
+						)}
 
 						<ErrorBoundary FallbackComponent={VariantSectionError}>
 							<Suspense fallback={<VariantSectionSkeleton />}>
