@@ -20,6 +20,10 @@ export type ProductListItemFragment = {
       start?: { gross: { amount: number; currency: string } } | null;
       stop?: { gross: { amount: number; currency: string } } | null;
     } | null;
+    priceRangeUndiscounted?: {
+      start?: { gross: { amount: number; currency: string } } | null;
+      stop?: { gross: { amount: number; currency: string } } | null;
+    } | null;
   } | null;
 };
 
@@ -39,6 +43,10 @@ export type ProductDetailsQuery = {
         start?: { gross: { amount: number; currency: string } } | null;
         stop?: { gross: { amount: number; currency: string } } | null;
       } | null;
+      priceRangeUndiscounted?: {
+        start?: { gross: { amount: number; currency: string } } | null;
+        stop?: { gross: { amount: number; currency: string } } | null;
+      } | null;
     } | null;
     attributes?: Array<{
       attribute: { slug?: string | null; name?: string | null; icon?: string | null };
@@ -51,6 +59,7 @@ export type ProductDetailsQuery = {
       media?: Array<{ url: string; alt?: string | null; type: string }> | null;
       pricing?: {
         price?: { gross: { amount: number; currency: string } } | null;
+        priceUndiscounted?: { gross: { amount: number; currency: string } } | null;
       } | null;
       attributes?: Array<{
         attribute: { slug?: string | null; name?: string | null; icon?: string | null };

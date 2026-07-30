@@ -65,7 +65,15 @@ export const AdminSidebarHeader: React.FC = () => {
 		>
 			{/* 1. Logotipo de la Tienda (Si el usuario cargó una imagen de logo) */}
 			{logoUrl && (
-				<div style={{ display: "flex", alignItems: "center", justifyContent: "flex-start", padding: "0 2px" }}>
+				<div
+					style={{
+						display: "flex",
+						alignItems: "center",
+						justifyContent: "center",
+						width: "100%",
+						padding: "4px 0",
+					}}
+				>
 					<img
 						src={logoUrl}
 						alt="Logotipo Tienda"

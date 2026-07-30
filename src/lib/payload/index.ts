@@ -169,6 +169,7 @@ function mapPayloadProductToCommerce(doc: any): NonNullable<ProductDetailsQuery[
   })) : [];
 
   const priceNum = doc.price || 0;
+  const compareAtPriceNum = typeof doc.compareAtPrice === 'number' && doc.compareAtPrice > priceNum ? doc.compareAtPrice : null;
 
   // Convert Lexical description to HTML and mock EditorJS structure
   const htmlContent = doc.description ? lexicalToHtml(doc.description) : "";
@@ -212,6 +213,13 @@ function mapPayloadProductToCommerce(doc: any): NonNullable<ProductDetailsQuery[
       priceRange: {
         start: { gross: { amount: priceNum, currency: 'USD' } },
         stop: { gross: { amount: priceNum, currency: 'USD' } }
+      },
+      priceRangeUndiscounted: compareAtPriceNum ? {
+        start: { gross: { amount: compareAtPriceNum, currency: 'USD' } },
+        stop: { gross: { amount: compareAtPriceNum, currency: 'USD' } }
+      } : {
+        start: { gross: { amount: priceNum, currency: 'USD' } },
+        stop: { gross: { amount: priceNum, currency: 'USD' } }
       }
     },
     attributes: [
@@ -228,7 +236,10 @@ function mapPayloadProductToCommerce(doc: any): NonNullable<ProductDetailsQuery[
         quantityAvailable: 100,
         media: images,
         pricing: {
-          price: { gross: { amount: priceNum, currency: 'USD' } }
+          price: { gross: { amount: priceNum, currency: 'USD' } },
+          priceUndiscounted: compareAtPriceNum ? {
+            gross: { amount: compareAtPriceNum, currency: 'USD' }
+          } : undefined
         },
         selectionAttributes: [
           {
