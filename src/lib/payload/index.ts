@@ -337,10 +337,10 @@ export async function getStoreIdentity() {
     const payload = await getPayload({ config: configPromise });
     const doc = await payload.findGlobal({ slug: "store-identity", depth: 1 }) as any;
     return {
-      siteName: doc?.siteName || "Saleor Store",
-      tagline: doc?.tagline || "Premium products with exceptional quality. Discover our curated collection.",
-      description: doc?.description || "Starter pack for building performant e-commerce experiences with Saleor.",
-      copyrightHolder: doc?.copyrightHolder || "Saleor Demo Store",
+      siteName: doc?.siteName ?? "Saleor Store",
+      tagline: doc?.tagline ?? "",
+      description: doc?.description ?? "",
+      copyrightHolder: doc?.copyrightHolder ?? "Saleor Demo Store",
       logoUrl: doc?.logo && typeof doc.logo === "object" ? doc.logo.url : null,
       logoInvertedUrl: doc?.logoInverted && typeof doc.logoInverted === "object" ? doc.logoInverted.url : null,
       faviconUrl: (() => {
@@ -351,24 +351,24 @@ export async function getStoreIdentity() {
       })(),
       announcement: {
         enabled: doc?.announcement?.enabled !== false,
-        text: doc?.announcement?.text || "Envío gratis en compras mayores a $100 USD • Calidad Premium Garantizada",
-        linkUrl: doc?.announcement?.linkUrl || "/products",
-        linkLabel: doc?.announcement?.linkLabel || "Ver más",
+        text: doc?.announcement?.text ?? "",
+        linkUrl: doc?.announcement?.linkUrl ?? "/products",
+        linkLabel: doc?.announcement?.linkLabel ?? "",
       },
       hero: {
         enabled: doc?.hero?.enabled !== false,
-        badge: doc?.hero?.badge || "COLECCIÓN DESTACADA",
-        title: doc?.hero?.title || "Calidad y Elegancia en Cada Detalle",
-        description: doc?.hero?.description || "Descubre nuestra selección curada de productos diseñados para ofrecerte el mejor rendimiento y estilo.",
-        ctaText: doc?.hero?.ctaText || "Explorar Catálogo",
-        ctaLink: doc?.hero?.ctaLink || "/products",
+        badge: doc?.hero?.badge ?? "",
+        title: doc?.hero?.title ?? "",
+        description: doc?.hero?.description ?? "",
+        ctaText: doc?.hero?.ctaText ?? "",
+        ctaLink: doc?.hero?.ctaLink ?? "/products",
         backgroundImageUrl: doc?.hero?.backgroundImage && typeof doc?.hero?.backgroundImage === "object" ? doc.hero.backgroundImage.url : null,
       },
       footerColumns: {
         showSupportColumn: doc?.footerColumns?.showSupportColumn !== false,
-        supportTitle: doc?.footerColumns?.supportTitle || "Soporte",
+        supportTitle: doc?.footerColumns?.supportTitle ?? "Soporte",
         showCompanyColumn: doc?.footerColumns?.showCompanyColumn !== false,
-        companyTitle: doc?.footerColumns?.companyTitle || "Empresa",
+        companyTitle: doc?.footerColumns?.companyTitle ?? "Empresa",
       },
     };
   } catch (error) {
@@ -413,23 +413,23 @@ export async function getStoreContact() {
     return {
       whatsapp: {
         enabled: doc?.enabled !== false,
-        businessPhone: doc?.businessPhone || "584120000000",
-        defaultMessagePrefix: doc?.defaultMessagePrefix || "¡Hola! Quiero completar mi pedido",
+        businessPhone: doc?.businessPhone ?? "",
+        defaultMessagePrefix: doc?.defaultMessagePrefix ?? "",
       },
       contactInfo: {
-        supportEmail: doc?.supportEmail || "soporte@tienda.com",
-        supportPhone: doc?.supportPhone || "+1 (555) 123-4567",
-        address: doc?.address || "123 Commerce St, Suite 100",
-        cityCountry: doc?.cityCountry || "Ciudad de México, México",
-        hours: doc?.hours || "Lunes - Viernes: 9am - 6pm",
+        supportEmail: doc?.supportEmail ?? "",
+        supportPhone: doc?.supportPhone ?? "",
+        address: doc?.address ?? "",
+        cityCountry: doc?.cityCountry ?? "",
+        hours: doc?.hours ?? "",
       },
       socialLinks: {
         showSocialLinks: doc?.showSocialLinks !== false,
-        instagram: doc?.instagram || null,
-        facebook: doc?.facebook || null,
-        twitter: doc?.twitter || null,
-        tiktok: doc?.tiktok || null,
-        whatsappSupport: doc?.whatsappSupport || null,
+        instagram: doc?.instagram ?? null,
+        facebook: doc?.facebook ?? null,
+        twitter: doc?.twitter ?? null,
+        tiktok: doc?.tiktok ?? null,
+        whatsappSupport: doc?.whatsappSupport ?? null,
       },
     };
   } catch (error) {

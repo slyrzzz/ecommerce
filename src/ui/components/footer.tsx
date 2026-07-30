@@ -142,52 +142,57 @@ export async function Footer({ channel }: { channel: string }) {
 					</div>
 
 					{/* Contacto y Horarios (StoreContact) */}
-					<div>
-						<h4 className="mb-4 text-sm font-medium text-neutral-300">Contacto</h4>
-						<ul className="space-y-3 text-sm text-neutral-400">
-							{storeContact.contactInfo.address && (
-								<li className="flex items-start gap-2.5">
-									<MapPin className="mt-0.5 h-4 w-4 shrink-0 text-neutral-500" />
-									<span>
-										{storeContact.contactInfo.address}
-										{storeContact.contactInfo.cityCountry && (
-											<span className="block text-xs text-neutral-500">
-												{storeContact.contactInfo.cityCountry}
-											</span>
-										)}
-									</span>
-								</li>
-							)}
-							{storeContact.contactInfo.supportPhone && (
-								<li className="flex items-center gap-2.5">
-									<Phone className="h-4 w-4 shrink-0 text-neutral-500" />
-									<a
-										href={`tel:${storeContact.contactInfo.supportPhone.replace(/[^\d+]/g, "")}`}
-										className="transition-colors hover:text-neutral-200"
-									>
-										{storeContact.contactInfo.supportPhone}
-									</a>
-								</li>
-							)}
-							{storeContact.contactInfo.supportEmail && (
-								<li className="flex items-center gap-2.5">
-									<Mail className="h-4 w-4 shrink-0 text-neutral-500" />
-									<a
-										href={`mailto:${storeContact.contactInfo.supportEmail}`}
-										className="transition-colors hover:text-neutral-200"
-									>
-										{storeContact.contactInfo.supportEmail}
-									</a>
-								</li>
-							)}
-							{storeContact.contactInfo.hours && (
-								<li className="flex items-start gap-2.5">
-									<Clock className="mt-0.5 h-4 w-4 shrink-0 text-neutral-500" />
-									<span>{storeContact.contactInfo.hours}</span>
-								</li>
-							)}
-						</ul>
-					</div>
+					{(storeContact.contactInfo.address ||
+						storeContact.contactInfo.supportPhone ||
+						storeContact.contactInfo.supportEmail ||
+						storeContact.contactInfo.hours) ? (
+						<div>
+							<h4 className="mb-4 text-sm font-medium text-neutral-300">Contacto</h4>
+							<ul className="space-y-3 text-sm text-neutral-400">
+								{storeContact.contactInfo.address && (
+									<li className="flex items-start gap-2.5">
+										<MapPin className="mt-0.5 h-4 w-4 shrink-0 text-neutral-500" />
+										<span>
+											{storeContact.contactInfo.address}
+											{storeContact.contactInfo.cityCountry && (
+												<span className="block text-xs text-neutral-500">
+													{storeContact.contactInfo.cityCountry}
+												</span>
+											)}
+										</span>
+									</li>
+								)}
+								{storeContact.contactInfo.supportPhone && (
+									<li className="flex items-center gap-2.5">
+										<Phone className="h-4 w-4 shrink-0 text-neutral-500" />
+										<a
+											href={`tel:${storeContact.contactInfo.supportPhone.replace(/[^\d+]/g, "")}`}
+											className="transition-colors hover:text-neutral-200"
+										>
+											{storeContact.contactInfo.supportPhone}
+										</a>
+									</li>
+								)}
+								{storeContact.contactInfo.supportEmail && (
+									<li className="flex items-center gap-2.5">
+										<Mail className="h-4 w-4 shrink-0 text-neutral-500" />
+										<a
+											href={`mailto:${storeContact.contactInfo.supportEmail}`}
+											className="transition-colors hover:text-neutral-200"
+										>
+											{storeContact.contactInfo.supportEmail}
+										</a>
+									</li>
+								)}
+								{storeContact.contactInfo.hours && (
+									<li className="flex items-start gap-2.5">
+										<Clock className="mt-0.5 h-4 w-4 shrink-0 text-neutral-500" />
+										<span>{storeContact.contactInfo.hours}</span>
+									</li>
+								)}
+							</ul>
+						</div>
+					) : null}
 
 					{/* Support links (Dinámicas del CMS y controlables) */}
 					{storeIdentity.footerColumns?.showSupportColumn !== false && (
