@@ -1,3 +1,4 @@
+
 import { buildConfig } from 'payload';
 import { mongooseAdapter } from '@payloadcms/db-mongodb';
 import { lexicalEditor } from '@payloadcms/richtext-lexical';
@@ -12,6 +13,7 @@ import { Categories } from './src/lib/payload/collections/Categories';
 import { Products } from './src/lib/payload/collections/Products';
 import { Carts } from './src/lib/payload/collections/Carts';
 import { Orders } from './src/lib/payload/collections/Orders';
+import { Pages } from './src/lib/payload/collections/Pages';
 import { StoreManagement } from './src/lib/payload/globals/StoreManagement';
 import { StoreIdentity } from './src/lib/payload/globals/StoreIdentity';
 import { StoreContact } from './src/lib/payload/globals/StoreContact';
@@ -47,6 +49,7 @@ export default buildConfig({
     Products,
     Carts,
     Orders,
+    Pages,
   ],
   globals: [
     StoreManagement,

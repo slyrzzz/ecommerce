@@ -101,8 +101,79 @@ export async function getAllCategorySlugs(): Promise<string[]> {
   }
 }
 
+export async function getPageBySlug(slug: string): Promise<{ title: string; slug: string; htmlContent: string } | null> {
+  try {
+    const payload = await getPayload({ config: configPromise });
+    const pages = await payload.find({
+      collection: 'pages' as any,
+      where: {
+        slug: { equals: slug },
+        status: { equals: 'published' }
+      },
+      limit: 1,
+    });
+    if (pages.docs.length > 0) {
+      const doc = pages.docs[0] as any;
+      return {
+        title: doc.title || slug,
+        slug: doc.slug || slug,
+        htmlContent: doc.content ? lexicalToHtml(doc.content) : '',
+      };
+    }
+  } catch (error) {
+    console.error("Error fetching page by slug:", error);
+  }
+
+  // Fallbacks predeterminados por si la página aún no se ha creado en el CMS
+  const normalized = slug.toLowerCase();
+  if (normalized === 'faq' || normalized === 'preguntas-frecuentes') {
+    return {
+      title: "Preguntas Frecuentes",
+      slug,
+      htmlContent: `<h2>¿Cuánto tardan los envíos?</h2><p>Los pedidos normalmente se procesan entre 24 y 48 horas hábiles. El tiempo de envío varía entre 2 a 5 días dependiendo de su localidad.</p><h2>¿Cuáles son los métodos de pago aceptados?</h2><p>Aceptamos tarjetas de crédito, débito y transferencias bancarias de las principales entidades bancarias.</p><h2>¿Puedo modificar o cancelar mi pedido?</h2><p>Puede solicitar modificaciones o cancelaciones en las primeras 12 horas tras realizar el pedido poniéndose en contacto con nuestro equipo de soporte.</p>`
+    };
+  }
+  if (normalized === 'envio' || normalized === 'shipping') {
+    return {
+      title: "Información de Envíos",
+      slug,
+      htmlContent: `<h2>Tiempos de entrega y procesamiento</h2><p>Nuestro compromiso es entregar sus pedidos en el menor tiempo posible. Trabajamos con paqueterías de confianza con número de seguimiento para todos los envíos nacionales.</p><h2>Tarifas de envío</h2><p>El costo de envío se calcula de manera automática al momento del checkout y dependerá del destino y peso de los productos seleccionados.</p>`
+    };
+  }
+  if (normalized === 'devoluciones' || normalized === 'returns') {
+    return {
+      title: "Política de Devoluciones",
+      slug,
+      htmlContent: `<h2>Plazo para devoluciones</h2><p>Dispone de un plazo de 30 días corridos a partir de la recepción del producto para solicitar una devolución o cambio.</p><h2>Condiciones</h2><p>Los artículos deben encontrarse en su estado original, sin uso y en su embalaje original.</p>`
+    };
+  }
+
+  return null;
+}
+
+export async function getFooterPages(): Promise<Array<{ title: string; slug: string }>> {
+  try {
+    const payload = await getPayload({ config: configPromise });
+    const pages = await payload.find({
+      collection: 'pages' as any,
+      where: {
+        status: { equals: 'published' },
+        showInFooter: { equals: true }
+      },
+      limit: 20,
+    });
+    return pages.docs.map((doc: any) => ({
+      title: doc.title,
+      slug: doc.slug,
+    }));
+  } catch (error) {
+    console.error("Error fetching footer pages:", error);
+    return [];
+  }
+}
+
 // --- MAPPERS ---
-function lexicalToHtml(node: any): string {
+export function lexicalToHtml(node: any): string {
   if (!node) return "";
   
   if (typeof node === 'string') return node;

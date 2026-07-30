@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { CopyrightText } from "./copyright-text";
 import { Logo } from "./shared/logo";
-import { getStoreIdentity, getStoreContact } from "@/lib/payload";
+import { getStoreIdentity, getStoreContact, getFooterPages } from "@/lib/payload";
 import {
 	Instagram,
 	Facebook,
@@ -15,24 +15,35 @@ import {
 import { FooterLocaleSwitcher } from "./footer-locale-switcher";
 
 // Default footer links
-const defaultFooterLinks = {
-	support: [
-		{ label: "Contacto", href: "/contact" },
-		{ label: "Preguntas Frecuentes", href: "/faq" },
-		{ label: "Envío", href: "/shipping" },
-		{ label: "Devoluciones", href: "/returns" },
-	],
-	company: [
-		{ label: "Sobre nosotros", href: "/about" },
-		{ label: "Sostenibilidad", href: "/sustainability" },
-		{ label: "Carreras", href: "/careers" },
-		{ label: "Prensa", href: "/press" },
-	],
-};
+const getDefaultCompanyLinks = (channel: string) => [
+	{ label: "Sobre nosotros", href: `/${channel}/pages/sobre-nosotros` },
+	{ label: "Sostenibilidad", href: `/${channel}/pages/sostenibilidad` },
+	{ label: "Carreras", href: `/${channel}/pages/carreras` },
+	{ label: "Prensa", href: `/${channel}/pages/prensa` },
+];
 
 export async function Footer({ channel }: { channel: string }) {
 	const storeIdentity = await getStoreIdentity();
 	const storeContact = await getStoreContact();
+	const footerPages = await getFooterPages();
+
+	const dynamicSupportLinks =
+		footerPages.length > 0
+			? [
+					{ label: "Contacto", href: `/${channel}/contact` },
+					...footerPages.map((page) => ({
+						label: page.title,
+						href: `/${channel}/pages/${page.slug}`,
+					})),
+			  ]
+			: [
+					{ label: "Contacto", href: `/${channel}/contact` },
+					{ label: "Preguntas Frecuentes", href: `/${channel}/pages/faq` },
+					{ label: "Envío", href: `/${channel}/pages/envio` },
+					{ label: "Devoluciones", href: `/${channel}/pages/devoluciones` },
+			  ];
+
+	const companyLinks = getDefaultCompanyLinks(channel);
 
 	return (
 		<footer className="bg-foreground text-background">
@@ -165,11 +176,11 @@ export async function Footer({ channel }: { channel: string }) {
 						</ul>
 					</div>
 
-					{/* Static Support links */}
+					{/* Support links (Dinámicas del CMS) */}
 					<div>
 						<h4 className="mb-4 text-sm font-medium text-neutral-300">Soporte</h4>
 						<ul className="space-y-3">
-							{defaultFooterLinks.support.map((link) => (
+							{dynamicSupportLinks.map((link) => (
 								<li key={link.href}>
 									<Link
 										href={link.href}
@@ -185,7 +196,7 @@ export async function Footer({ channel }: { channel: string }) {
 					<div>
 						<h4 className="mb-4 text-sm font-medium text-neutral-300">Empresa</h4>
 						<ul className="space-y-3">
-							{defaultFooterLinks.company.map((link) => (
+							{companyLinks.map((link) => (
 								<li key={link.href}>
 									<Link
 										href={link.href}
