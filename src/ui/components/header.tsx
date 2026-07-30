@@ -39,6 +39,7 @@ export async function Header({ channel }: { channel: string }) {
 						logoUrl={storeIdentity.logoUrl}
 						logoInvertedUrl={storeIdentity.logoInvertedUrl}
 						siteName={storeIdentity.siteName}
+						size={storeIdentity.logoSizeHeader}
 					/>
 
 					{/* Search bar - Suspense for server action */}

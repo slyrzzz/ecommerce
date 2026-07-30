@@ -67,7 +67,7 @@ export async function Footer({ channel }: { channel: string }) {
 					<div className="col-span-2 md:col-span-1">
 						<Link href={`/${channel}`} prefetch={false} className="mb-4 inline-block">
 							<Logo
-								className="h-7 w-auto"
+								size={storeIdentity.logoSizeFooter}
 								inverted
 								logoUrl={storeIdentity.logoUrl}
 								logoInvertedUrl={storeIdentity.logoInvertedUrl}

@@ -13,19 +13,32 @@ export async function HeroBanner() {
 
 	const hasBgImage = Boolean(hero.backgroundImageUrl);
 
+	const OPACITY_CLASSES: Record<string, string> = {
+		"0": "opacity-0",
+		"20": "opacity-20",
+		"40": "opacity-40",
+		"50": "opacity-50",
+		"60": "opacity-60",
+		"80": "opacity-80",
+	};
+	const overlayClass = OPACITY_CLASSES[hero.overlayOpacity || "50"] || "opacity-50";
+
 	return (
 		<div className="relative mb-12 overflow-hidden rounded-2xl border border-border bg-black text-white shadow-xl">
-			{/* Imagen de fondo con mayor opacidad para apreciar la foto correctamente */}
+			{/* Imagen de fondo */}
 			{hasBgImage && (
 				<div
-					className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-85 transition-transform duration-700 hover:scale-105"
+					className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-700 hover:scale-105"
 					style={{ backgroundImage: `url(${hero.backgroundImageUrl})` }}
 					aria-hidden="true"
 				/>
 			)}
 
-			{/* Gradiente lateral suave (a la izquierda) para legibilidad del texto sin tapar la foto a la derecha */}
-			<div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/40 to-transparent" />
+			{/* Capa de oscuridad personalizable (Overlay Opacity) controlada desde Payload CMS */}
+			<div className={`absolute inset-0 bg-black ${overlayClass} transition-opacity duration-300`} />
+
+			{/* Gradiente lateral suave para legibilidad del texto sin tapar la foto a la derecha */}
+			<div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/25 to-transparent" />
 
 			{/* Contenedor alineado a la izquierda (mr-auto) y más compacto para dejar lucir la foto */}
 			<div className="relative z-10 mr-auto max-w-2xl px-6 py-12 sm:px-10 sm:py-16 lg:py-20">

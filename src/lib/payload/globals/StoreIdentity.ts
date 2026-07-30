@@ -89,6 +89,36 @@ export const StoreIdentity: GlobalConfig = {
 								description: "Icono cuadrado para la pestaña del navegador en formato PNG, ICO o SVG. Tamaño recomendado: 32x32 px o 64x64 px.",
 							},
 						},
+						{
+							name: "logoSizeHeader",
+							type: "select",
+							label: "Tamaño del Logotipo en Cabecera (Header)",
+							defaultValue: "normal",
+							options: [
+								{ label: "Pequeño (Discreto - altura compacta)", value: "pequeno" },
+								{ label: "Normal (Estándar recomendado)", value: "normal" },
+								{ label: "Mediano (Mayor presencia visual)", value: "mediano" },
+								{ label: "Grande (Prominente sin romper responsividad)", value: "grande" },
+							],
+							admin: {
+								description: "Elige el tamaño visual del logo en la barra superior. Se adapta en móviles para mantener la proporción y no saturar el espacio.",
+							},
+						},
+						{
+							name: "logoSizeFooter",
+							type: "select",
+							label: "Tamaño del Logotipo en Pie de Página (Footer)",
+							defaultValue: "normal",
+							options: [
+								{ label: "Pequeño (Discreto - altura compacta)", value: "pequeno" },
+								{ label: "Normal (Estándar recomendado)", value: "normal" },
+								{ label: "Mediano (Mayor presencia visual)", value: "mediano" },
+								{ label: "Grande (Prominente en el pie de página)", value: "grande" },
+							],
+							admin: {
+								description: "Elige el tamaño visual del logo en el pie de página de la tienda.",
+							},
+						},
 					],
 				},
 				{
@@ -210,6 +240,24 @@ export const StoreIdentity: GlobalConfig = {
 									label: "Imagen de Portada (Opcional)",
 									admin: {
 										description: "Imagen de fondo para el Hero Banner. Tamaño recomendado: 1920x600 px o relación de aspecto horizontal 16:5. Formatos recomendados: JPG o WebP de alta resolución.",
+										condition: (_, siblingData) => Boolean(siblingData?.enabled),
+									},
+								},
+								{
+									name: "overlayOpacity",
+									type: "select",
+									label: "Opacidad del Fondo Oscuro (Overlay)",
+									defaultValue: "50",
+									options: [
+										{ label: "0% - Sin oscurecer (Imagen original)", value: "0" },
+										{ label: "20% - Ligero contraste", value: "20" },
+										{ label: "40% - Medio contraste", value: "40" },
+										{ label: "50% - Equilibrado (Recomendado)", value: "50" },
+										{ label: "60% - Mayor contraste", value: "60" },
+										{ label: "80% - Muy oscuro (Resalta texto en blanco)", value: "80" },
+									],
+									admin: {
+										description: "Controla qué tan oscuro es el filtro sobre la imagen de fondo del banner principal para mejorar la lectura del título.",
 										condition: (_, siblingData) => Boolean(siblingData?.enabled),
 									},
 								},

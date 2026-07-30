@@ -7,6 +7,7 @@ interface LogoProps {
 	siteName?: string;
 	inverted?: boolean;
 	className?: string;
+	size?: string;
 }
 
 /**
@@ -18,12 +19,14 @@ export const Logo = ({
 	logoInvertedUrl = null,
 	siteName = "Store Homepage",
 	inverted = false,
-	className = "h-7 w-auto",
+	size,
+	className,
 }: LogoProps = {}) => {
 	return (
 		<LinkWithChannel href="/" className="flex shrink-0 items-center" aria-label={siteName}>
 			<SharedLogo
 				className={className}
+				size={size}
 				ariaLabel={siteName}
 				inverted={inverted}
 				logoUrl={logoUrl}

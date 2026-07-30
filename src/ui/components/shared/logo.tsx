@@ -14,6 +14,7 @@
 
 interface LogoProps {
 	className?: string;
+	size?: string;
 	/** Accessible label for the logo */
 	ariaLabel?: string;
 	/** Invert colors (for dark backgrounds like footer) */
@@ -24,17 +25,27 @@ interface LogoProps {
 	logoInvertedUrl?: string | null;
 }
 
+const SIZE_CLASSES: Record<string, string> = {
+	pequeno: "h-6 sm:h-7 w-auto",
+	normal: "h-7 sm:h-8 w-auto",
+	mediano: "h-9 sm:h-10 w-auto",
+	grande: "h-11 sm:h-14 w-auto",
+};
+
 /**
  * Combined logo component supporting custom uploaded images from Payload CMS
  * or falling back to default Saleor SVG logos.
  */
 export const Logo = ({
 	className,
+	size,
 	ariaLabel = "Store Logo",
 	inverted = false,
 	logoUrl = null,
 	logoInvertedUrl = null,
 }: LogoProps) => {
+	const effectiveSizeClass = size && SIZE_CLASSES[size] ? SIZE_CLASSES[size] : (className || "h-7 sm:h-8 w-auto");
+
 	// If a custom logo image was uploaded in admin
 	if (logoUrl || logoInvertedUrl) {
 		const customSrc = (inverted && logoInvertedUrl) ? logoInvertedUrl : (logoUrl || logoInvertedUrl || "/logo.svg");
@@ -43,7 +54,7 @@ export const Logo = ({
 			<img
 				src={customSrc}
 				alt={ariaLabel}
-				className={`max-h-10 w-auto object-contain ${className ?? ""}`}
+				className={`w-auto object-contain ${effectiveSizeClass}`}
 			/>
 		);
 	}
@@ -63,7 +74,7 @@ export const Logo = ({
 				alt={ariaLabel}
 				width={100}
 				height={23}
-				className={`dark:hidden ${baseStyles} ${className ?? ""}`}
+				className={`dark:hidden ${baseStyles} ${effectiveSizeClass}`}
 			/>
 			{/* Dark mode */}
 			{/* eslint-disable-next-line @next/next/no-img-element */}
@@ -72,7 +83,7 @@ export const Logo = ({
 				alt={ariaLabel}
 				width={100}
 				height={23}
-				className={`hidden dark:block ${baseStyles} ${className ?? ""}`}
+				className={`hidden dark:block ${baseStyles} ${effectiveSizeClass}`}
 			/>
 		</>
 	);

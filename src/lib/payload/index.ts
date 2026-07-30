@@ -343,6 +343,8 @@ export async function getStoreIdentity() {
       copyrightHolder: doc?.copyrightHolder ?? "Saleor Demo Store",
       logoUrl: doc?.logo && typeof doc.logo === "object" ? doc.logo.url : null,
       logoInvertedUrl: doc?.logoInverted && typeof doc.logoInverted === "object" ? doc.logoInverted.url : null,
+      logoSizeHeader: doc?.logoSizeHeader ?? "normal",
+      logoSizeFooter: doc?.logoSizeFooter ?? "normal",
       faviconUrl: (() => {
         const rawUrl = doc?.favicon && typeof doc.favicon === "object" ? doc.favicon.url : (typeof doc?.favicon === "string" ? doc.favicon : null);
         if (!rawUrl) return null;
@@ -363,6 +365,7 @@ export async function getStoreIdentity() {
         ctaText: doc?.hero?.ctaText ?? "",
         ctaLink: doc?.hero?.ctaLink ?? "/products",
         backgroundImageUrl: doc?.hero?.backgroundImage && typeof doc?.hero?.backgroundImage === "object" ? doc.hero.backgroundImage.url : null,
+        overlayOpacity: doc?.hero?.overlayOpacity ?? "50",
       },
       footerColumns: {
         showSupportColumn: doc?.footerColumns?.showSupportColumn !== false,
@@ -380,6 +383,8 @@ export async function getStoreIdentity() {
       copyrightHolder: "Saleor Demo Store",
       logoUrl: null,
       logoInvertedUrl: null,
+      logoSizeHeader: "normal",
+      logoSizeFooter: "normal",
       faviconUrl: null,
       announcement: {
         enabled: true,
@@ -395,6 +400,7 @@ export async function getStoreIdentity() {
         ctaText: "Explorar Catálogo",
         ctaLink: "/products",
         backgroundImageUrl: null,
+        overlayOpacity: "50",
       },
       footerColumns: {
         showSupportColumn: true,
