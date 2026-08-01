@@ -39,16 +39,16 @@ export const Products: CollectionConfig = {
                 {
                   name: 'status',
                   type: 'select',
-                  label: 'Estado en la Tienda *',
+                  label: 'Visibilidad en la Tienda *',
                   defaultValue: 'draft',
                   required: true,
                   options: [
-                    { label: '🟡 Borrador (Oculto)', value: 'draft' },
-                    { label: '🟢 Publicado (Visible)', value: 'published' },
+                    { label: '🔴 No Mostrar en Tienda (Oculto / Borrador)', value: 'draft' },
+                    { label: '🟢 Mostrar en Tienda (Publicado y Visible)', value: 'published' },
                   ],
                   admin: {
                     width: '30%',
-                    description: 'Determina si el producto se muestra públicamente.',
+                    description: 'Determina si el producto se muestra públicamente en la tienda o permanece oculto.',
                   },
                 },
               ],

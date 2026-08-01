@@ -7,9 +7,14 @@ export async function getProducts({ query, reverse, sortKey, categoryId }: { que
   console.log("=== ADAPTER: getProducts starting ===");
   const payload = await getPayload({ config: configPromise });
   
-  let where: any = {};
+  let where: any = {
+    status: { equals: 'published' },
+  };
   if (categoryId) {
     where['category.slug'] = { equals: categoryId };
+  }
+  if (query) {
+    where['title'] = { like: query };
   }
   
   console.log("=== ADAPTER: querying products with where:", where);
@@ -17,7 +22,7 @@ export async function getProducts({ query, reverse, sortKey, categoryId }: { que
     collection: 'products',
     depth: 2,
     limit: 100,
-    where: Object.keys(where).length > 0 ? where : undefined,
+    where,
   });
 
   console.log("=== ADAPTER: found raw products count:", products.docs.length);
@@ -30,7 +35,10 @@ export async function getProduct(handle: string): Promise<NonNullable<ProductDet
   const payload = await getPayload({ config: configPromise });
   const products = await payload.find({
     collection: 'products',
-    where: { slug: { equals: handle } },
+    where: { 
+      slug: { equals: handle },
+      status: { equals: 'published' },
+    },
     depth: 2,
     limit: 1,
   });
@@ -48,11 +56,18 @@ export async function getCollectionProducts(collectionSlug: string): Promise<Pro
   });
   const categoryId = categories.docs.length ? categories.docs[0].id : null;
   
+  const where: any = {
+    status: { equals: 'published' },
+  };
+  if (categoryId) {
+    where['category'] = { equals: categoryId };
+  }
+
   const products = await payload.find({
     collection: 'products',
     depth: 2,
     limit: 100,
-    where: categoryId ? { 'category': { equals: categoryId } } : undefined,
+    where,
   });
 
   return products.docs.map((doc: any) => mapPayloadProductToCommerce(doc) as ProductListItemFragment);
@@ -76,6 +91,9 @@ export async function getAllProductSlugs(): Promise<string[]> {
     const payload = await getPayload({ config: configPromise });
     const products = await payload.find({
       collection: 'products',
+      where: {
+        status: { equals: 'published' },
+      },
       limit: 1000,
       depth: 0,
     });
