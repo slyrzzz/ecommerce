@@ -16,7 +16,7 @@ type Props = {
 export function UserMenu({ user }: Props) {
 	return (
 		<Menu as="div" className="relative">
-			<Menu.Button className="focus:outline-hidden relative flex rounded-full bg-neutral-200 text-sm focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-neutral-800">
+			<Menu.Button className="focus:outline-hidden relative flex rounded-full text-sm transition-transform hover:scale-105 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background">
 				<span className="sr-only">Abrir menú de usuario</span>
 				<UserAvatar user={user} />
 			</Menu.Button>
@@ -29,7 +29,7 @@ export function UserMenu({ user }: Props) {
 				leaveFrom="transform opacity-100 scale-100"
 				leaveTo="transform opacity-0 scale-95"
 			>
-				<Menu.Items className="focus:outline-hidden absolute right-0 z-10 mt-2 w-48 origin-top-right divide-y divide-neutral-200 bg-white text-start shadow-sm ring-1 ring-neutral-200 ring-opacity-5">
+				<Menu.Items className="focus:outline-hidden absolute right-0 z-10 mt-2 w-48 origin-top-right divide-y divide-border rounded-md bg-card text-start text-card-foreground shadow-lg ring-1 ring-border">
 					<UserInfo user={user} />
 					<div className="flex flex-col px-1 py-1">
 						<Menu.Item>
@@ -37,8 +37,8 @@ export function UserMenu({ user }: Props) {
 								<LinkWithChannel
 									href="/account"
 									className={clsx(
-										active && "bg-neutral-100",
-										"block px-4 py-2 text-sm font-medium text-neutral-500 hover:text-neutral-700",
+										active && "bg-secondary text-foreground",
+										"block rounded-md px-4 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground",
 									)}
 								>
 									Mi cuenta
@@ -50,8 +50,8 @@ export function UserMenu({ user }: Props) {
 								<LinkWithChannel
 									href="/account/orders"
 									className={clsx(
-										active && "bg-neutral-100",
-										"block px-4 py-2 text-sm font-medium text-neutral-500 hover:text-neutral-700",
+										active && "bg-secondary text-foreground",
+										"block rounded-md px-4 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground",
 									)}
 								>
 									Mis pedidos
@@ -66,8 +66,8 @@ export function UserMenu({ user }: Props) {
 									<button
 										type="submit"
 										className={clsx(
-											active && "bg-neutral-100",
-											"w-full px-4 py-2 text-start text-sm font-medium text-neutral-500 hover:text-neutral-700",
+											active && "bg-secondary text-foreground",
+											"w-full rounded-md px-4 py-2 text-start text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground",
 										)}
 									>
 										Cerrar sesión
