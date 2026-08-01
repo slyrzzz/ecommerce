@@ -180,8 +180,8 @@ async function ProductContent({
 							{product.name}
 						</h1>
 						{(product as any).model && (
-							<p className="order-2 -mt-1 text-sm font-medium text-neutral-500">
-								Modelo: <span className="text-neutral-700">{(product as any).model}</span>
+							<p className="order-2 -mt-1 text-sm font-medium text-muted-foreground">
+								Modelo: <span className="text-foreground">{(product as any).model}</span>
 							</p>
 						)}
 

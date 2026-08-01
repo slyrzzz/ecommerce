@@ -14,15 +14,15 @@ export const DeleteLineButton = ({ lineId, checkoutId }: Props) => {
 	return (
 		<button
 			type="button"
-			className="text-sm text-neutral-500 hover:text-neutral-900"
+			className="text-sm text-muted-foreground hover:text-foreground"
 			onClick={() => {
 				if (isPending) return;
 				startTransition(() => deleteLineFromCheckout({ lineId, checkoutId }));
 			}}
 			aria-disabled={isPending}
 		>
-			{isPending ? "Removing" : "Remove"}
-			<span className="sr-only">line from cart</span>
+			{isPending ? "Eliminando" : "Eliminar"}
+			<span className="sr-only">artículo del carrito</span>
 		</button>
 	);
 };

@@ -52,11 +52,11 @@ async function CartContent({ params: paramsPromise }: { params: Promise<{ channe
 			<ul
 				data-testid="CartProductList"
 				role="list"
-				className="divide-y divide-neutral-200 border-b border-t border-neutral-200"
+				className="divide-y divide-border border-b border-t border-border"
 			>
 				{checkout.lines.map((item) => (
 					<li key={item.id} className="flex py-4">
-						<div className="aspect-square h-24 w-24 shrink-0 overflow-hidden rounded-md border bg-neutral-50 sm:h-32 sm:w-32">
+						<div className="aspect-square h-24 w-24 shrink-0 overflow-hidden rounded-md border border-border bg-secondary sm:h-32 sm:w-32">
 							{item.variant?.product?.thumbnail?.url && (
 								<Image
 									src={item.variant.product.thumbnail.url}
@@ -76,19 +76,19 @@ async function CartContent({ params: paramsPromise }: { params: Promise<{ channe
 											variantId: item.variant.id,
 										})}
 									>
-										<h2 className="font-medium text-neutral-700">{item.variant?.product?.name}</h2>
+										<h2 className="font-medium text-foreground">{item.variant?.product?.name}</h2>
 									</LinkWithChannel>
-									<p className="mt-1 text-sm text-neutral-500">{item.variant?.product?.category?.name}</p>
+									<p className="mt-1 text-sm text-muted-foreground">{item.variant?.product?.category?.name}</p>
 									{item.variant.name !== item.variant.id && Boolean(item.variant.name) && (
-										<p className="mt-1 text-sm text-neutral-500">Opción: {item.variant.name}</p>
+										<p className="mt-1 text-sm text-muted-foreground">Opción: {item.variant.name}</p>
 									)}
 								</div>
-								<p className="text-right font-semibold text-neutral-900">
+								<p className="text-right font-semibold text-foreground">
 									{formatMoney(item.totalPrice.gross.amount, item.totalPrice.gross.currency)}
 								</p>
 							</div>
 							<div className="flex justify-between">
-								<div className="text-sm font-bold">Cant: {item.quantity}</div>
+								<div className="text-sm font-bold text-foreground">Cant: {item.quantity}</div>
 								<DeleteLineButton checkoutId={checkoutId} lineId={item.id} />
 							</div>
 						</div>
@@ -97,13 +97,13 @@ async function CartContent({ params: paramsPromise }: { params: Promise<{ channe
 			</ul>
 
 			<div className="mt-12">
-				<div className="rounded border bg-neutral-50 px-4 py-2">
+				<div className="rounded border border-border bg-card px-4 py-2">
 					<div className="flex items-center justify-between gap-2 py-2">
 						<div>
-							<p className="font-semibold text-neutral-900">Tu Total</p>
-							<p className="mt-1 text-sm text-neutral-500">El envío se calculará en el siguiente paso</p>
+							<p className="font-semibold text-foreground">Tu Total</p>
+							<p className="mt-1 text-sm text-muted-foreground">El envío se calculará en el siguiente paso</p>
 						</div>
-						<div className="font-medium text-neutral-900">
+						<div className="font-medium text-foreground">
 							{formatMoney(checkout.totalPrice.gross.amount, checkout.totalPrice.gross.currency)}
 						</div>
 					</div>
