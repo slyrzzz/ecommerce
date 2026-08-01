@@ -49,7 +49,7 @@ function HeaderSkeleton() {
  */
 function FooterSkeleton() {
 	return (
-		<footer className="animate-skeleton-delayed bg-foreground text-background opacity-0">
+		<footer className="animate-skeleton-delayed bg-neutral-950 text-white dark:bg-neutral-950 dark:border-t dark:border-neutral-800 opacity-0">
 			<div className="mx-auto max-w-7xl px-4 pb-24 pt-12 sm:px-6 sm:pb-12 lg:px-8 lg:py-16">
 				<div className="grid grid-cols-2 gap-8 md:grid-cols-4 lg:gap-12">
 					{/* Brand column */}

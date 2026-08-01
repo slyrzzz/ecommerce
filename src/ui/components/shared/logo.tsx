@@ -48,14 +48,40 @@ export const Logo = ({
 
 	// If a custom logo image was uploaded in admin
 	if (logoUrl || logoInvertedUrl) {
-		const customSrc = (inverted && logoInvertedUrl) ? logoInvertedUrl : (logoUrl || logoInvertedUrl || "/logo.svg");
+		// Footer or explicitly inverted container
+		if (inverted) {
+			const customSrc = logoInvertedUrl || logoUrl || "/logo-dark.svg";
+			return (
+				/* eslint-disable-next-line @next/next/no-img-element */
+				<img
+					src={customSrc}
+					alt={ariaLabel}
+					className={`w-auto object-contain ${effectiveSizeClass} ${!logoInvertedUrl ? "brightness-0 invert" : ""}`}
+				/>
+			);
+		}
+
+		// Header or normal container (supports adaptive light/dark switching)
+		const lightSrc = logoUrl || logoInvertedUrl || "/logo.svg";
+		const darkSrc = logoInvertedUrl || logoUrl || "/logo-dark.svg";
+
 		return (
-			/* eslint-disable-next-line @next/next/no-img-element */
-			<img
-				src={customSrc}
-				alt={ariaLabel}
-				className={`w-auto object-contain ${effectiveSizeClass}`}
-			/>
+			<>
+				{/* Light Mode Logo */}
+				{/* eslint-disable-next-line @next/next/no-img-element */}
+				<img
+					src={lightSrc}
+					alt={ariaLabel}
+					className={`w-auto object-contain dark:hidden ${effectiveSizeClass}`}
+				/>
+				{/* Dark Mode Logo (uses inverted logo if uploaded, or auto-inverts light logo) */}
+				{/* eslint-disable-next-line @next/next/no-img-element */}
+				<img
+					src={darkSrc}
+					alt={ariaLabel}
+					className={`hidden w-auto object-contain dark:block ${effectiveSizeClass} ${!logoInvertedUrl ? "brightness-0 invert" : ""}`}
+				/>
+			</>
 		);
 	}
 
