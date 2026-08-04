@@ -6,8 +6,8 @@ import { SetPasswordMode } from "./auth/set-password-mode";
 
 export function LoginForm() {
 	const searchParams = useSearchParams();
-	const resetEmail = searchParams.get("email");
-	const resetToken = searchParams.get("token");
+	const resetEmail = searchParams.get("email") || searchParams.get("passwordResetEmail");
+	const resetToken = searchParams.get("token") || searchParams.get("passwordResetToken");
 
 	if (resetEmail && resetToken) {
 		return <SetPasswordMode email={resetEmail} token={resetToken} />;

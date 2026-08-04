@@ -130,7 +130,7 @@ export function LoginMode() {
 					)}
 
 					{resetMessage && (
-						<div aria-live="polite" className="rounded-md bg-green-100 p-3 text-sm text-green-800">
+						<div aria-live="polite" className="rounded-md bg-green-100 p-3 text-sm text-green-800 dark:border dark:border-green-800/50 dark:bg-green-950/50 dark:text-green-300">
 							{resetMessage}
 						</div>
 					)}

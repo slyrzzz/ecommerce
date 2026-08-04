@@ -291,7 +291,7 @@ export const OrderSummary: FC<OrderSummaryProps> = ({ checkout, order, editable 
 										placeholder="Discount code"
 										value={promoCode}
 										onChange={(e) => setPromoCode(e.target.value)}
-										className="h-10 bg-white pl-10 text-sm"
+										className="h-10 bg-background pl-10 text-sm"
 										disabled={promoApplied}
 									/>
 								</div>
@@ -299,7 +299,7 @@ export const OrderSummary: FC<OrderSummaryProps> = ({ checkout, order, editable 
 									type="submit"
 									variant="outline-solid"
 									disabled={!promoCode || promoApplied}
-									className="h-10 bg-white px-4 text-sm"
+									className="h-10 bg-background px-4 text-sm"
 								>
 									{promoApplied ? "Applied" : "Apply"}
 								</Button>

@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { LoginMode } from "@/ui/components/auth/login-mode";
+import { LoginForm } from "@/ui/components/login-form";
 
 export const metadata = {
 	title: "Iniciar sesión",
@@ -10,7 +10,7 @@ export default function LoginPage() {
 	return (
 		<Suspense fallback={<LoginSkeleton />}>
 			<section className="mx-auto max-w-7xl p-8 pb-24">
-				<LoginMode />
+				<LoginForm />
 			</section>
 		</Suspense>
 	);
