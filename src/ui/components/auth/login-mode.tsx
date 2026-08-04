@@ -20,7 +20,9 @@ export function LoginMode() {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [error, setError] = useState("");
 	const [resetMessage, setResetMessage] = useState("");
+	const [resetUrl, setResetUrl] = useState("");
 	const [resetEmailSent, setResetEmailSent] = useState(false);
+
 
 	const handleLogin = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -45,7 +47,10 @@ export function LoginMode() {
 				body: JSON.stringify({ email, password }),
 			});
 
-			const data = await response.json();
+			const data = (await response.json()) as {
+				errors?: Array<{ message: string }>;
+				token?: string;
+			};
 
 			if (!response.ok || data.errors?.length) {
 				setError(data.errors?.[0]?.message || "Correo o contraseña inválidos. Por favor intenta de nuevo.");
@@ -56,6 +61,7 @@ export function LoginMode() {
 				router.push(`/${params.channel}`);
 				router.refresh();
 			}
+
 		} catch {
 			setError("Ocurrió un error. Por favor intenta de nuevo.");
 		} finally {
@@ -88,6 +94,7 @@ export function LoginMode() {
 			const data = (await response.json()) as {
 				errors?: Array<{ message: string }>;
 				success?: boolean;
+				resetUrl?: string;
 			};
 
 			if (data.errors?.length) {
@@ -99,6 +106,9 @@ export function LoginMode() {
 			setResetMessage(
 				`Si existe una cuenta para ${email}, se ha enviado un enlace de recuperación de contraseña. Nota: Solo puedes solicitar un enlace de recuperación cada 15 minutos.`,
 			);
+			if (data.resetUrl) {
+				setResetUrl(data.resetUrl);
+			}
 		} catch {
 			setError("Ocurrió un error. Por favor intenta de nuevo.");
 		} finally {
@@ -131,7 +141,17 @@ export function LoginMode() {
 
 					{resetMessage && (
 						<div aria-live="polite" className="rounded-md bg-green-100 p-3 text-sm text-green-800 dark:border dark:border-green-800/50 dark:bg-green-950/50 dark:text-green-300">
-							{resetMessage}
+							<p>{resetMessage}</p>
+							{resetUrl && (
+								<div className="mt-3 border-t border-green-200 pt-2 dark:border-green-800/50">
+									<a
+										href={resetUrl}
+										className="inline-flex items-center gap-1 font-semibold underline hover:no-underline"
+									>
+										👉 Haz clic aquí para restablecer tu contraseña (Enlace de demostración)
+									</a>
+								</div>
+							)}
 						</div>
 					)}
 

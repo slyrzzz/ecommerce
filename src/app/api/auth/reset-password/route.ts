@@ -1,63 +1,61 @@
 import { NextRequest, NextResponse } from "next/server";
-import { executeRawGraphQL, getUserMessage } from "@/lib/graphql";
-
-const REQUEST_PASSWORD_RESET_MUTATION = `
-  mutation RequestPasswordReset($email: String!, $channel: String!, $redirectUrl: String!) {
-    requestPasswordReset(email: $email, channel: $channel, redirectUrl: $redirectUrl) {
-      errors {
-        field
-        message
-        code
-      }
-    }
-  }
-`;
-
-interface ResetPasswordRequest {
-	email: string;
-	channel: string;
-	redirectUrl: string;
-}
-
-interface RequestPasswordResetResult {
-	requestPasswordReset?: {
-		errors?: Array<{ field?: string | null; message: string; code?: string | null }>;
-	};
-}
+import { getPayload } from "payload";
+import configPromise from "@payload-config";
 
 export async function POST(request: NextRequest) {
-	const body = (await request.json()) as ResetPasswordRequest;
+	const body = await request.json();
 	const { email, channel, redirectUrl } = body;
 
-	if (!email || !channel || !redirectUrl) {
+	if (!email || !channel) {
 		return NextResponse.json(
-			{ errors: [{ message: "Email, channel, and redirectUrl are required", code: "REQUIRED" }] },
+			{ errors: [{ message: "Por favor ingresa un correo electrónico", code: "REQUIRED" }] },
 			{ status: 400 },
 		);
 	}
 
-	const result = await executeRawGraphQL<RequestPasswordResetResult>({
-		query: REQUEST_PASSWORD_RESET_MUTATION,
-		variables: { email, channel, redirectUrl },
-	});
+	try {
+		const payload = await getPayload({ config: configPromise });
 
-	// Network or GraphQL error
-	if (!result.ok) {
-		console.error("Password reset error:", result.error.type);
+		const users = await payload.find({
+			collection: "users",
+			where: { email: { equals: email.toLowerCase() } },
+		});
+
+		if (users && users.totalDocs > 0) {
+			const token = await payload.forgotPassword({
+				collection: "users",
+				data: {
+					email: email.toLowerCase(),
+				},
+				disableEmail: true,
+			});
+
+			let baseUrl = request.nextUrl.origin;
+			try {
+				if (redirectUrl && redirectUrl.startsWith("http")) {
+					baseUrl = new URL(redirectUrl).origin;
+				}
+			} catch {
+				// fallback to request origin
+			}
+
+			const resetUrl = `${baseUrl}/${channel}/login?email=${encodeURIComponent(email)}&token=${encodeURIComponent(token)}`;
+			console.log(`[PASSWORD RESET] Enlace generado para ${email}: ${resetUrl}`);
+
+			return NextResponse.json({
+				success: true,
+				token,
+				resetUrl,
+			});
+		}
+
+		// Always return success to prevent email enumeration
+		return NextResponse.json({ success: true });
+	} catch (error: any) {
+		console.error("Password reset error:", error);
 		return NextResponse.json(
-			{ errors: [{ message: getUserMessage(result.error), code: result.error.type.toUpperCase() }] },
-			{ status: result.error.type === "network" ? 503 : 400 },
+			{ errors: [{ message: "No se pudo procesar la solicitud. Intenta de nuevo.", code: "ERROR" }] },
+			{ status: 500 },
 		);
 	}
-
-	const requestPasswordReset = result.data.requestPasswordReset;
-
-	// Saleor validation errors - log but don't expose to prevent email enumeration
-	if (requestPasswordReset?.errors?.length) {
-		console.error("Password reset validation errors");
-		// Still return success to prevent email enumeration
-	}
-
-	// Always return success to prevent email enumeration
-	return NextResponse.json({ success: true });
 }

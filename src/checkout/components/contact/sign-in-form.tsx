@@ -84,20 +84,23 @@ export const SignInForm: FC<SignInFormProps> = ({
 
 		setIsSubmitting(true);
 		try {
-			const result = await requestPasswordReset({
-				email,
-				channel: channelSlug,
-				redirectUrl: window.location.href,
+			const response = await fetch("/api/auth/reset-password", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					email,
+					channel: channelSlug,
+					redirectUrl: `${window.location.origin}/${channelSlug}/login`,
+				}),
 			});
 
-			if (result.error) {
-				setError(result.error.message || "Failed to send reset link");
-				return;
-			}
+			const data = (await response.json()) as {
+				errors?: Array<{ message: string }>;
+				success?: boolean;
+			};
 
-			if (result.data?.requestPasswordReset?.errors?.length) {
-				const err = result.data.requestPasswordReset.errors[0];
-				setError(err.message || "Failed to send reset link");
+			if (data.errors?.length) {
+				setError(data.errors[0].message || "Failed to send reset link");
 			} else {
 				setPasswordResetSent(true);
 				setSuccessMessage(
@@ -111,6 +114,7 @@ export const SignInForm: FC<SignInFormProps> = ({
 			setIsSubmitting(false);
 		}
 	};
+
 
 	return (
 		<form onSubmit={handleSubmit} className="space-y-4">
