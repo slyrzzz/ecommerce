@@ -17,6 +17,7 @@ import { Pages } from './src/lib/payload/collections/Pages';
 import { StoreManagement } from './src/lib/payload/globals/StoreManagement';
 import { StoreIdentity } from './src/lib/payload/globals/StoreIdentity';
 import { StoreContact } from './src/lib/payload/globals/StoreContact';
+import { StoreLegal } from './src/lib/payload/globals/StoreLegal';
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -55,6 +56,7 @@ export default buildConfig({
     StoreManagement,
     StoreIdentity,
     StoreContact,
+    StoreLegal,
   ],
   plugins: [],
   editor: lexicalEditor({}),

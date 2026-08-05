@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { CopyrightText } from "./copyright-text";
 import { Logo } from "./shared/logo";
-import { getStoreIdentity, getStoreContact, getFooterPages } from "@/lib/payload";
+import { getStoreIdentity, getStoreContact, getFooterPages, getStoreLegal } from "@/lib/payload";
 import {
 	Instagram,
 	Facebook,
@@ -26,6 +26,7 @@ export async function Footer({ channel }: { channel: string }) {
 	const storeIdentity = await getStoreIdentity();
 	const storeContact = await getStoreContact();
 	const footerPages = await getFooterPages();
+	const storeLegal = await getStoreLegal();
 
 	const supportPages = footerPages.filter(
 		(page) => !page.footerColumn || page.footerColumn === "soporte",
@@ -244,20 +245,24 @@ export async function Footer({ channel }: { channel: string }) {
 					</p>
 					<div className="flex items-center gap-6">
 						<FooterLocaleSwitcher />
-						<Link
-							href="/privacy"
-							prefetch={false}
-							className="text-xs text-neutral-500 transition-colors hover:text-neutral-300"
-						>
-							Política de Privacidad
-						</Link>
-						<Link
-							href="/terms"
-							prefetch={false}
-							className="text-xs text-neutral-500 transition-colors hover:text-neutral-300"
-						>
-							Términos de Servicio
-						</Link>
+						{storeLegal.showPrivacyPolicy && (
+							<Link
+								href={`/${channel}/privacy`}
+								prefetch={false}
+								className="text-xs text-neutral-500 transition-colors hover:text-neutral-300"
+							>
+								Política de Privacidad
+							</Link>
+						)}
+						{storeLegal.showTermsOfService && (
+							<Link
+								href={`/${channel}/terms`}
+								prefetch={false}
+								className="text-xs text-neutral-500 transition-colors hover:text-neutral-300"
+							>
+								Términos de Servicio
+							</Link>
+						)}
 					</div>
 				</div>
 			</div>

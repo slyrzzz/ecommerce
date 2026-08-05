@@ -505,3 +505,29 @@ export async function getStoreContact() {
   }
 }
 
+export async function getStoreLegal() {
+  try {
+    const payload = await getPayload({ config: configPromise });
+    const doc = await payload.findGlobal({ slug: "store-legal", depth: 1 }) as any;
+    return {
+      legalName: doc?.legalName ?? "Empresa de Ejemplo, S.A. de C.V.",
+      taxId: doc?.taxId ?? "XAXX010101000",
+      legalAddress: doc?.legalAddress ?? "123 Calle Principal, Ciudad, País",
+      legalEmail: doc?.legalEmail ?? "legal@ejemplo.com",
+      jurisdiction: doc?.jurisdiction ?? "Ciudad de México, México",
+      showPrivacyPolicy: doc?.showPrivacyPolicy !== false,
+      showTermsOfService: doc?.showTermsOfService !== false,
+    };
+  } catch (error) {
+    console.error("Failed to fetch store-legal:", error);
+    return {
+      legalName: "Empresa de Ejemplo, S.A. de C.V.",
+      taxId: "XAXX010101000",
+      legalAddress: "123 Calle Principal, Ciudad, País",
+      legalEmail: "legal@ejemplo.com",
+      jurisdiction: "Ciudad de México, México",
+      showPrivacyPolicy: true,
+      showTermsOfService: true,
+    };
+  }
+}
