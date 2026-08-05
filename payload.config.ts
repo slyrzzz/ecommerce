@@ -1,9 +1,9 @@
-
 import { buildConfig } from 'payload';
 import { mongooseAdapter } from '@payloadcms/db-mongodb';
 import { lexicalEditor } from '@payloadcms/richtext-lexical';
 import { es } from '@payloadcms/translations/languages/es';
 import { en } from '@payloadcms/translations/languages/en';
+import { resendAdapter } from '@payloadcms/email-resend';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -42,6 +42,12 @@ export default buildConfig({
   routes: {
     admin: process.env.PANEL_ROUTE || '/admin',
   },
+  // Configuración de correo usando Resend
+  email: resendAdapter({
+    defaultFromAddress: process.env.RESEND_DEFAULT_FROM_ADDRESS || 'onboarding@resend.dev',
+    defaultFromName: process.env.RESEND_DEFAULT_FROM_NAME || 'Tienda (Pruebas)',
+    apiKey: process.env.RESEND_API_KEY || '',
+  }),
   // Colecciones (las definiremos en la Fase 2)
   collections: [
     Users,

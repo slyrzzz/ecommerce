@@ -18,6 +18,45 @@ export const Orders: CollectionConfig = {
     update: () => true,
     delete: () => true,
   },
+  hooks: {
+    afterChange: [
+      async ({ doc, previousDoc, req }) => {
+        // Si el estado cambió a 'completed' y antes no lo estaba
+        if (doc.status === 'completed' && previousDoc.status !== 'completed') {
+          try {
+            // Buscamos el correo del cliente. Puede estar referenciado por User o podemos enviarlo al admin como fallback si no hay correo directo.
+            // Para fines de esta implementación, asumiremos que si hay usuario relacionado, le enviamos el correo a ese usuario.
+            let emailTo = '';
+            
+            if (doc.user) {
+              const user = typeof doc.user === 'object' ? doc.user : await req.payload.findByID({ collection: 'users', id: doc.user });
+              if (user && user.email) {
+                emailTo = user.email;
+              }
+            }
+
+            if (emailTo) {
+              await req.payload.sendEmail({
+                to: emailTo,
+                subject: `Tu pedido #${doc.orderNumber} ha sido completado`,
+                html: `
+                  <h1>¡Gracias por tu compra!</h1>
+                  <p>Hola ${doc.customer?.firstName || 'cliente'},</p>
+                  <p>Tu pedido <strong>#${doc.orderNumber}</strong> ha sido confirmado y está siendo procesado.</p>
+                  <p>Total: $${doc.totalPrice} ${doc.currency || 'USD'}</p>
+                  <p>Te avisaremos cuando tu orden esté en camino hacia ${doc.customer?.address || 'tu domicilio'}.</p>
+                `,
+              });
+              req.payload.logger.info(`Correo de pedido completado enviado a ${emailTo}`);
+            }
+          } catch (error) {
+            req.payload.logger.error(`Error enviando correo de orden: ${error}`);
+          }
+        }
+        return doc;
+      }
+    ]
+  },
   fields: [
     {
       name: 'orderNumber',
