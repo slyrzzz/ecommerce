@@ -74,17 +74,25 @@ export const AdminSidebarHeader: React.FC = () => {
 						padding: "4px 0",
 					}}
 				>
-					<img
-						src={logoUrl}
-						alt="Logotipo Tienda"
-						style={{
-							maxHeight: "38px",
-							width: "auto",
-							maxWidth: "180px",
-							objectFit: "contain",
-							display: "block",
-						}}
-					/>
+					<a 
+						href="/?ref=admin_dashboard" 
+						target="_blank" 
+						rel="noopener noreferrer"
+						style={{ textDecoration: "none", display: "inline-block" }}
+						title="Visitar la tienda"
+					>
+						<img
+							src={logoUrl}
+							alt="Logotipo Tienda"
+							style={{
+								maxHeight: "38px",
+								width: "auto",
+								maxWidth: "180px",
+								objectFit: "contain",
+								display: "block",
+							}}
+						/>
+					</a>
 				</div>
 			)}
 
