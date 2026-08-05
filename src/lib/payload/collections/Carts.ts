@@ -7,10 +7,10 @@ export const Carts: CollectionConfig = {
     group: 'Shop',
   },
   access: {
-    read: () => true,
+    read: ({ req: { user } }) => Boolean(user),
     create: () => true,
-    update: () => true,
-    delete: () => true,
+    update: ({ req: { user } }) => Boolean(user),
+    delete: ({ req: { user } }) => Boolean(user),
   },
   fields: [
     {

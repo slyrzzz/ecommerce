@@ -6,6 +6,8 @@ This document provides essential context for AI agents. For detailed task-specif
 
 ## Quick Reference
 
+> **CRITICAL**: Before making architectural decisions or proposing new features, you MUST read the business and infrastructure context in `PROJECT_CONTEXT.md`.
+
 ### Critical Commands
 
 ```bash

@@ -13,10 +13,10 @@ export const Orders: CollectionConfig = {
     description: 'Pedidos guardados o realizados por clientes. Puedes consultar el teléfono y datos de envío para contactar por WhatsApp o procesar la orden.',
   },
   access: {
-    read: () => true,
+    read: ({ req: { user } }) => Boolean(user),
     create: () => true,
-    update: () => true,
-    delete: () => true,
+    update: ({ req: { user } }) => Boolean(user),
+    delete: ({ req: { user } }) => Boolean(user),
   },
   hooks: {
     afterChange: [
