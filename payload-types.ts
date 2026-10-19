@@ -101,11 +101,13 @@ export interface Config {
     'store-management': StoreManagement;
     'store-identity': StoreIdentity;
     'store-contact': StoreContact;
+    'store-legal': StoreLegal;
   };
   globalsSelect: {
     'store-management': StoreManagementSelect<false> | StoreManagementSelect<true>;
     'store-identity': StoreIdentitySelect<false> | StoreIdentitySelect<true>;
     'store-contact': StoreContactSelect<false> | StoreContactSelect<true>;
+    'store-legal': StoreLegalSelect<false> | StoreLegalSelect<true>;
   };
   locale: null;
   widgets: {
@@ -221,13 +223,33 @@ export interface Product {
    */
   title: string;
   /**
-   * Determina si el producto se muestra públicamente.
+   * Determina si el producto se muestra públicamente en la tienda o permanece oculto.
    */
   status: 'draft' | 'published';
+  /**
+   * Enlace amigable (ej: gamuza-blanca). Se llena automáticamente del nombre o puedes editarlo.
+   */
+  slug: string;
   /**
    * Selecciona una o más categorías para organizar el producto.
    */
   category: (string | Category)[];
+  /**
+   * Ejemplo: Apple, Audi, Nike, Sony...
+   */
+  brand?: string | null;
+  /**
+   * Visible junto a la categoría.
+   */
+  showBrandInCard?: boolean | null;
+  /**
+   * Visible sobre el título del producto.
+   */
+  showBrandInPDP?: boolean | null;
+  /**
+   * Ejemplo: WH-1000XM5, POLO-WHT-01, A3294...
+   */
+  model?: string | null;
   /**
    * Detalla características y beneficios. Puedes usar subtítulos, negritas y listas.
    */
@@ -277,10 +299,6 @@ export interface Product {
         id?: string | null;
       }[]
     | null;
-  /**
-   * Identificador para la URL de la tienda (ejemplo: smartpulse-x7-wearable). En minúsculas y separado por guiones.
-   */
-  slug: string;
   updatedAt: string;
   createdAt: string;
 }
@@ -350,9 +368,13 @@ export interface Page {
   slug: string;
   status?: ('published' | 'draft') | null;
   /**
-   * Si está activo, aparecerá un enlace a esta página en el pie de página.
+   * Si está activo, aparecerá en el pie de página.
    */
   showInFooter?: boolean | null;
+  /**
+   * Elige en qué columna aparecerá el enlace.
+   */
+  footerColumn?: ('soporte' | 'empresa') | null;
   /**
    * Escribe y da formato al contenido de la página (títulos, listas, negritas, enlaces).
    */
@@ -532,7 +554,12 @@ export interface CategoriesSelect<T extends boolean = true> {
 export interface ProductsSelect<T extends boolean = true> {
   title?: T;
   status?: T;
+  slug?: T;
   category?: T;
+  brand?: T;
+  showBrandInCard?: T;
+  showBrandInPDP?: T;
+  model?: T;
   description?: T;
   price?: T;
   compareAtPrice?: T;
@@ -547,7 +574,6 @@ export interface ProductsSelect<T extends boolean = true> {
         icon?: T;
         id?: T;
       };
-  slug?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -606,6 +632,7 @@ export interface PagesSelect<T extends boolean = true> {
   slug?: T;
   status?: T;
   showInFooter?: T;
+  footerColumn?: T;
   content?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -715,6 +742,14 @@ export interface StoreIdentity {
    * Icono cuadrado para la pestaña del navegador en formato PNG, ICO o SVG. Tamaño recomendado: 32x32 px o 64x64 px.
    */
   favicon?: (string | null) | Media;
+  /**
+   * Elige el tamaño visual del logo en la barra superior. Se adapta en móviles para mantener la proporción y no saturar el espacio.
+   */
+  logoSizeHeader?: ('pequeno' | 'normal' | 'mediano' | 'grande') | null;
+  /**
+   * Elige el tamaño visual del logo en el pie de página de la tienda.
+   */
+  logoSizeFooter?: ('pequeno' | 'normal' | 'mediano' | 'grande') | null;
   announcement?: {
     enabled?: boolean | null;
     /**
@@ -744,6 +779,22 @@ export interface StoreIdentity {
      * Imagen de fondo para el Hero Banner. Tamaño recomendado: 1920x600 px o relación de aspecto horizontal 16:5. Formatos recomendados: JPG o WebP de alta resolución.
      */
     backgroundImage?: (string | null) | Media;
+    /**
+     * Controla qué tan oscuro es el filtro sobre la imagen de fondo del banner principal para mejorar la lectura del título.
+     */
+    overlayOpacity?: ('0' | '20' | '40' | '50' | '60' | '80') | null;
+  };
+  footerColumns?: {
+    /**
+     * Activa o desactiva toda la columna de enlaces de Soporte en el Footer.
+     */
+    showSupportColumn?: boolean | null;
+    supportTitle?: string | null;
+    /**
+     * Activa o desactiva toda la columna de enlaces de Empresa en el Footer.
+     */
+    showCompanyColumn?: boolean | null;
+    companyTitle?: string | null;
   };
   updatedAt?: string | null;
   createdAt?: string | null;
@@ -783,6 +834,27 @@ export interface StoreContact {
   createdAt?: string | null;
 }
 /**
+ * Configura la información legal de tu empresa y la visibilidad de las políticas en el pie de página.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "store-legal".
+ */
+export interface StoreLegal {
+  id: string;
+  legalName: string;
+  taxId?: string | null;
+  legalAddress: string;
+  legalEmail: string;
+  /**
+   * Ejemplo: 'Madrid, España' o 'Ciudad de México, México'. Se usará para definir bajo qué leyes se rigen los Términos de Servicio.
+   */
+  jurisdiction: string;
+  showPrivacyPolicy?: boolean | null;
+  showTermsOfService?: boolean | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "store-management_select".
  */
@@ -816,6 +888,8 @@ export interface StoreIdentitySelect<T extends boolean = true> {
   logo?: T;
   logoInverted?: T;
   favicon?: T;
+  logoSizeHeader?: T;
+  logoSizeFooter?: T;
   announcement?:
     | T
     | {
@@ -834,6 +908,15 @@ export interface StoreIdentitySelect<T extends boolean = true> {
         ctaText?: T;
         ctaLink?: T;
         backgroundImage?: T;
+        overlayOpacity?: T;
+      };
+  footerColumns?:
+    | T
+    | {
+        showSupportColumn?: T;
+        supportTitle?: T;
+        showCompanyColumn?: T;
+        companyTitle?: T;
       };
   updatedAt?: T;
   createdAt?: T;
@@ -858,6 +941,22 @@ export interface StoreContactSelect<T extends boolean = true> {
   twitter?: T;
   tiktok?: T;
   whatsappSupport?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "store-legal_select".
+ */
+export interface StoreLegalSelect<T extends boolean = true> {
+  legalName?: T;
+  taxId?: T;
+  legalAddress?: T;
+  legalEmail?: T;
+  jurisdiction?: T;
+  showPrivacyPolicy?: T;
+  showTermsOfService?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

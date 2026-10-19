@@ -63,7 +63,7 @@ export function AccountDashboard({
 				body: JSON.stringify(formData),
 			});
 
-			const data = await res.json();
+			const data = (await res.json()) as any;
 			if (!res.ok || data.error) {
 				setProfileError(data.error || "No se pudo actualizar tu información");
 			} else {
@@ -98,7 +98,7 @@ export function AccountDashboard({
 				body: JSON.stringify({ orderId }),
 			});
 
-			const data = await res.json();
+			const data = (await res.json()) as any;
 			if (!res.ok || data.error) {
 				setOrderError(data.error || "No se pudo eliminar el pedido.");
 			} else {
@@ -166,7 +166,7 @@ export function AccountDashboard({
 				</div>
 				{!isEditing && (
 					<Button
-						variant="outline"
+						variant="outline-solid"
 						onClick={() => setIsEditing(true)}
 						className="gap-2 font-medium"
 					>
@@ -265,7 +265,7 @@ export function AccountDashboard({
 					<div className="mt-8 flex items-center justify-end gap-3 border-t pt-4">
 						<Button
 							type="button"
-							variant="outline"
+							variant="outline-solid"
 							onClick={() => {
 								setIsEditing(false);
 								setFormData({
@@ -455,7 +455,7 @@ export function AccountDashboard({
 								) : (
 									<div className="mt-6 flex flex-wrap items-center justify-end gap-3 border-t pt-4">
 										<Button
-											variant="outline"
+											variant="outline-solid"
 											size="sm"
 											onClick={() => handleDeleteOrder(order.id, order.orderNumber)}
 											disabled={deletingOrderId === order.id}

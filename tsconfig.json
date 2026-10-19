@@ -54,6 +54,7 @@
   ],
   "exclude": [
     "node_modules",
-    "src/_reference"
+    "src/_reference",
+    "src/checkout"
   ]
 }

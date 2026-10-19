@@ -1,6 +1,5 @@
 import { Suspense } from "react";
 import { type Metadata } from "next";
-import { CACHE_PROFILES, applyCacheProfile } from "@/lib/cache-manifest";
 import { ProductList } from "@/ui/components/product-list";
 import { getProducts, getStoreIdentity } from "@/lib/payload";
 import { HeroBanner } from "@/ui/components/home/hero-banner";
@@ -21,7 +20,7 @@ export async function generateMetadata(): Promise<Metadata> {
  * Note: the empty array IS cached for the cacheLife duration —
  * on-demand revalidation via cacheTag is the intended recovery path.
  */
-async function getFeaturedProducts(channel: string) {
+async function getFeaturedProducts() {
 	console.log("=== RUNNING getFeaturedProducts ===");
 	try {
 		const products = await getProducts({});
@@ -38,7 +37,8 @@ async function getFeaturedProducts(channel: string) {
  * The async product grid streams inside its own Suspense boundary
  * so it doesn't rely on the layout's main Suspense for reconciliation.
  */
-export default function Page(props: { params: Promise<{ channel: string }> }) {
+export default async function Page({ params }: { params: Promise<{ _channel: string }> }) {
+	const { _channel } = await params;
 	return (
 		<section className="mx-auto max-w-7xl p-8 pb-16">
 			<Suspense fallback={null}>
@@ -67,15 +67,14 @@ export default function Page(props: { params: Promise<{ channel: string }> }) {
 					</ul>
 				}
 			>
-				<FeaturedProducts params={props.params} />
+				<FeaturedProducts />
 			</Suspense>
 		</section>
 	);
 }
 
-async function FeaturedProducts({ params: paramsPromise }: { params: Promise<{ channel: string }> }) {
-	const { channel } = await paramsPromise;
-	const products = await getFeaturedProducts(channel);
+async function FeaturedProducts() {
+	const products = await getFeaturedProducts();
 
 	return <ProductList products={products} />;
 }

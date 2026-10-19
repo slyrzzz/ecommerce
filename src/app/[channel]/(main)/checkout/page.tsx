@@ -37,10 +37,10 @@ export default async function CheckoutPage() {
 							const price =
 								typeof product.price === "number"
 									? product.price
-									: product.pricing?.priceRange?.start?.gross?.amount || 0;
+									: (product as any).pricing?.priceRange?.start?.gross?.amount || 0;
 							cartData.totalPrice += price * line.quantity;
 							cartData.lines.push({
-								productName: product.title || product.name || "Producto",
+								productName: (product as any).title || (product as any).name || "Producto",
 								quantity: line.quantity,
 								price: price,
 								merchandiseId: line.merchandiseId,

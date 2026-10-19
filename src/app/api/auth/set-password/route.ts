@@ -4,7 +4,7 @@ import { getPayload } from "payload";
 import configPromise from "@payload-config";
 
 export async function POST(request: NextRequest) {
-	const body = await request.json();
+	const body = await request.json() as any;
 	const { token, password } = body;
 
 	if (!token || !password) {

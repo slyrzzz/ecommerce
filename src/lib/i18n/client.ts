@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getDictionary, esDictionary, type Dictionary, type Locale } from "@/config/dictionaries";
+import { getDictionary, esDictionary, type Locale } from "@/config/dictionaries";
 
-export function useDictionary(): Dictionary {
-	const [dict, setDict] = useState<Dictionary>(esDictionary);
+export function useDictionary() {
+	const [dict, setDict] = useState(esDictionary);
 
 	useEffect(() => {
 		try {

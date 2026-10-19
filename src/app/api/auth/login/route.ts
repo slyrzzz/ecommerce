@@ -4,7 +4,7 @@ import configPromise from "@payload-config";
 import { cookies } from "next/headers";
 
 export async function POST(request: NextRequest) {
-  const body = await request.json();
+  const body = await request.json() as any;
   const { email, password } = body;
 
   if (!email || !password) {
@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    if (!result.token) {
+    if (!result || !result.user || !result.token) {
       return NextResponse.json(
         { errors: [{ message: "Invalid email or password", code: "INVALID" }] },
         { status: 401 },
@@ -43,8 +43,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       user: {
         id: result.user.id,
-        email: result.user.email,
-        firstName: (result.user as any).firstName || "",
+        email: result?.user?.email,
+        firstName: result?.user?.firstName || "",
         lastName: (result.user as any).lastName || "",
       },
       token: result.token,

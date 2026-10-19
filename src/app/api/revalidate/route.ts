@@ -91,7 +91,7 @@ function revalidateProfile(
 	paths: string[],
 ) {
 	const tag = buildTag(profile, slug);
-	revalidateTag(tag, profile.cacheProfile);
+	revalidateTag(tag);
 	tags.push(tag);
 
 	const path = buildPath(profile, channel, slug);
@@ -241,7 +241,7 @@ export async function GET(request: NextRequest) {
 
 		const fixedTagProfiles = Object.values(CACHE_PROFILES).filter((p) => !p.tagPattern.includes("{slug}"));
 		for (const p of fixedTagProfiles) {
-			revalidateTag(p.tagPattern, p.cacheProfile);
+			revalidateTag(p.tagPattern);
 			revalidatedTags.push(p.tagPattern);
 		}
 
@@ -274,7 +274,7 @@ export async function GET(request: NextRequest) {
 				"",
 			)}", "${profile}") — invalidates "use cache" entries with this tag`,
 		);
-		revalidateTag(tag, profile);
+		revalidateTag(tag);
 		revalidatedTags.push(tag);
 	}
 

@@ -6,7 +6,9 @@ export const Users: CollectionConfig = {
     maxLoginAttempts: 5,
     lockTime: 15 * 60 * 1000, // 15 minutos
     forgotPassword: {
-      generateEmailHTML: ({ req, token, user }) => {
+      generateEmailHTML: (args: any) => {
+        const token = args?.token;
+        const user = args?.user;
         // En Next.js App Router, el frontend normalmente usa una página para resetear
         // Ajustaremos la URL según el diseño del storefront. Asumiremos /reset-password
         const resetUrl = `${process.env.NEXT_PUBLIC_STOREFRONT_URL || 'http://localhost:3000'}/reset-password?token=${token}`;

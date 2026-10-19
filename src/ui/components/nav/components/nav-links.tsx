@@ -1,7 +1,7 @@
 import { NavLink } from "./nav-link";
 import { getCategories } from "@/lib/payload";
 
-export const NavLinks = async ({ channel }: { channel: string }) => {
+export const NavLinks = async ({ _channel: __channel }: { _channel: string }) => {
 	const categories = await getCategories();
 
 	return (

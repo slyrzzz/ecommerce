@@ -54,7 +54,7 @@ export async function Header({ channel }: { channel: string }) {
 					{/* Navigation - Suspense for cached data + client active state */}
 					<nav className="hidden items-center gap-6 lg:flex">
 						<Suspense fallback={<NavLinksSkeleton />}>
-							<NavLinks channel={channel} />
+							<NavLinks _channel={channel} />
 						</Suspense>
 					</nav>
 
@@ -65,7 +65,7 @@ export async function Header({ channel }: { channel: string }) {
 							<UserMenuContainer />
 						</Suspense>
 						<Suspense fallback={<div className="h-10 w-10" />}>
-							<CartNavItem channel={channel} />
+							<CartNavItem _channel={channel} />
 						</Suspense>
 						<Suspense>
 							<MobileMenu>
@@ -73,7 +73,7 @@ export async function Header({ channel }: { channel: string }) {
 									<SearchBar channel={channel} />
 								</Suspense>
 								<Suspense fallback={<NavLinksSkeleton />}>
-									<NavLinks channel={channel} />
+									<NavLinks _channel={channel} />
 								</Suspense>
 							</MobileMenu>
 						</Suspense>

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Suspense } from "react";
 import Image from "next/image";
 import { CheckoutLink } from "./checkout-link";

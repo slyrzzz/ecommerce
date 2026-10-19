@@ -1,4 +1,4 @@
-import type { ProductListItemFragment } from "@/gql/graphql";
+type ProductListItemFragment = any;
 import type { ProductCardData } from "./product-card";
 import { getColorHex, isColorAttribute, isSizeAttribute } from "@/lib/colors";
 import { sortSizes } from "@/lib/sizes";
@@ -13,10 +13,10 @@ function extractColorsFromVariants(
 ): { name: string; hex: string }[] {
 	const colorSet = new Map<string, string>();
 
-	variants?.forEach((variant) => {
-		variant.selectionAttributes?.forEach((attr) => {
+	variants?.forEach((variant: any) => {
+		variant.selectionAttributes?.forEach((attr: any) => {
 			if (isColorAttribute(attr.attribute?.slug ?? "")) {
-				attr.values?.forEach((value) => {
+				attr.values?.forEach((value: any) => {
 					const colorName = value.name;
 					if (colorName && !colorSet.has(colorName)) {
 						const hex = getColorHex(value) ?? "#6b7280"; // Default gray if no match
@@ -36,10 +36,10 @@ function extractColorsFromVariants(
 function extractSizesFromVariants(variants: ProductListItemFragment["variants"]): string[] {
 	const sizeSet = new Set<string>();
 
-	variants?.forEach((variant) => {
-		variant.selectionAttributes?.forEach((attr) => {
+	variants?.forEach((variant: any) => {
+		variant.selectionAttributes?.forEach((attr: any) => {
 			if (isSizeAttribute(attr.attribute?.slug ?? "")) {
-				attr.values?.forEach((value) => {
+				attr.values?.forEach((value: any) => {
 					if (value.name) {
 						sizeSet.add(value.name);
 					}

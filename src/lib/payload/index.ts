@@ -1,9 +1,7 @@
 import { getPayload } from 'payload';
 import configPromise from '@payload-config';
-import { ProductDetailsQuery, ProductListItemFragment } from '@/gql/graphql';
-import { cookies } from 'next/headers';
 
-export async function getProducts({ query, reverse, sortKey, categoryId }: { query?: string, reverse?: boolean, sortKey?: string, categoryId?: string }): Promise<ProductListItemFragment[]> {
+export async function getProducts({ query, reverse: _reverse, sortKey: _sortKey, categoryId }: { query?: string, reverse?: boolean, sortKey?: string, categoryId?: string }): Promise<any[]> {
   console.log("=== ADAPTER: getProducts starting ===");
   const payload = await getPayload({ config: configPromise });
   
@@ -26,12 +24,12 @@ export async function getProducts({ query, reverse, sortKey, categoryId }: { que
   });
 
   console.log("=== ADAPTER: found raw products count:", products.docs.length);
-  const mapped = products.docs.map((doc: any) => mapPayloadProductToCommerce(doc) as ProductListItemFragment);
+  const mapped = products.docs.map((doc: any) => mapPayloadProductToCommerce(doc) as any[]);
   console.log("=== ADAPTER: mapped products count:", mapped.length);
   return mapped;
 }
 
-export async function getProduct(handle: string): Promise<NonNullable<ProductDetailsQuery['product']> | undefined> {
+export async function getProduct(handle: string): Promise<any | undefined> {
   const payload = await getPayload({ config: configPromise });
   const products = await payload.find({
     collection: 'products',
@@ -47,7 +45,7 @@ export async function getProduct(handle: string): Promise<NonNullable<ProductDet
   return mapPayloadProductToCommerce(products.docs[0]);
 }
 
-export async function getCollectionProducts(collectionSlug: string): Promise<ProductListItemFragment[]> {
+export async function getCollectionProducts(collectionSlug: string): Promise<any[]> {
   const payload = await getPayload({ config: configPromise });
   // Find category id
   const categories = await payload.find({
@@ -70,7 +68,7 @@ export async function getCollectionProducts(collectionSlug: string): Promise<Pro
     where,
   });
 
-  return products.docs.map((doc: any) => mapPayloadProductToCommerce(doc) as ProductListItemFragment);
+  return products.docs.map((doc: any) => mapPayloadProductToCommerce(doc) as any[]);
 }
 
 export async function getCategories() {
@@ -249,7 +247,7 @@ export function lexicalToHtml(node: any): string {
   return "";
 }
 
-function mapPayloadProductToCommerce(doc: any): NonNullable<ProductDetailsQuery['product']> {
+function mapPayloadProductToCommerce(doc: any): any {
   const images = doc.media ? doc.media.map((m: any) => ({
     // cloudinaryURL is the direct CDN URL set by payload-cloudinary plugin.
     // Fallback to m.url only if cloudinaryURL is not present.
@@ -369,7 +367,7 @@ function mapPayloadProductToCommerce(doc: any): NonNullable<ProductDetailsQuery[
         ]
       }
     ]
-  };
+  } as any;
 }
 
 export async function getStoreIdentity() {
@@ -508,7 +506,7 @@ export async function getStoreContact() {
 export async function getStoreLegal() {
   try {
     const payload = await getPayload({ config: configPromise });
-    const doc = await payload.findGlobal({ slug: "store-legal", depth: 1 }) as any;
+    const doc = await payload.findGlobal({ slug: "store-legal" as any, depth: 1 }) as any;
     return {
       legalName: doc?.legalName ?? "Empresa de Ejemplo, S.A. de C.V.",
       taxId: doc?.taxId ?? "XAXX010101000",

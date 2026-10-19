@@ -12,7 +12,10 @@
  * Note: Server-only functions (like resolveCategorySlugsToIds) are in filter-utils.server.ts
  */
 
-import type { ProductOrder, ProductOrderField, OrderDirection, ProductFilterInput } from "@/gql/graphql";
+type ProductOrder = any;
+type ProductOrderField = any;
+type OrderDirection = any;
+type ProductFilterInput = any;
 import { compareSizes } from "@/lib/sizes";
 import type { ProductCardData } from "./product-card";
 import type { FilterOption, ActiveFilter, SortOption } from "./filter-bar";

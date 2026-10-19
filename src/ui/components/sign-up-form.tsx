@@ -59,7 +59,7 @@ export function SignUpForm() {
 				}),
 			});
 
-			const data = await response.json();
+			const data: any = await response.json();
 
 			if (!response.ok || data.errors?.length) {
 				const err = data.errors?.[0];

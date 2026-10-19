@@ -5,7 +5,7 @@ import { getCurrentUser } from "@/lib/payload/auth";
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    const body = await request.json() as any;
     const { customer, lines, totalPrice, currency = "USD", status = "saved" } = body;
 
     if (!lines || lines.length === 0) {

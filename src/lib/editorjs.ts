@@ -46,7 +46,7 @@ export function parseEditorJSToHtml(content: string | null | undefined): string[
 		if (!parsed.blocks || !Array.isArray(parsed.blocks)) {
 			return null;
 		}
-		return parser.parse(parsed).map((html: string) => xss(html));
+		return (parser.parse(parsed) as unknown as string[]).map((html: string) => xss(html));
 	} catch {
 		// Not valid EditorJS JSON, return null
 		return null;

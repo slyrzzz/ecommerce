@@ -1,7 +1,7 @@
 import { LinkWithChannel } from "../atoms/link-with-channel";
 import { ProductImageWrapper } from "@/ui/atoms/product-image-wrapper";
 
-import type { ProductListItemFragment } from "@/gql/graphql";
+
 import { formatMoneyRange } from "@/lib/utils";
 import { hasDiscountInPriceRange } from "@/lib/pricing";
 import { Badge } from "@/ui/components/ui/badge";
@@ -10,7 +10,7 @@ export function ProductElement({
 	product,
 	loading,
 	priority,
-}: { product: ProductListItemFragment } & { loading: "eager" | "lazy"; priority?: boolean }) {
+}: { product: any } & { loading: "eager" | "lazy"; priority?: boolean }) {
 	const isSale = hasDiscountInPriceRange(
 		product.pricing?.priceRange,
 		product.pricing?.priceRangeUndiscounted,

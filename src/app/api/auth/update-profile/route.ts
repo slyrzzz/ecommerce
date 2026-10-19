@@ -10,7 +10,7 @@ export async function POST(request: Request) {
 			return NextResponse.json({ error: "No autorizado" }, { status: 401 });
 		}
 
-		const body = await request.json();
+		const body = await request.json() as any;
 		const { firstName, lastName, phone, address, city } = body;
 
 		const payload = await getPayload({ config: configPromise });

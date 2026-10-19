@@ -20,8 +20,6 @@ import {
 	Camera,
 	HardDrive,
 	Globe,
-	Shield,
-	Battery,
 	Shirt,
 	Wrench,
 	Sparkles,

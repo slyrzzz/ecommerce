@@ -5,12 +5,16 @@ import clsx from "clsx";
 import { Menu, Transition } from "@headlessui/react";
 import { UserInfo } from "./components/user-info";
 import { UserAvatar } from "./components/user-avatar";
-import { type UserDetailsFragment } from "@/gql/graphql";
 import { logout } from "@/app/actions";
 import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 
 type Props = {
-	user: UserDetailsFragment;
+	user: {
+		email: string;
+		firstName?: string | null;
+		lastName?: string | null;
+		avatar?: { url: string } | null;
+	};
 };
 
 export function UserMenu({ user }: Props) {

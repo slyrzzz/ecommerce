@@ -116,6 +116,6 @@ export const esDictionary = {
 		termsOfService: "Términos de Servicio",
 		contactUs: "Contáctanos",
 	},
-} as const;
+};
 
 export type Dictionary = typeof esDictionary;

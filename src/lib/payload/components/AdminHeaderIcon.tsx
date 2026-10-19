@@ -19,7 +19,7 @@ export const AdminHeaderIcon: React.FC = () => {
 			try {
 				const res = await fetch("/api/globals/store-identity", { cache: "no-store" });
 				if (!res.ok) return;
-				const doc = await res.json();
+				const doc: any = await res.json();
 				// Mostrar en el breadcrumb ÚNICAMENTE el favicon. Si no hay favicon, mostrar por defecto el icono de Payload.
 				const customUrl = doc?.favicon?.url;
 				if (customUrl) {
@@ -53,7 +53,7 @@ export const AdminHeaderIcon: React.FC = () => {
 					viewBox="0 0 25 25"
 					fill="none"
 					xmlns="http://www.w3.org/2000/svg"
-					style={{ shrink: 0, display: "block" }}
+					style={{ flexShrink: 0, display: "block" }}
 				>
 					<path
 						d="M12.5 0C5.59644 0 0 5.59644 0 12.5C0 19.4036 5.59644 25 12.5 25C19.4036 25 25 19.4036 25 12.5C25 5.59644 19.4036 0 12.5 0ZM17.1875 18.75H13.4375L7.8125 7.5H11.5625L17.1875 18.75Z"

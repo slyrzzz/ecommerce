@@ -3,7 +3,7 @@ import { getPayload } from "payload";
 import configPromise from "@payload-config";
 import { CartButton } from "@/ui/components/cart";
 
-export const CartNavItem = async ({ channel }: { channel: string }) => {
+export const CartNavItem = async ({ _channel: __channel }: { _channel: string }) => {
 	const cookieStore = await cookies();
 	const cartId = cookieStore.get("cartId")?.value;
 	let lineCount = 0;

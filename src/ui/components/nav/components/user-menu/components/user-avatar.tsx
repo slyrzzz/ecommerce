@@ -1,8 +1,13 @@
 import Image from "next/image";
-import { type UserDetailsFragment } from "@/gql/graphql";
+export type BaseUser = {
+	email: string;
+	firstName?: string | null;
+	lastName?: string | null;
+	avatar?: { url: string } | null;
+};
 
 type Props = {
-	user: UserDetailsFragment;
+	user: BaseUser;
 };
 
 export const UserAvatar = ({ user }: Props) => {

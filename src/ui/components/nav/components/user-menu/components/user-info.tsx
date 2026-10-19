@@ -1,7 +1,9 @@
-import { type UserDetailsFragment } from "@/gql/graphql";
-
 type Props = {
-	user: UserDetailsFragment;
+	user: {
+		email: string;
+		firstName?: string | null;
+		lastName?: string | null;
+	};
 };
 
 export const UserInfo = ({ user }: Props) => {

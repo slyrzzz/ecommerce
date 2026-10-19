@@ -3,7 +3,7 @@ import { getPayload } from "payload";
 import configPromise from "@payload-config";
 
 export async function POST(request: NextRequest) {
-	const body = await request.json();
+	const body = await request.json() as any;
 	const { email, channel, redirectUrl } = body;
 
 	if (!email || !channel) {

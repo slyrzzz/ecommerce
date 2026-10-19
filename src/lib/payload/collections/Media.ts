@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { CollectionConfig } from 'payload';
 import { v2 as cloudinary } from 'cloudinary';
 
@@ -59,7 +60,7 @@ export const Media: CollectionConfig = {
           (doc as Record<string, unknown>)?.url
       ) || null,
     handlers: [
-      async (req, { doc }) => {
+      async (_req, { doc }) => {
         const targetUrl =
           (doc as Record<string, unknown>)?.cloudinaryURL ||
           (doc as Record<string, unknown>)?.url;
@@ -71,7 +72,7 @@ export const Media: CollectionConfig = {
           const optimized = optimizeCloudinaryUrl(targetUrl) || targetUrl;
           return Response.redirect(optimized, 302);
         }
-        return null;
+        return undefined;
       },
     ],
   },

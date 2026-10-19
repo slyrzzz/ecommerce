@@ -29,7 +29,7 @@ export const AdminSidebarHeader: React.FC = () => {
 			try {
 				const res = await fetch("/api/globals/store-identity", { cache: "no-store" });
 				if (!res.ok) return;
-				const doc = await res.json();
+				const doc: any = await res.json();
 				const fetchedSiteName = doc?.siteName || "Tienda Online";
 				const fetchedTagline = doc?.tagline || "Panel de Administración";
 				const customUrl = doc?.logo?.url || doc?.logoInverted?.url || doc?.favicon?.url;

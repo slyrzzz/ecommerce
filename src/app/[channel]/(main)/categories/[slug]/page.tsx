@@ -1,5 +1,4 @@
 import { Suspense } from "react";
-import { notFound } from "next/navigation";
 import { type ResolvingMetadata, type Metadata } from "next";
 import { getCollectionProducts, getAllCategorySlugs } from "@/lib/payload";
 import { ProductList } from "@/ui/components/product-list";

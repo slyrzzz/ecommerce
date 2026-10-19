@@ -4,7 +4,7 @@ import configPromise from "@payload-config";
 import { cookies } from "next/headers";
 
 export async function POST(request: NextRequest) {
-  const body = await request.json();
+  const body = await request.json() as any;
   const { email, password, firstName, lastName, phone, address, city } = body;
 
   if (!email || !password) {
