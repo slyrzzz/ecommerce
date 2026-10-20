@@ -3,12 +3,18 @@
 import { ShoppingBagIcon } from "lucide-react";
 import { useCart } from "./cart-context";
 
+import { useDictionary } from "@/lib/i18n/client";
+
 interface CartButtonProps {
 	itemCount: number;
 }
 
 export function CartButton({ itemCount }: CartButtonProps) {
 	const { openCart } = useCart();
+	const dict = useDictionary();
+
+	const itemLabel = itemCount === 1 ? (dict.cart.item || "producto") : (dict.cart.items || "productos");
+	const inCartLabel = dict.cart.inCart || "en el carrito, ver carrito";
 
 	return (
 		<button
@@ -28,7 +34,7 @@ export function CartButton({ itemCount }: CartButtonProps) {
 				</span>
 			)}
 			<span className="sr-only">
-				{itemCount} {itemCount === 1 ? "producto" : "productos"} en el carrito, ver carrito
+				{itemCount} {itemLabel} {inCartLabel}
 			</span>
 		</button>
 	);

@@ -13,20 +13,21 @@ import {
 	Clock,
 } from "lucide-react";
 import { FooterLocaleSwitcher } from "./footer-locale-switcher";
-
-// Default footer links
-const getDefaultCompanyLinks = (channel: string) => [
-	{ label: "Sobre nosotros", href: `/${channel}/pages/sobre-nosotros` },
-	{ label: "Sostenibilidad", href: `/${channel}/pages/sostenibilidad` },
-	{ label: "Carreras", href: `/${channel}/pages/carreras` },
-	{ label: "Prensa", href: `/${channel}/pages/prensa` },
-];
+import { getServerDictionary } from "@/lib/i18n/server";
 
 export async function Footer({ channel }: { channel: string }) {
+	const dict = await getServerDictionary();
 	const storeIdentity = await getStoreIdentity();
 	const storeContact = await getStoreContact();
 	const footerPages = await getFooterPages();
 	const storeLegal = await getStoreLegal();
+
+	const getDefaultCompanyLinks = (ch: string) => [
+		{ label: dict.footer.aboutUs || "Sobre nosotros", href: `/${ch}/pages/sobre-nosotros` },
+		{ label: dict.footer.sustainability || "Sostenibilidad", href: `/${ch}/pages/sostenibilidad` },
+		{ label: dict.footer.careers || "Carreras", href: `/${ch}/pages/carreras` },
+		{ label: dict.footer.press || "Prensa", href: `/${ch}/pages/prensa` },
+	];
 
 	const supportPages = footerPages.filter(
 		(page) => !page.footerColumn || page.footerColumn === "soporte",
@@ -38,17 +39,17 @@ export async function Footer({ channel }: { channel: string }) {
 	const dynamicSupportLinks =
 		footerPages.length > 0
 			? [
-					{ label: "Contacto", href: `/${channel}/contact` },
+					{ label: dict.footer.contact || "Contacto", href: `/${channel}/contact` },
 					...supportPages.map((page) => ({
 						label: page.title,
 						href: `/${channel}/pages/${page.slug}`,
 					})),
 			  ]
 			: [
-					{ label: "Contacto", href: `/${channel}/contact` },
-					{ label: "Preguntas Frecuentes", href: `/${channel}/pages/faq` },
-					{ label: "Envío", href: `/${channel}/pages/envio` },
-					{ label: "Devoluciones", href: `/${channel}/pages/devoluciones` },
+					{ label: dict.footer.contact || "Contacto", href: `/${channel}/contact` },
+					{ label: dict.footer.faq || "Preguntas Frecuentes", href: `/${channel}/pages/faq` },
+					{ label: dict.footer.shipping || "Envío", href: `/${channel}/pages/envio` },
+					{ label: dict.footer.returns || "Devoluciones", href: `/${channel}/pages/devoluciones` },
 			  ];
 
 	const companyLinks =
@@ -58,6 +59,7 @@ export async function Footer({ channel }: { channel: string }) {
 					href: `/${channel}/pages/${page.slug}`,
 			  }))
 			: getDefaultCompanyLinks(channel);
+
 
 	return (
 		<footer className="bg-neutral-950 text-white dark:bg-neutral-950 dark:border-t dark:border-neutral-800">
@@ -148,7 +150,9 @@ export async function Footer({ channel }: { channel: string }) {
 						storeContact.contactInfo.supportEmail ||
 						storeContact.contactInfo.hours) ? (
 						<div>
-							<h4 className="mb-4 text-sm font-medium text-neutral-300">Contacto</h4>
+							<h4 className="mb-4 text-sm font-medium text-neutral-300">
+								{dict.footer.contact || "Contacto"}
+							</h4>
 							<ul className="space-y-3 text-sm text-neutral-400">
 								{storeContact.contactInfo.address && (
 									<li className="flex items-start gap-2.5">
@@ -199,7 +203,7 @@ export async function Footer({ channel }: { channel: string }) {
 					{storeIdentity.footerColumns?.showSupportColumn !== false && (
 						<div>
 							<h4 className="mb-4 text-sm font-medium text-neutral-300">
-								{storeIdentity.footerColumns?.supportTitle || "Soporte"}
+								{storeIdentity.footerColumns?.supportTitle || dict.footer.support || "Soporte"}
 							</h4>
 							<ul className="space-y-3">
 								{dynamicSupportLinks.map((link) => (
@@ -219,7 +223,7 @@ export async function Footer({ channel }: { channel: string }) {
 					{storeIdentity.footerColumns?.showCompanyColumn !== false && (
 						<div>
 							<h4 className="mb-4 text-sm font-medium text-neutral-300">
-								{storeIdentity.footerColumns?.companyTitle || "Empresa"}
+								{storeIdentity.footerColumns?.companyTitle || dict.footer.company || "Empresa"}
 							</h4>
 							<ul className="space-y-3">
 								{companyLinks.map((link) => (
@@ -251,7 +255,7 @@ export async function Footer({ channel }: { channel: string }) {
 								prefetch={false}
 								className="text-xs text-neutral-500 transition-colors hover:text-neutral-300"
 							>
-								Política de Privacidad
+								{dict.footer.privacyPolicy || "Política de Privacidad"}
 							</Link>
 						)}
 						{storeLegal.showTermsOfService && (
@@ -260,7 +264,7 @@ export async function Footer({ channel }: { channel: string }) {
 								prefetch={false}
 								className="text-xs text-neutral-500 transition-colors hover:text-neutral-300"
 							>
-								Términos de Servicio
+								{dict.footer.termsOfService || "Términos de Servicio"}
 							</Link>
 						)}
 					</div>

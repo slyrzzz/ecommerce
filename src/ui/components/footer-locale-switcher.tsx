@@ -1,27 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useLocale } from "@/lib/i18n/client";
 
 export function FooterLocaleSwitcher() {
-	const [locale, setLocale] = useState<"es" | "en">("es");
+	const currentLocale = useLocale();
+	const [locale, setLocale] = useState<"es" | "en">(currentLocale);
 	const [mounted, setMounted] = useState(false);
 
 	useEffect(() => {
 		setMounted(true);
-		// 1. Verificar si hay cookie o localStorage con preferencia guardada
-		const saved = localStorage.getItem("NEXT_LOCALE") as "es" | "en" | null;
-		if (saved === "es" || saved === "en") {
-			setLocale(saved);
-			return;
-		}
-
-		// 2. Si es primera visita, detectar idioma del navegador
-		const browserLang = navigator.language || "es";
-		const detected = browserLang.toLowerCase().startsWith("en") ? "en" : "es";
-		setLocale(detected);
-		localStorage.setItem("NEXT_LOCALE", detected);
-		document.cookie = `NEXT_LOCALE=${detected}; path=/; max-age=31536000; SameSite=Lax`;
-	}, []);
+		setLocale(currentLocale);
+	}, [currentLocale]);
 
 	const handleLocaleChange = (newLocale: "es" | "en") => {
 		if (newLocale === locale) return;

@@ -85,31 +85,38 @@ function FooterSkeleton() {
 	);
 }
 
+import { getServerDictionary, getServerLocale } from "@/lib/i18n/server";
+import { I18nProvider } from "@/lib/i18n/provider";
+
 export default async function RootLayout(props: {
 	children: ReactNode;
 	params: Promise<{ channel: string }>;
 }) {
 	const channel = (await props.params).channel;
+	const locale = await getServerLocale();
+	const dict = await getServerDictionary();
 
 	return (
-		<CartProvider>
-			<Suspense fallback={null}>
-				<AnnouncementBar />
-			</Suspense>
-			<Suspense fallback={<HeaderSkeleton />}>
-				<Header channel={channel} />
-			</Suspense>
-			<div className="flex min-h-[calc(100dvh-64px)] flex-col">
-				<main className="flex-1">
-					<Suspense fallback={null}>{props.children}</Suspense>
-				</main>
-				<Suspense fallback={<FooterSkeleton />}>
-					<Footer channel={channel} />
+		<I18nProvider locale={locale} dictionary={dict}>
+			<CartProvider>
+				<Suspense fallback={null}>
+					<AnnouncementBar />
 				</Suspense>
-			</div>
-			<Suspense fallback={null}>
-				<CartDrawerWrapper channel={channel} />
-			</Suspense>
-		</CartProvider>
+				<Suspense fallback={<HeaderSkeleton />}>
+					<Header channel={channel} />
+				</Suspense>
+				<div className="flex min-h-[calc(100dvh-64px)] flex-col">
+					<main className="flex-1">
+						<Suspense fallback={null}>{props.children}</Suspense>
+					</main>
+					<Suspense fallback={<FooterSkeleton />}>
+						<Footer channel={channel} />
+					</Suspense>
+				</div>
+				<Suspense fallback={null}>
+					<CartDrawerWrapper channel={channel} />
+				</Suspense>
+			</CartProvider>
+		</I18nProvider>
 	);
 }

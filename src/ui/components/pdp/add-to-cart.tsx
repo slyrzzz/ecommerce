@@ -8,6 +8,8 @@ import { cn } from "@/lib/utils";
 import { useCart } from "@/ui/components/cart/cart-context";
 import { deleteCartLine, updateCartLineQuantity } from "@/ui/components/cart/actions";
 
+import { useDictionary } from "@/lib/i18n/client";
+
 interface AddToCartProps {
 	price: string;
 	compareAtPrice?: string | null;
@@ -29,12 +31,13 @@ function AddToCartButton({
 	onAdd?: () => void;
 }) {
 	const { pending } = useFormStatus();
+	const dict = useDictionary();
 
 	const getButtonText = () => {
-		if (pending) return "Agregando...";
-		if (!disabled) return "Agregar al carrito";
-		if (disabledReason === "out-of-stock") return "Agotado";
-		return "Seleccionar opciones";
+		if (pending) return dict.pdp.adding || "Agregando...";
+		if (!disabled) return dict.pdp.addToBag || "Agregar al carrito";
+		if (disabledReason === "out-of-stock") return dict.pdp.outOfStock || "Agotado";
+		return dict.pdp.selectOptions || "Seleccionar opciones";
 	};
 
 	return (
@@ -67,6 +70,7 @@ function QuantitySelector({
 	quantity: number;
 }) {
 	const [isPending, startTransition] = useTransition();
+	const dict = useDictionary();
 
 	const handleUpdate = (newQty: number) => {
 		startTransition(() => {
@@ -89,12 +93,12 @@ function QuantitySelector({
 				className="h-10 w-10 rounded-md text-foreground hover:bg-secondary"
 			>
 				<Minus className="h-4 w-4" />
-				<span className="sr-only">Disminuir cantidad</span>
+				<span className="sr-only">{dict.pdp.decreaseQuantity || "Disminuir cantidad"}</span>
 			</Button>
 
 			<div className="flex items-center gap-2 text-base font-medium">
 				<ShoppingBag className="h-4 w-4 text-primary" />
-				<span>{isPending ? "Actualizando..." : `${quantity} en carrito`}</span>
+				<span>{isPending ? (dict.pdp.updating || "Actualizando...") : `${quantity} ${dict.pdp.inCart || "en carrito"}`}</span>
 			</div>
 
 			<Button
@@ -106,7 +110,7 @@ function QuantitySelector({
 				className="h-10 w-10 rounded-md text-foreground hover:bg-secondary"
 			>
 				<Plus className="h-4 w-4" />
-				<span className="sr-only">Aumentar cantidad</span>
+				<span className="sr-only">{dict.pdp.increaseQuantity || "Aumentar cantidad"}</span>
 			</Button>
 		</div>
 	);
@@ -123,6 +127,7 @@ export function AddToCart({
 	initialQuantityInCart = 0,
 }: AddToCartProps) {
 	const { openCart } = useCart();
+	const dict = useDictionary();
 
 	return (
 		<div className="space-y-4">
@@ -158,14 +163,14 @@ export function AddToCart({
 					<svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
 						<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
 					</svg>
-					Compra segura
+					{dict.pdp.securePurchase || "Compra segura"}
 				</span>
 				<span className="flex items-center gap-1.5">
 					<svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
 						<path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
 						<path d="M9 22V12h6v10" />
 					</svg>
-					Envío gratis en pedidos de más de $100
+					{dict.pdp.freeShippingOver100 || "Envío gratis en pedidos de más de $100"}
 				</span>
 			</div>
 		</div>

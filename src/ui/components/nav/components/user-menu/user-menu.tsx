@@ -8,6 +8,8 @@ import { UserAvatar } from "./components/user-avatar";
 import { logout } from "@/app/actions";
 import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 
+import { useDictionary } from "@/lib/i18n/client";
+
 type Props = {
 	user: {
 		email: string;
@@ -18,10 +20,12 @@ type Props = {
 };
 
 export function UserMenu({ user }: Props) {
+	const dict = useDictionary();
+
 	return (
 		<Menu as="div" className="relative">
 			<Menu.Button className="focus:outline-hidden relative flex rounded-full text-sm transition-transform hover:scale-105 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background">
-				<span className="sr-only">Abrir menú de usuario</span>
+				<span className="sr-only">{dict.header.openUserMenu || "Abrir menú de usuario"}</span>
 				<UserAvatar user={user} />
 			</Menu.Button>
 			<Transition
@@ -45,7 +49,7 @@ export function UserMenu({ user }: Props) {
 										"block rounded-md px-4 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground",
 									)}
 								>
-									Mi cuenta
+									{dict.header.myAccount || dict.common.account || "Mi cuenta"}
 								</LinkWithChannel>
 							)}
 						</Menu.Item>
@@ -58,7 +62,7 @@ export function UserMenu({ user }: Props) {
 										"block rounded-md px-4 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground",
 									)}
 								>
-									Mis pedidos
+									{dict.header.myOrders || dict.account.myOrders || "Mis pedidos"}
 								</LinkWithChannel>
 							)}
 						</Menu.Item>
@@ -74,7 +78,7 @@ export function UserMenu({ user }: Props) {
 											"w-full rounded-md px-4 py-2 text-start text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground",
 										)}
 									>
-										Cerrar sesión
+										{dict.header.logout || dict.account.logOut || "Cerrar sesión"}
 									</button>
 								</form>
 							)}
@@ -85,3 +89,4 @@ export function UserMenu({ user }: Props) {
 		</Menu>
 	);
 }
+

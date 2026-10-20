@@ -12,6 +12,8 @@ import {
 	SheetCloseButton,
 } from "@/ui/components/ui/sheet";
 
+import { useDictionary } from "@/lib/i18n/client";
+
 // Context to allow children to close the menu
 const MobileMenuContext = createContext<{ close: () => void } | null>(null);
 
@@ -26,6 +28,7 @@ type Props = {
 
 export const MobileMenu = ({ children }: Props) => {
 	const [isOpen, setIsOpen] = useState(false);
+	const dict = useDictionary();
 
 	const close = () => setIsOpen(false);
 
@@ -35,13 +38,13 @@ export const MobileMenu = ({ children }: Props) => {
 				<button
 					type="button"
 					className="flex h-10 w-10 items-center justify-center rounded-md transition-colors hover:bg-accent md:hidden"
-					aria-label="Abrir menú"
+					aria-label={dict.nav.openMenu || dict.common.openMenu || "Abrir menú"}
 				>
 					<Menu className="h-5 w-5" />
 				</button>
 			</SheetTrigger>
 			<SheetContent side="left" className="flex w-full flex-col p-0 sm:max-w-sm">
-				<SheetTitle className="sr-only">Menú de navegación</SheetTitle>
+				<SheetTitle className="sr-only">{dict.common.navigationMenu || "Menú de navegación"}</SheetTitle>
 				<SheetHeader className="justify-between border-b border-border px-4 py-4">
 					<Logo />
 					<SheetCloseButton className="static" />

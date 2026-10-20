@@ -12,6 +12,8 @@ import { cn } from "@/lib/utils";
 import { formatMoney } from "@/lib/utils";
 import { localeConfig } from "@/config/locale";
 
+import { useDictionary } from "@/lib/i18n/client";
+
 interface PayloadCartLine {
 	id: string;
 	merchandiseId: string;
@@ -39,6 +41,7 @@ interface CartDrawerProps {
 export function CartDrawer({ cartId, lines, totalPrice, channel, settings }: CartDrawerProps) {
 	const { isOpen, closeCart } = useCart();
 	const [isPending, startTransition] = useTransition();
+	const dict = useDictionary();
 
 	const itemCount = lines.reduce((sum, line) => sum + line.quantity, 0);
 	const currency = localeConfig.fallbackCurrency;
@@ -60,11 +63,12 @@ export function CartDrawer({ cartId, lines, totalPrice, channel, settings }: Car
 	const showFreeShippingBar = settings?.showFreeShippingBar ?? true;
 	const freeShippingThreshold = typeof settings?.freeShippingThreshold === "number" ? settings.freeShippingThreshold : 100;
 	const showCartFooterMessages = settings?.showCartFooterMessages ?? true;
-	const freeDeliveryText = settings?.freeDeliveryText || "Envío gratis desde";
-	const returnsText = settings?.returnsText || "Devoluciones en 30 días";
+	const freeDeliveryText = settings?.freeDeliveryText || dict.cart.freeDeliveryText || "Envío gratis desde";
+	const returnsText = settings?.returnsText || dict.cart.returnsText || "Devoluciones en 30 días";
 
 	const progressToFreeShipping = Math.min((totalPrice / freeShippingThreshold) * 100, 100);
 	const amountToFreeShipping = Math.max(freeShippingThreshold - totalPrice, 0);
+	const itemLabel = itemCount === 1 ? (dict.cart.item || "producto") : (dict.cart.items || "productos");
 
 	return (
 		<Sheet open={isOpen} onOpenChange={(open) => !open && closeCart()}>
@@ -72,8 +76,8 @@ export function CartDrawer({ cartId, lines, totalPrice, channel, settings }: Car
 				<SheetHeader className="justify-between border-b border-border px-6 py-4">
 					<div className="flex items-center gap-3">
 						<ShoppingBag className="h-5 w-5" />
-						<SheetTitle>Tu Carrito</SheetTitle>
-						<span className="text-sm text-muted-foreground">({itemCount} {itemCount === 1 ? "producto" : "productos"})</span>
+						<SheetTitle>{dict.cart.title || "Tu Carrito"}</SheetTitle>
+						<span className="text-sm text-muted-foreground">({itemCount} {itemLabel})</span>
 					</div>
 					<SheetCloseButton className="static" />
 				</SheetHeader>
@@ -84,10 +88,14 @@ export function CartDrawer({ cartId, lines, totalPrice, channel, settings }: Car
 							<Truck className={cn("h-4 w-4", amountToFreeShipping <= 0 && "text-success")} />
 							{amountToFreeShipping > 0 ? (
 								<span>
-									Agrega <strong>{formatMoney(amountToFreeShipping, currency)}</strong> más para envío gratis
+									{dict.cart.freeShippingPrefix || "Agrega"}{" "}
+									<strong>{formatMoney(amountToFreeShipping, currency)}</strong>{" "}
+									{dict.cart.freeShippingSuffix || "más para envío gratis"}
 								</span>
 							) : (
-								<span className="font-medium text-success">¡Calificas para envío gratis!</span>
+								<span className="font-medium text-success">
+									{dict.cart.freeShippingQualified || "¡Calificas para envío gratis!"}
+								</span>
 							)}
 						</div>
 						<div className="h-1.5 overflow-hidden rounded-full bg-border">
@@ -108,16 +116,16 @@ export function CartDrawer({ cartId, lines, totalPrice, channel, settings }: Car
 							<div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-secondary">
 								<ShoppingBag className="h-8 w-8 text-muted-foreground" />
 							</div>
-							<h3 className="mb-2 text-lg font-medium">Tu carrito está vacío</h3>
+							<h3 className="mb-2 text-lg font-medium">{dict.cart.yourBagIsEmpty || "Tu carrito está vacío"}</h3>
 							<p className="mb-6 text-sm text-muted-foreground">
-								Parece que aún no has agregado nada a tu carrito.
+								{dict.cart.emptySubtitle || "Parece que aún no has agregado nada a tu carrito."}
 							</p>
 							<Link
 								href={`/${channel}/products`}
 								onClick={closeCart}
 								className="hover:bg-primary/90 inline-flex h-10 items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground transition-colors"
 							>
-								Comenzar a comprar
+								{dict.cart.startShopping || "Comenzar a comprar"}
 							</Link>
 						</div>
 					) : (
@@ -209,15 +217,19 @@ export function CartDrawer({ cartId, lines, totalPrice, channel, settings }: Car
 					<div className="border-t border-border bg-background">
 						<div className="space-y-2 px-6 py-4">
 							<div className="flex items-center justify-between text-sm">
-								<span className="text-muted-foreground">Subtotal</span>
+								<span className="text-muted-foreground">{dict.cart.subtotal || "Subtotal"}</span>
 								<span>{formatMoney(totalPrice, currency)}</span>
 							</div>
 							<div className="flex items-center justify-between text-sm">
-								<span className="text-muted-foreground">Envío</span>
-								<span>{totalPrice >= freeShippingThreshold ? "Gratis" : "Calculado en el checkout"}</span>
+								<span className="text-muted-foreground">{dict.cart.shipping || "Envío"}</span>
+								<span>
+									{totalPrice >= freeShippingThreshold
+										? (dict.cart.freeShipping || "Gratis")
+										: (dict.cart.calculatedAtCheckout || "Calculado al finalizar compra")}
+								</span>
 							</div>
 							<div className="flex items-center justify-between border-t border-border pt-2 text-base font-semibold">
-								<span>Total</span>
+								<span>{dict.cart.total || "Total"}</span>
 								<span>{formatMoney(totalPrice, currency)}</span>
 							</div>
 						</div>
@@ -228,7 +240,7 @@ export function CartDrawer({ cartId, lines, totalPrice, channel, settings }: Car
 								onClick={closeCart}
 								className="hover:bg-primary/90 group inline-flex h-12 w-full items-center justify-center gap-2 rounded-md bg-primary text-base font-medium text-primary-foreground transition-colors"
 							>
-								<span>Finalizar Compra</span>
+								<span>{dict.cart.checkout || "Finalizar Compra"}</span>
 								<ArrowRight className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-1" />
 							</Link>
 							<Link
@@ -236,7 +248,7 @@ export function CartDrawer({ cartId, lines, totalPrice, channel, settings }: Car
 								onClick={closeCart}
 								className="inline-flex h-12 w-full items-center justify-center rounded-md border border-border bg-transparent text-base font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
 							>
-								Seguir Comprando
+								{dict.cart.continueShopping || "Seguir Comprando"}
 							</Link>
 						</div>
 

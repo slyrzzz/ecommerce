@@ -4,9 +4,9 @@ import { type ReactNode } from "react";
 import { type Metadata } from "next";
 import { getStoreIdentity } from "@/lib/payload";
 import { getMetadataBase } from "@/lib/seo";
-import { localeConfig } from "@/config/locale";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { ThemeProvider } from "@/ui/components/theme-provider";
+import { getServerLocale } from "@/lib/i18n/server";
 
 export async function generateMetadata(): Promise<Metadata> {
 	const identity = await getStoreIdentity();
@@ -25,11 +25,12 @@ export async function generateMetadata(): Promise<Metadata> {
 	};
 }
 
-export default function RootLayout(props: { children: ReactNode }) {
+export default async function RootLayout(props: { children: ReactNode }) {
 	const { children } = props;
+	const locale = await getServerLocale();
 
 	return (
-		<html lang={localeConfig.htmlLang} className={`${GeistSans.variable} ${GeistMono.variable} min-h-dvh`} suppressHydrationWarning>
+		<html lang={locale} className={`${GeistSans.variable} ${GeistMono.variable} min-h-dvh`} suppressHydrationWarning>
 			<body className="min-h-dvh font-sans bg-background text-foreground transition-colors duration-200">
 				<ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
 					{children}

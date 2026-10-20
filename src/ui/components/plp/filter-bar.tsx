@@ -23,6 +23,7 @@ import {
 	SheetCloseButton,
 } from "@/ui/components/ui/sheet";
 import { Check } from "lucide-react";
+import { useDictionary } from "@/lib/i18n/client";
 
 export type SortOption = "featured" | "newest" | "price_asc" | "price_desc" | "bestselling";
 
@@ -90,6 +91,7 @@ export function FilterBar({
 	onPriceRangeChange,
 }: FilterBarProps) {
 	const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+	const dict = useDictionary();
 
 	const hasFilters =
 		categoryOptions.length > 0 || colorOptions.length > 0 || sizeOptions.length > 0 || priceRanges.length > 0;
@@ -111,7 +113,7 @@ export function FilterBar({
 								<SheetTrigger asChild>
 									<Button variant="outline-solid" size="sm" className="shrink-0 bg-transparent md:hidden">
 										<SlidersHorizontal className="mr-2 h-4 w-4" />
-										Filtros
+										{dict.plp.filters || "Filtros"}
 										{activeFilterCount > 0 && (
 											<Badge variant="secondary" className="ml-2 h-5 px-1.5 py-0 text-xs">
 												{activeFilterCount}
@@ -121,7 +123,7 @@ export function FilterBar({
 								</SheetTrigger>
 								<SheetContent side="left" className="flex w-[280px] flex-col p-0">
 									<SheetHeader className="flex-row items-center justify-between border-b border-border px-4 py-4">
-										<SheetTitle>Filtros</SheetTitle>
+										<SheetTitle>{dict.plp.filters || "Filtros"}</SheetTitle>
 										<SheetCloseButton />
 									</SheetHeader>
 
@@ -131,7 +133,7 @@ export function FilterBar({
 											{categoryOptions.length > 0 && onCategoryToggle && (
 												<div className="px-4 py-6">
 													<h3 className="mb-4 text-sm font-medium uppercase tracking-wide text-muted-foreground">
-														Categoría
+														{dict.plp.category || "Categoría"}
 													</h3>
 													<div className="space-y-3">
 														{categoryOptions.map((category) => {
@@ -160,10 +162,11 @@ export function FilterBar({
 											)}
 
 											{/* Mobile Color Filter */}
+											{/* Mobile Color Filter */}
 											{colorOptions.length > 0 && onColorToggle && (
 												<div className="px-4 py-6">
 													<h3 className="mb-4 text-sm font-medium uppercase tracking-wide text-muted-foreground">
-														Color
+														{dict.plp.color || "Color"}
 													</h3>
 													<div className="space-y-3">
 														{colorOptions.map((color) => {
@@ -202,7 +205,7 @@ export function FilterBar({
 											{sizeOptions.length > 0 && onSizeToggle && (
 												<div className="px-4 py-6">
 													<h3 className="mb-4 text-sm font-medium uppercase tracking-wide text-muted-foreground">
-														Talla
+														{dict.plp.size || "Talla"}
 													</h3>
 													<div className="flex flex-wrap gap-2">
 														{sizeOptions.map((size) => {
@@ -229,7 +232,7 @@ export function FilterBar({
 											{priceRanges.length > 0 && onPriceRangeChange && (
 												<div className="px-4 py-6">
 													<h3 className="mb-4 text-sm font-medium uppercase tracking-wide text-muted-foreground">
-														Precio
+														{dict.plp.price || "Precio"}
 													</h3>
 													<div className="space-y-3">
 														{priceRanges.map((range) => {
@@ -268,7 +271,7 @@ export function FilterBar({
 													setMobileFiltersOpen(false);
 												}}
 											>
-												Limpiar todos los filtros ({activeFilterCount})
+												{dict.plp.clearAllFilters || "Limpiar todos los filtros"} ({activeFilterCount})
 											</Button>
 										</div>
 									)}
@@ -285,7 +288,7 @@ export function FilterBar({
 										size="sm"
 										className="hidden shrink-0 bg-transparent md:flex"
 									>
-										Categoría
+										{dict.plp.category || "Categoría"}
 										{selectedCategories.length > 0 && (
 											<Badge variant="secondary" className="ml-2 h-5 px-1.5 py-0 text-xs">
 												{selectedCategories.length}
@@ -295,7 +298,7 @@ export function FilterBar({
 									</Button>
 								</DropdownMenuTrigger>
 								<DropdownMenuContent align="start" className="w-56">
-									<DropdownMenuLabel>Categoría</DropdownMenuLabel>
+									<DropdownMenuLabel>{dict.plp.category || "Categoría"}</DropdownMenuLabel>
 									<DropdownMenuSeparator />
 									{categoryOptions.map((category) => (
 										<DropdownMenuCheckboxItem
@@ -319,7 +322,7 @@ export function FilterBar({
 										size="sm"
 										className="hidden shrink-0 bg-transparent md:flex"
 									>
-										Color
+										{dict.plp.color || "Color"}
 										{selectedColors.length > 0 && (
 											<Badge variant="secondary" className="ml-2 h-5 px-1.5 py-0 text-xs">
 												{selectedColors.length}
@@ -329,7 +332,7 @@ export function FilterBar({
 									</Button>
 								</DropdownMenuTrigger>
 								<DropdownMenuContent align="start" className="w-56">
-									<DropdownMenuLabel>Color</DropdownMenuLabel>
+									<DropdownMenuLabel>{dict.plp.color || "Color"}</DropdownMenuLabel>
 									<DropdownMenuSeparator />
 									{colorOptions.map((color) => (
 										<DropdownMenuCheckboxItem
@@ -360,7 +363,7 @@ export function FilterBar({
 										size="sm"
 										className="hidden shrink-0 bg-transparent md:flex"
 									>
-										Talla
+										{dict.plp.size || "Talla"}
 										{selectedSizes.length > 0 && (
 											<Badge variant="secondary" className="ml-2 h-5 px-1.5 py-0 text-xs">
 												{selectedSizes.length}
@@ -370,7 +373,7 @@ export function FilterBar({
 									</Button>
 								</DropdownMenuTrigger>
 								<DropdownMenuContent align="start" className="w-48">
-									<DropdownMenuLabel>Talla</DropdownMenuLabel>
+									<DropdownMenuLabel>{dict.plp.size || "Talla"}</DropdownMenuLabel>
 									<DropdownMenuSeparator />
 									{sizeOptions.map((size) => (
 										<DropdownMenuCheckboxItem
@@ -395,7 +398,7 @@ export function FilterBar({
 										size="sm"
 										className="hidden shrink-0 bg-transparent md:flex"
 									>
-										Precio
+										{dict.plp.price || "Precio"}
 										{selectedPriceRange && (
 											<Badge variant="secondary" className="ml-2 h-5 px-1.5 py-0 text-xs">
 												1
@@ -405,7 +408,7 @@ export function FilterBar({
 									</Button>
 								</DropdownMenuTrigger>
 								<DropdownMenuContent align="start" className="w-48">
-									<DropdownMenuLabel>Rango de Precio</DropdownMenuLabel>
+									<DropdownMenuLabel>{dict.plp.priceRange || "Rango de Precio"}</DropdownMenuLabel>
 									<DropdownMenuSeparator />
 									<DropdownMenuRadioGroup
 										value={selectedPriceRange || ""}
@@ -425,13 +428,13 @@ export function FilterBar({
 					{/* Right: Result Count + Sort */}
 					<div className="flex shrink-0 items-center gap-3">
 						<span className="hidden text-sm text-muted-foreground sm:block">
-							{resultCount} {resultCount === 1 ? "producto" : "productos"}
+							{resultCount} {resultCount === 1 ? (dict.plp.product || "producto") : (dict.plp.products || "productos")}
 						</span>
 
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild>
 								<Button variant="outline-solid" size="sm" className="bg-transparent">
-									Ordenar
+									{dict.plp.sort || "Ordenar"}
 									<ChevronDown className="ml-1.5 h-4 w-4 opacity-50" />
 								</Button>
 							</DropdownMenuTrigger>
@@ -440,11 +443,11 @@ export function FilterBar({
 									value={sortValue}
 									onValueChange={(v) => onSortChange(v as SortOption)}
 								>
-									<DropdownMenuRadioItem value="featured">Destacados</DropdownMenuRadioItem>
-									<DropdownMenuRadioItem value="newest">Más recientes</DropdownMenuRadioItem>
-									<DropdownMenuRadioItem value="price_asc">Precio: Menor a Mayor</DropdownMenuRadioItem>
-									<DropdownMenuRadioItem value="price_desc">Precio: Mayor a Menor</DropdownMenuRadioItem>
-									<DropdownMenuRadioItem value="bestselling">Más vendidos</DropdownMenuRadioItem>
+									<DropdownMenuRadioItem value="featured">{dict.plp.featured || "Destacados"}</DropdownMenuRadioItem>
+									<DropdownMenuRadioItem value="newest">{dict.plp.newest || "Más recientes"}</DropdownMenuRadioItem>
+									<DropdownMenuRadioItem value="price_asc">{dict.plp.priceLowToHigh || "Precio: Menor a Mayor"}</DropdownMenuRadioItem>
+									<DropdownMenuRadioItem value="price_desc">{dict.plp.priceHighToLow || "Precio: Mayor a Menor"}</DropdownMenuRadioItem>
+									<DropdownMenuRadioItem value="bestselling">{dict.plp.bestselling || "Más vendidos"}</DropdownMenuRadioItem>
 								</DropdownMenuRadioGroup>
 							</DropdownMenuContent>
 						</DropdownMenu>
@@ -467,7 +470,9 @@ export function FilterBar({
 									className="hover:bg-background/50 ml-0.5 rounded-full p-0.5 transition-colors"
 								>
 									<X className="h-3 w-3" />
-									<span className="sr-only">Quitar filtro {filter.value}</span>
+									<span className="sr-only">
+										{dict.plp.removeFilter || "Quitar filtro"} {filter.value}
+									</span>
 								</button>
 							</Badge>
 						))}
@@ -477,7 +482,7 @@ export function FilterBar({
 							className="h-6 shrink-0 px-2 text-xs text-muted-foreground"
 							onClick={onClearFilters}
 						>
-							Limpiar todo
+							{dict.plp.clearAll || "Limpiar todo"}
 						</Button>
 					</div>
 				)}

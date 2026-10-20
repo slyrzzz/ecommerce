@@ -27,6 +27,8 @@ function getServerScrollSnapshot() {
 	return false;
 }
 
+import { useDictionary } from "@/lib/i18n/client";
+
 interface StickyBarProps {
 	productName: string;
 	price: string;
@@ -35,6 +37,7 @@ interface StickyBarProps {
 
 function StickyAddButton() {
 	const { pending } = useFormStatus();
+	const dict = useDictionary();
 
 	return (
 		<Button
@@ -48,7 +51,7 @@ function StickyAddButton() {
 			)}
 		>
 			<ShoppingBag className="h-4 w-4" />
-			{pending ? "Agregando..." : "Agregar al carrito"}
+			{pending ? (dict.pdp.adding || "Agregando...") : (dict.pdp.addToBag || "Agregar al carrito")}
 		</Button>
 	);
 }

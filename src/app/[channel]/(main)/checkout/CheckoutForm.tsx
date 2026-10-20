@@ -6,6 +6,7 @@ import { CheckoutCustomerData, CheckoutCartData, WhatsAppCheckoutStrategy } from
 import { formatMoney } from "@/lib/utils";
 import { Button } from "@/ui/components/ui/button";
 import { Save, CheckCircle2, MessageSquare } from "lucide-react";
+import { useDictionary } from "@/lib/i18n/client";
 
 export function CheckoutForm({
 	cartData,
@@ -18,6 +19,7 @@ export function CheckoutForm({
 	whatsappNumber?: string;
 	whatsappPrefix?: string;
 }) {
+	const dict = useDictionary();
 	const [customer, setCustomer] = useState<CheckoutCustomerData>({
 		firstName: currentUser?.firstName || "",
 		lastName: currentUser?.lastName || "",
@@ -26,6 +28,7 @@ export function CheckoutForm({
 		city: currentUser?.city || "",
 	});
 
+	const [errors, setErrors] = useState<Record<string, string>>({});
 	const [isSaving, setIsSaving] = useState(false);
 	const [saveSuccess, setSaveSuccess] = useState("");
 	const [saveError, setSaveError] = useState("");
@@ -51,10 +54,18 @@ export function CheckoutForm({
 		}
 	}, [currentUser]);
 
-	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const { name, value } = e.target;
-		const updated = { ...customer, [name]: value };
+	const updateCustomerField = (field: keyof CheckoutCustomerData, value: string) => {
+		const updated = { ...customer, [field]: value };
 		setCustomer(updated);
+
+		// Limpiar error del campo si el usuario empieza a escribir
+		if (errors[field]) {
+			setErrors((prev) => {
+				const next = { ...prev };
+				delete next[field];
+				return next;
+			});
+		}
 
 		if (!currentUser) {
 			try {
@@ -65,13 +76,40 @@ export function CheckoutForm({
 		}
 	};
 
+	const validateForm = (): boolean => {
+		const newErrors: Record<string, string> = {};
+
+		if (!customer.firstName || !customer.firstName.trim()) {
+			newErrors.firstName = "El nombre es obligatorio.";
+		}
+		if (!customer.lastName || !customer.lastName.trim()) {
+			newErrors.lastName = "El apellido es obligatorio.";
+		}
+		if (!customer.phone || !customer.phone.trim()) {
+			newErrors.phone = "El teléfono / WhatsApp es obligatorio.";
+		}
+		if (!customer.address || !customer.address.trim()) {
+			newErrors.address = "La dirección de entrega es obligatoria.";
+		}
+		if (!customer.city || !customer.city.trim()) {
+			newErrors.city = "La ciudad es obligatoria.";
+		}
+
+		setErrors(newErrors);
+		return Object.keys(newErrors).length === 0;
+	};
+
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
+		if (!validateForm()) return;
+
 		const strategy = new WhatsAppCheckoutStrategy(whatsappNumber, whatsappPrefix);
 		strategy.execute(customer, cartData);
 	};
 
 	const handleSaveOrder = async () => {
+		if (!validateForm()) return;
+
 		setIsSaving(true);
 		setSaveSuccess("");
 		setSaveError("");
@@ -109,8 +147,8 @@ export function CheckoutForm({
 	if (cartData.lines.length === 0) {
 		return (
 			<div className="text-center py-12">
-				<h2 className="text-2xl font-semibold mb-4">Tu bolsa está vacía</h2>
-				<p className="text-muted-foreground">Agrega productos para proceder al checkout.</p>
+				<h2 className="text-2xl font-semibold mb-4">{dict.checkout.emptyCart || "Tu bolsa está vacía"}</h2>
+				<p className="text-muted-foreground">{dict.checkout.emptyCartSubtitle || "Agrega productos para proceder al checkout."}</p>
 			</div>
 		);
 	}
@@ -118,7 +156,7 @@ export function CheckoutForm({
 	return (
 		<div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
 			<div>
-				<h2 className="text-2xl font-semibold mb-6">Información de Envío</h2>
+				<h2 className="text-2xl font-semibold mb-6">{dict.checkout.shippingInfo || "Información de Envío"}</h2>
 
 				{currentUser && (
 					<div className="mb-6 rounded-lg bg-primary/10 border border-primary/20 p-4 text-sm">
@@ -129,61 +167,106 @@ export function CheckoutForm({
 					</div>
 				)}
 
-				<form onSubmit={handleSubmit} className="space-y-4">
+				<form onSubmit={handleSubmit} className="space-y-4" noValidate>
 					<div className="grid grid-cols-2 gap-4">
-						<div className="space-y-2">
-							<label className="text-sm font-medium">Nombre</label>
+						<div className="space-y-1.5">
+							<label className="text-sm font-medium flex items-center gap-1">
+								{dict.checkout.firstName || "Nombre"} <span className="text-destructive">*</span>
+							</label>
 							<input
-								required
 								type="text"
-								className="w-full rounded-md border border-border bg-background px-3 py-2"
+								className={`w-full rounded-md border bg-background px-3 py-2 transition-colors focus:outline-none focus:ring-2 ${
+									errors.firstName
+										? "border-destructive focus:ring-destructive/30"
+										: "border-border focus:ring-primary/20"
+								}`}
 								value={customer.firstName}
 								onChange={(e) => updateCustomerField("firstName", e.target.value)}
+								placeholder={dict.checkout.enterFirstName || "Ingresa tu nombre"}
 							/>
+							{errors.firstName && (
+								<p className="text-xs text-destructive font-medium mt-1">{errors.firstName}</p>
+							)}
 						</div>
-						<div className="space-y-2">
-							<label className="text-sm font-medium">Apellido</label>
+						<div className="space-y-1.5">
+							<label className="text-sm font-medium flex items-center gap-1">
+								{dict.checkout.lastName || "Apellido"} <span className="text-destructive">*</span>
+							</label>
 							<input
-								required
 								type="text"
-								className="w-full rounded-md border border-border bg-background px-3 py-2"
+								className={`w-full rounded-md border bg-background px-3 py-2 transition-colors focus:outline-none focus:ring-2 ${
+									errors.lastName
+										? "border-destructive focus:ring-destructive/30"
+										: "border-border focus:ring-primary/20"
+								}`}
 								value={customer.lastName}
 								onChange={(e) => updateCustomerField("lastName", e.target.value)}
+								placeholder={dict.checkout.enterLastName || "Ingresa tu apellido"}
 							/>
+							{errors.lastName && (
+								<p className="text-xs text-destructive font-medium mt-1">{errors.lastName}</p>
+							)}
 						</div>
 					</div>
 
-					<div className="space-y-2">
-						<label className="text-sm font-medium">Teléfono / WhatsApp</label>
+					<div className="space-y-1.5">
+						<label className="text-sm font-medium flex items-center gap-1">
+							{dict.checkout.phone || "Teléfono / WhatsApp"} <span className="text-destructive">*</span>
+						</label>
 						<input
-							required
 							type="tel"
-							className="w-full rounded-md border border-border bg-background px-3 py-2"
+							className={`w-full rounded-md border bg-background px-3 py-2 transition-colors focus:outline-none focus:ring-2 ${
+								errors.phone
+									? "border-destructive focus:ring-destructive/30"
+									: "border-border focus:ring-primary/20"
+							}`}
 							value={customer.phone}
 							onChange={(e) => updateCustomerField("phone", e.target.value)}
+							placeholder={dict.checkout.enterPhone || "Ej: +58 412 1234567"}
 						/>
+						{errors.phone && (
+							<p className="text-xs text-destructive font-medium mt-1">{errors.phone}</p>
+						)}
 					</div>
 
-					<div className="space-y-2">
-						<label className="text-sm font-medium">Dirección de entrega</label>
+					<div className="space-y-1.5">
+						<label className="text-sm font-medium flex items-center gap-1">
+							{dict.checkout.address || "Dirección de entrega"} <span className="text-destructive">*</span>
+						</label>
 						<input
-							required
 							type="text"
-							className="w-full rounded-md border border-border bg-background px-3 py-2"
+							className={`w-full rounded-md border bg-background px-3 py-2 transition-colors focus:outline-none focus:ring-2 ${
+								errors.address
+									? "border-destructive focus:ring-destructive/30"
+									: "border-border focus:ring-primary/20"
+							}`}
 							value={customer.address}
 							onChange={(e) => updateCustomerField("address", e.target.value)}
+							placeholder={dict.checkout.enterAddress || "Calle, número, edificio, apartamento..."}
 						/>
+						{errors.address && (
+							<p className="text-xs text-destructive font-medium mt-1">{errors.address}</p>
+						)}
 					</div>
 
-					<div className="space-y-2">
-						<label className="text-sm font-medium">Ciudad</label>
+					<div className="space-y-1.5">
+						<label className="text-sm font-medium flex items-center gap-1">
+							{dict.checkout.city || "Ciudad"} <span className="text-destructive">*</span>
+						</label>
 						<input
-							required
 							type="text"
-							className="w-full rounded-md border border-border bg-background px-3 py-2"
+							className={`w-full rounded-md border bg-background px-3 py-2 transition-colors focus:outline-none focus:ring-2 ${
+								errors.city
+									? "border-destructive focus:ring-destructive/30"
+									: "border-border focus:ring-primary/20"
+							}`}
 							value={customer.city}
 							onChange={(e) => updateCustomerField("city", e.target.value)}
+							placeholder={dict.checkout.enterCity || "Ej: Caracas, Valencia..."}
 						/>
+						{errors.city && (
+							<p className="text-xs text-destructive font-medium mt-1">{errors.city}</p>
+						)}
 					</div>
 
 					{saveSuccess && (
@@ -205,7 +288,7 @@ export function CheckoutForm({
 							className="flex-1 gap-2 bg-[#25D366] hover:bg-[#128C7E] text-white font-semibold h-12"
 						>
 							<MessageSquare className="h-5 w-5" />
-							Completar orden por WhatsApp
+							{dict.checkout.whatsappButton || "Completar orden por WhatsApp"}
 						</Button>
 
 						<Button
@@ -216,7 +299,7 @@ export function CheckoutForm({
 							className="gap-2 font-semibold h-12 border-primary text-primary hover:bg-primary/5"
 						>
 							<Save className="h-4 w-4" />
-							{isSaving ? "Guardando..." : "Guardar orden"}
+							{isSaving ? (dict.checkout.saving || "Guardando...") : (dict.checkout.saveOrder || "Guardar orden")}
 						</Button>
 					</div>
 				</form>
@@ -224,7 +307,7 @@ export function CheckoutForm({
 
 			<div>
 				<div className="bg-secondary/50 rounded-xl p-6 sticky top-24">
-					<h3 className="text-xl font-semibold mb-6">Resumen del Pedido</h3>
+					<h3 className="text-xl font-semibold mb-6">{dict.checkout.orderSummary || "Resumen del Pedido"}</h3>
 					<ul className="space-y-4 mb-6">
 						{cartData.lines.map((line, index) => (
 							<li key={index} className="flex justify-between items-center text-sm">
@@ -241,7 +324,7 @@ export function CheckoutForm({
 
 					<div className="border-t border-border pt-4">
 						<div className="flex justify-between items-center text-lg font-bold">
-							<span>Total</span>
+							<span>{dict.cart.total || "Total"}</span>
 							<span>{formatMoney(cartData.totalPrice, cartData.currency)}</span>
 						</div>
 					</div>

@@ -38,7 +38,7 @@ async function getFeaturedProducts() {
  * so it doesn't rely on the layout's main Suspense for reconciliation.
  */
 export default async function Page({ params }: { params: Promise<{ _channel: string }> }) {
-	const { _channel } = await params;
+	await params;
 	return (
 		<section className="mx-auto max-w-7xl p-8 pb-16">
 			<Suspense fallback={null}>
